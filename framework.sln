@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PMU.Net", "Net\PMU.Net.csproj", "{1847A683-B574-4236-947E-EA2130C2648A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PMU.Core", "Core\PMU.Core.csproj", "{2BD1EB8D-04DB-4C04-9AB8-8965B42E7CF1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PMU.Compression", "Compression\PMU.Compression.csproj", "{496E2A61-21B4-4403-91DB-60B1F7826684}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1847A683-B574-4236-947E-EA2130C2648A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1847A683-B574-4236-947E-EA2130C2648A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1847A683-B574-4236-947E-EA2130C2648A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1847A683-B574-4236-947E-EA2130C2648A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2BD1EB8D-04DB-4C04-9AB8-8965B42E7CF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2BD1EB8D-04DB-4C04-9AB8-8965B42E7CF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2BD1EB8D-04DB-4C04-9AB8-8965B42E7CF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2BD1EB8D-04DB-4C04-9AB8-8965B42E7CF1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{496E2A61-21B4-4403-91DB-60B1F7826684}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{496E2A61-21B4-4403-91DB-60B1F7826684}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{496E2A61-21B4-4403-91DB-60B1F7826684}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{496E2A61-21B4-4403-91DB-60B1F7826684}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
