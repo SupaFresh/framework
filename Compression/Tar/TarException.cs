@@ -39,7 +39,7 @@ using System;
 using System.Runtime.Serialization;
 #endif
 
-namespace PMU.Compression.Tar {
+namespace PMDCP.Compression.Tar {
 	
 	/// <summary>
 	/// TarExceptions are used for exceptions specific to tar classes and code.	

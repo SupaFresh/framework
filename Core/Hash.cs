@@ -19,7 +19,7 @@ using System.Text;
 using System.IO;
 using System.Security.Cryptography;
 
-namespace PMU.Core
+namespace PMDCP.Core
 {
     public class Hash
     {

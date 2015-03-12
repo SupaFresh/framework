@@ -18,10 +18,10 @@ using System.Collections.Generic;
 using System.Text;
 using System.Diagnostics;
 
-using PMU.Core;
+using PMDCP.Core;
 using System.Net.NetworkInformation;
 
-namespace PMU.Net
+namespace PMDCP.Net
 {
     /// <summary>
     /// Misc. methods for communicating with the internet
@@ -51,7 +51,7 @@ namespace PMU.Net
             if (NetworkInterface.GetIsNetworkAvailable() == false) {
                 return success;
             }
-            string[] Mysite = { "www.pmuniverse.net" };
+            string[] Mysite = { "www.PMDCPniverse.net" };
             try {
                 using (Ping ping = new Ping()) {
                     foreach (string url in Mysite) {

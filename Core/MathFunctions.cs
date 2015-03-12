@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace PMU.Core
+namespace PMDCP.Core
 {
     public class MathFunctions
     {

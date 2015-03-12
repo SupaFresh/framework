@@ -36,7 +36,7 @@
 using System;
 using System.IO;
 
-namespace PMU.Compression.Tar 
+namespace PMDCP.Compression.Tar 
 {
 	/// <summary>
 	/// This class represents an entry in a Tar archive. It consists

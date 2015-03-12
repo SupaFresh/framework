@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace PMU.Core
+namespace PMDCP.Core
 {
     /// <summary>
     /// Class definition for a cacheable collection of items.  Specifically, 

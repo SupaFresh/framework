@@ -18,10 +18,10 @@ using System.Collections.Generic;
 using System.Text;
 using System.Net;
 using System.Net.Sockets;
-using PMU.Core;
+using PMDCP.Core;
 using System.Threading;
 
-namespace PMU.Sockets.Gnp
+namespace PMDCP.Sockets.Gnp
 {
     public class GnpClient
     {

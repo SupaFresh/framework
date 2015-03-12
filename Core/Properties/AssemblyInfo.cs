@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("PMU.Core.dll")]
+[assembly: AssemblyTitle("PMDCP.Core.dll")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("PMU Development Team")]
-[assembly: AssemblyProduct("PMU.Core.dll")]
-[assembly: AssemblyCopyright("Copyright ©  2010")]
+[assembly: AssemblyCompany("Pokemon Mystery Dungeon Community Project")]
+[assembly: AssemblyProduct("PMDCP.Core.dll")]
+[assembly: AssemblyCopyright("Copyright © Pokemon Mystery Dungeon Community Project 2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

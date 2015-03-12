@@ -32,7 +32,7 @@ using System;
 using System.IO;
 using RE = System.Text.RegularExpressions;
 
-namespace PMU.Compression.Zip
+namespace PMDCP.Compression.Zip
 {
 
     public partial class ZipEntry
@@ -553,7 +553,7 @@ namespace PMU.Compression.Zip
         {
             if (_UncompressedSize < 0x10) return false;
             if (_CompressionMethod == 0x00) return false;
-            if (CompressionLevel == PMU.Compression.Zlib.CompressionLevel.None) return false;
+            if (CompressionLevel == PMDCP.Compression.Zlib.CompressionLevel.None) return false;
             if (_CompressedSize < _UncompressedSize) return false;
 
             if (this._Source == ZipEntrySource.Stream && !this._sourceStream.CanSeek) return false;
@@ -637,7 +637,7 @@ namespace PMU.Compression.Zip
             if (SetCompression != null)
                 CompressionLevel = SetCompression(LocalFileName, _FileNameInArchive);
 
-            _CompressionMethod = (short)((CompressionLevel == PMU.Compression.Zlib.CompressionLevel.None)
+            _CompressionMethod = (short)((CompressionLevel == PMDCP.Compression.Zlib.CompressionLevel.None)
                                           ? 0x00
                                           : 0x08);
             return;
@@ -903,7 +903,7 @@ namespace PMU.Compression.Zip
 
 
             // LastMod
-            _TimeBlob = PMU.Compression.Zip.SharedUtilities.DateTimeToPacked(LastModified);
+            _TimeBlob = PMDCP.Compression.Zip.SharedUtilities.DateTimeToPacked(LastModified);
 
             // (i==10) time blob
             bytes[i++] = (byte)(_TimeBlob & 0x000000FF);
@@ -1015,7 +1015,7 @@ namespace PMU.Compression.Zip
                 // get the original stream:
                 if (this._Source == ZipEntrySource.WriteDelegate)
                 {
-                    var output = new PMU.Compression.Zlib.CrcCalculatorStream(Stream.Null);
+                    var output = new PMDCP.Compression.Zlib.CrcCalculatorStream(Stream.Null);
                     // allow the application to write the data
                     this._WriteDelegate(this.FileName, output);
                     _Crc32 = output.Crc;
@@ -1048,7 +1048,7 @@ namespace PMU.Compression.Zip
                         input = File.Open(LocalFileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
                     }
 
-                    var crc32 = new PMU.Compression.Zlib.CRC32();
+                    var crc32 = new PMDCP.Compression.Zlib.CRC32();
                     _Crc32 = crc32.GetCrc32(input);
 
                     if (_sourceStream == null)
@@ -1206,7 +1206,7 @@ namespace PMU.Compression.Zip
                 CountingStream entryCounter;  // counts bytes written for this entry
                 Stream encryptor;
                 Stream deflater;
-                PMU.Compression.Zlib.CrcCalculatorStream output;
+                PMDCP.Compression.Zlib.CrcCalculatorStream output;
                 PrepOutputStream(s, fileLength, out entryCounter, out encryptor, out deflater, out output);
 
                 // as we emit the file, the flow is:
@@ -1318,17 +1318,17 @@ namespace PMU.Compression.Zip
                                          CountingStream entryCounter,
                                          Stream encryptor,
                                          Stream deflater,
-                                         PMU.Compression.Zlib.CrcCalculatorStream output)
+                                         PMDCP.Compression.Zlib.CrcCalculatorStream output)
         {
             if (output == null) return;
 
             output.Close();
 
             // by calling Close() on the deflate stream, we write the footer bytes, as necessary.
-            if ((deflater as PMU.Compression.Zlib.DeflateStream) != null)
+            if ((deflater as PMDCP.Compression.Zlib.DeflateStream) != null)
                 deflater.Close();
 #if !NETCF
-            else if ((deflater as PMU.Compression.Zlib.ParallelDeflateOutputStream) != null)
+            else if ((deflater as PMDCP.Compression.Zlib.ParallelDeflateOutputStream) != null)
                 deflater.Close();
 #endif
 
@@ -1668,7 +1668,7 @@ namespace PMU.Compression.Zip
                                        out CountingStream outputCounter,
                                        out Stream encryptor,
                                        out Stream deflater,
-                                       out PMU.Compression.Zlib.CrcCalculatorStream output)
+                                       out PMDCP.Compression.Zlib.CrcCalculatorStream output)
         {
             TraceWriteLine("PrepOutputStream: e({0}) comp({1}) crypto({2}) zf({3})", FileName, CompressionLevel, Encryption, (_container).Name);
 
@@ -1697,14 +1697,14 @@ namespace PMU.Compression.Zip
             }
             // Wrap a CrcCalculatorStream around that.
             // This will happen BEFORE deflation (if any) as we write data out.
-            output = new PMU.Compression.Zlib.CrcCalculatorStream(deflater, true);
+            output = new PMDCP.Compression.Zlib.CrcCalculatorStream(deflater, true);
         }
 
 
 
         private Stream MaybeApplyDeflation(Stream s, long streamLength)
         {
-            if (_CompressionMethod == 0x08 && CompressionLevel != PMU.Compression.Zlib.CompressionLevel.None)
+            if (_CompressionMethod == 0x08 && CompressionLevel != PMDCP.Compression.Zlib.CompressionLevel.None)
             {
 #if !NETCF
                 // ParallelDeflateThreshold == 0    means ALWAYS use parallel deflate
@@ -1736,7 +1736,7 @@ namespace PMU.Compression.Zip
                     if (_container.ParallelDeflater == null)
                     {
                         _container.ParallelDeflater =
-                            new PMU.Compression.Zlib.ParallelDeflateOutputStream(s,
+                            new PMDCP.Compression.Zlib.ParallelDeflateOutputStream(s,
                                                                        CompressionLevel,
                                                                        _container.Strategy,
                                                                        true);
@@ -1745,12 +1745,12 @@ namespace PMU.Compression.Zip
                             _container.ParallelDeflater.BufferSize = _container.CodecBufferSize;
                     }
                     // reset it with the new stream
-                    PMU.Compression.Zlib.ParallelDeflateOutputStream o1 = _container.ParallelDeflater;
+                    PMDCP.Compression.Zlib.ParallelDeflateOutputStream o1 = _container.ParallelDeflater;
                     o1.Reset(s);
                     return o1;
                 }
 #endif
-                var o = new PMU.Compression.Zlib.DeflateStream(s, PMU.Compression.Zlib.CompressionMode.Compress,
+                var o = new PMDCP.Compression.Zlib.DeflateStream(s, PMDCP.Compression.Zlib.CompressionMode.Compress,
                                                      CompressionLevel,
                                                      true);
                 if (_container.CodecBufferSize > 0)
@@ -2048,7 +2048,7 @@ namespace PMU.Compression.Zip
                     // http://www.info-zip.org/pub/infozip/
 
                     // Also, winzip insists on this!
-                    _TimeBlob = PMU.Compression.Zip.SharedUtilities.DateTimeToPacked(LastModified);
+                    _TimeBlob = PMDCP.Compression.Zip.SharedUtilities.DateTimeToPacked(LastModified);
                     encryptionHeader[11] = (byte)((this._TimeBlob >> 8) & 0xff);
                 }
                 else

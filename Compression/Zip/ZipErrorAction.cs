@@ -26,7 +26,7 @@
 // ------------------------------------------------------------------
 
 
-namespace PMU.Compression.Zip
+namespace PMDCP.Compression.Zip
 {
     /// <summary>
     /// An enum providing the options when an error occurs during opening or reading

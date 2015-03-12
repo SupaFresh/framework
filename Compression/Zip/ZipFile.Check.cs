@@ -31,7 +31,7 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 
-namespace PMU.Compression.Zip
+namespace PMDCP.Compression.Zip
 {
     public partial class ZipFile
     {

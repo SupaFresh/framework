@@ -29,7 +29,7 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 
-namespace PMU.Compression.Zip
+namespace PMDCP.Compression.Zip
 {
 
     public partial class ZipFile
@@ -74,9 +74,9 @@ namespace PMU.Compression.Zip
         ///
         /// </remarks>
         ///
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.AddEntry(String, System.IO.Stream)"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.AddEntry(String, System.IO.Stream)"/>
         ///
-        /// <exception cref="PMU.Compression.Zip.BadStateException">
+        /// <exception cref="PMDCP.Compression.Zip.BadStateException">
         /// Thrown if you haven't specified a location or stream for saving the zip,
         /// either in the constructor or by setting the Name property, or if you try to
         /// save a regular zip archive to a filename with a .exe extension.
@@ -409,9 +409,9 @@ namespace PMU.Compression.Zip
         ///   then gets the array of bytes from that MemoryStream.
         ///
         /// <code lang="C#">
-        /// using (var zip = new PMU.Compression.Zip.ZipFile())
+        /// using (var zip = new PMDCP.Compression.Zip.ZipFile())
         /// {
-        ///     zip.CompressionLevel= PMU.Compression.Zlib.CompressionLevel.BestCompression;
+        ///     zip.CompressionLevel= PMDCP.Compression.Zlib.CompressionLevel.BestCompression;
         ///     zip.Password = "VerySecret.";
         ///     zip.Encryption = EncryptionAlgorithm.WinZipAes128;
         ///     zip.AddFile(sourceFileName);

@@ -28,7 +28,7 @@
 using System;
 using System.IO;
 
-namespace PMU.Compression.Zip
+namespace PMDCP.Compression.Zip
 {
 
     public partial class ZipEntry
@@ -43,7 +43,7 @@ namespace PMU.Compression.Zip
         /// <c>ExtractWithPassword()</c> methods.
         /// </overloads>
         ///
-        /// <seealso cref="PMU.Compression.Zip.ZipEntry.ExtractExistingFile"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipEntry.ExtractExistingFile"/>
         /// <seealso cref="ZipEntry.Extract(ExtractExistingFileAction)"/>
         ///
         /// <remarks>
@@ -118,8 +118,8 @@ namespace PMU.Compression.Zip
         ///
         /// <param name="baseDirectory">the pathname of the base directory</param>
         ///
-        /// <seealso cref="PMU.Compression.Zip.ZipEntry.ExtractExistingFile"/>
-        /// <seealso cref="PMU.Compression.Zip.ZipEntry.Extract(string, ExtractExistingFileAction)"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipEntry.ExtractExistingFile"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipEntry.Extract(string, ExtractExistingFileAction)"/>
         ///
         /// <example>
         /// This example extracts only the entries in a zip file that are .txt files,
@@ -232,14 +232,14 @@ namespace PMU.Compression.Zip
         /// the right one for you...
         /// </overloads>
         ///
-        /// <seealso cref="PMU.Compression.Zip.ZipEntry.ExtractExistingFile"/>
-        /// <seealso cref="PMU.Compression.Zip.ZipEntry.ExtractWithPassword(ExtractExistingFileAction, string)"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipEntry.ExtractExistingFile"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipEntry.ExtractWithPassword(ExtractExistingFileAction, string)"/>
         ///
         /// <remarks>
         ///
         /// <para> Existing entries in the filesystem will not be overwritten. If you would
         /// like to force the overwrite of existing files, see the <see
-        /// cref="PMU.Compression.Zip.ZipEntry.ExtractExistingFile"/>property, or call <see
+        /// cref="PMDCP.Compression.Zip.ZipEntry.ExtractExistingFile"/>property, or call <see
         /// cref="ExtractWithPassword(ExtractExistingFileAction,string)"/>.</para>
         ///
         /// <para>
@@ -286,13 +286,13 @@ namespace PMU.Compression.Zip
         /// and using the specified password.
         /// </summary>
         ///
-        /// <seealso cref="PMU.Compression.Zip.ZipEntry.ExtractExistingFile"/>
-        /// <seealso cref="PMU.Compression.Zip.ZipEntry.ExtractWithPassword(string, ExtractExistingFileAction, string)"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipEntry.ExtractExistingFile"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipEntry.ExtractWithPassword(string, ExtractExistingFileAction, string)"/>
         ///
         /// <remarks>
         /// <para> Existing entries in the filesystem will not be overwritten. If you would
         /// like to force the overwrite of existing files, see the <see
-        /// cref="PMU.Compression.Zip.ZipEntry.ExtractExistingFile"/>property, or call <see
+        /// cref="PMDCP.Compression.Zip.ZipEntry.ExtractExistingFile"/>property, or call <see
         /// cref="ExtractWithPassword(ExtractExistingFileAction,string)"/>.</para>
         ///
         /// <para>
@@ -388,7 +388,7 @@ namespace PMU.Compression.Zip
         /// </para>
         ///
         /// <para>
-        /// The return value is a <see cref="PMU.Compression.Zlib.CrcCalculatorStream"/>.  Use it
+        /// The return value is a <see cref="PMDCP.Compression.Zlib.CrcCalculatorStream"/>.  Use it
         /// as you would any stream for reading.  The data you get by calling <see
         /// cref="Stream.Read(byte[], int, int)"/> on that stream will be decrypted and
         /// decompressed.
@@ -397,7 +397,7 @@ namespace PMU.Compression.Zip
         /// <para>
         /// CrcCalculatorStream adds one additional feature: it keeps a CRC32 checksum
         /// on the bytes of the stream as it is read.  The CRC value is available in the
-        /// <see cref="PMU.Compression.Zlib.CrcCalculatorStream.Crc"/> property on the
+        /// <see cref="PMDCP.Compression.Zlib.CrcCalculatorStream.Crc"/> property on the
         /// <c>CrcCalculatorStream</c>.  When the read is complete, this CRC
         /// <em>should</em> be checked against the <see cref="ZipEntry.Crc"/> property
         /// on the <c>ZipEntry</c> to validate the content of the ZipEntry.  You don't
@@ -431,7 +431,7 @@ namespace PMU.Compression.Zip
         /// using (ZipFile zip = new ZipFile(ZipFileToRead))
         /// {
         ///   ZipEntry e1= zip["Elevation.mp3"];
-        ///   using (PMU.Compression.Zlib.CrcCalculatorStream s = e1.OpenReader())
+        ///   using (PMDCP.Compression.Zlib.CrcCalculatorStream s = e1.OpenReader())
         ///   {
         ///     byte[] buffer = new byte[4096];
         ///     int n, totalBytesRead= 0;
@@ -449,7 +449,7 @@ namespace PMU.Compression.Zip
         /// <code lang="VB">
         ///   Using zip As New ZipFile(ZipFileToRead)
         ///       Dim e1 As ZipEntry = zip.Item("Elevation.mp3")
-        ///       Using s As PMU.Compression.Zlib.CrcCalculatorStream = e1.OpenReader
+        ///       Using s As PMDCP.Compression.Zlib.CrcCalculatorStream = e1.OpenReader
         ///           Dim n As Integer
         ///           Dim buffer As Byte() = New Byte(4096) {}
         ///           Dim totalBytesRead As Integer = 0
@@ -467,9 +467,9 @@ namespace PMU.Compression.Zip
         ///   End Using
         /// </code>
         /// </example>
-        /// <seealso cref="PMU.Compression.Zip.ZipEntry.Extract(System.IO.Stream)"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipEntry.Extract(System.IO.Stream)"/>
         /// <returns>The Stream for reading.</returns>
-        public PMU.Compression.Zlib.CrcCalculatorStream OpenReader()
+        public PMDCP.Compression.Zlib.CrcCalculatorStream OpenReader()
         {
             // use the entry password if it is non-null, else use the zipfile password, which is possibly null
             return InternalOpenReader(this._Password ?? this._container.Password);
@@ -489,14 +489,14 @@ namespace PMU.Compression.Zip
         ///
         /// <param name="password">The password to use for decrypting the entry.</param>
         /// <returns>The Stream for reading.</returns>
-        public PMU.Compression.Zlib.CrcCalculatorStream OpenReader(string password)
+        public PMDCP.Compression.Zlib.CrcCalculatorStream OpenReader(string password)
         {
             return InternalOpenReader(password);
         }
 
 
 
-        internal PMU.Compression.Zlib.CrcCalculatorStream InternalOpenReader(string password)
+        internal PMDCP.Compression.Zlib.CrcCalculatorStream InternalOpenReader(string password)
         {
             ValidateCompression();
             ValidateEncryption();
@@ -521,7 +521,7 @@ namespace PMU.Compression.Zip
             _inputDecryptorStream = GetExtractDecryptor(input);
             Stream input3 = GetExtractDecompressor(_inputDecryptorStream);
 
-            return new PMU.Compression.Zlib.CrcCalculatorStream(input3, LeftToRead);
+            return new PMDCP.Compression.Zlib.CrcCalculatorStream(input3, LeftToRead);
         }
 
 
@@ -729,7 +729,7 @@ namespace PMU.Compression.Zip
             catch (Exception)
             {
                 _ioOperationCanceled = true;
-//                 if (ex1 as PMU.Compression.Zip.ZipException == null)
+//                 if (ex1 as PMDCP.Compression.Zip.ZipException == null)
 //                     // wrap the original exception and throw
 //                     throw new ZipException("Cannot extract", ex1);
 //                 else
@@ -769,7 +769,7 @@ namespace PMU.Compression.Zip
                 if (input is WinZipAesCipherStream)
                     wzs = input as WinZipAesCipherStream;
 
-                else if (input is PMU.Compression.Zlib.CrcCalculatorStream)
+                else if (input is PMDCP.Compression.Zlib.CrcCalculatorStream)
                 {
                     xxx;
                 }
@@ -898,7 +898,7 @@ namespace PMU.Compression.Zip
 
             Int64 bytesWritten = 0;
             // As we read, we maybe decrypt, and then we maybe decompress. Then we write.
-            using (var s1 = new PMU.Compression.Zlib.CrcCalculatorStream(input3))
+            using (var s1 = new PMDCP.Compression.Zlib.CrcCalculatorStream(input3))
             {
                 while (LeftToRead > 0)
                 {
@@ -938,7 +938,7 @@ namespace PMU.Compression.Zip
             // Using the above, now we get a stream that either decompresses or not.
             Stream input3 = (_CompressionMethod_FromZipFile == (short)CompressionMethod.None)
                 ? input2
-                : new PMU.Compression.Zlib.DeflateStream(input2, PMU.Compression.Zlib.CompressionMode.Decompress, true);
+                : new PMDCP.Compression.Zlib.DeflateStream(input2, PMDCP.Compression.Zlib.CompressionMode.Decompress, true);
             return input3;
         }
 
@@ -1013,7 +1013,7 @@ namespace PMU.Compression.Zip
                 else
                 {
                     // workitem 6191
-                    DateTime AdjustedLastModified = PMU.Compression.Zip.SharedUtilities.AdjustTime_Reverse(LastModified);
+                    DateTime AdjustedLastModified = PMDCP.Compression.Zip.SharedUtilities.AdjustTime_Reverse(LastModified);
 
 #if NETCF
                     int rc = NetCfFile.SetLastWriteTime(fileOrDirectory, AdjustedLastModified);

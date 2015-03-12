@@ -14,7 +14,7 @@
 // along with Mystery Dungeon eXtended.  If not, see <http://www.gnu.org/licenses/>.
 
 // From: http://stackoverflow.com/questions/754233/is-it-there-any-lru-implementation-of-idictionary
-namespace PMU.Core
+namespace PMDCP.Core
 {
     using System;
     using System.Collections.Generic;

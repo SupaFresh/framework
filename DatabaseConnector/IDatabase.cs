@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Data;
 
-namespace PMU.DatabaseConnector
+namespace PMDCP.DatabaseConnector
 {
     public interface IDatabase
     {

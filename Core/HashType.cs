@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.ComponentModel;
 
-namespace PMU.Core
+namespace PMDCP.Core
 {
     public enum HashType
     {

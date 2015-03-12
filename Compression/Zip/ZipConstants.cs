@@ -25,7 +25,7 @@
 
 using System;
 
-namespace PMU.Compression.Zip
+namespace PMDCP.Compression.Zip
 {
   static class ZipConstants
   {      

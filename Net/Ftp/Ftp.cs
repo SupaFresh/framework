@@ -19,7 +19,7 @@ using System.Text;
 using System.Net;
 using System.IO;
 
-namespace PMU.Net.Ftp
+namespace PMDCP.Net.Ftp
 {
     public class Ftp
     {

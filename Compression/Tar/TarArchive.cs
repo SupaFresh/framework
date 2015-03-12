@@ -40,7 +40,7 @@ using System;
 using System.IO;
 using System.Text;
 
-namespace PMU.Compression.Tar
+namespace PMDCP.Compression.Tar
 {
 	/// <summary>
 	/// Used to advise clients of 'events' while processing archives

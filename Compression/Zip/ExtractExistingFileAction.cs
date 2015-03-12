@@ -25,7 +25,7 @@
 // ------------------------------------------------------------------
 
 
-namespace PMU.Compression.Zip
+namespace PMDCP.Compression.Zip
 {
 
     /// <summary>

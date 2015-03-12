@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace PMU.Sockets
+namespace PMDCP.Sockets
 {
     public interface ISendable
     {

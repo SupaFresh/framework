@@ -28,7 +28,7 @@ using System;
 using System.IO;
 using System.Security.Permissions;
 
-namespace PMU.Compression.Zip
+namespace PMDCP.Compression.Zip
 {
     /// <summary>
     /// Collects general purpose utility methods.

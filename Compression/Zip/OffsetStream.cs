@@ -29,7 +29,7 @@
 using System;
 using System.IO;
 
-namespace PMU.Compression.Zip
+namespace PMDCP.Compression.Zip
 {
     internal class OffsetStream : System.IO.Stream, System.IDisposable
     {

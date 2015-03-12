@@ -25,7 +25,7 @@
 // ------------------------------------------------------------------
 
 
-namespace PMU.Compression.Zip
+namespace PMDCP.Compression.Zip
 {
 
     // For some weird reason, the method with the DispId(-4) attribute, which is used as

@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace PMU.DatabaseConnector.SQLite
+namespace PMDCP.DatabaseConnector.SQLite
 {
     public enum FieldType
     {

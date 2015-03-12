@@ -29,7 +29,7 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 
-namespace PMU.Compression.Zip
+namespace PMDCP.Compression.Zip
 {
 
     public partial class ZipFile
@@ -53,7 +53,7 @@ namespace PMU.Compression.Zip
         /// property on the <c>ZipFile</c> instance, the entry will not be extracted,
         /// the existing file will not be overwritten and an exception will be
         /// thrown. To change this, set the property, or use the <see
-        /// cref="ZipFile.ExtractAll(string, PMU.Compression.Zip.ExtractExistingFileAction)" />
+        /// cref="ZipFile.ExtractAll(string, PMDCP.Compression.Zip.ExtractExistingFileAction)" />
         /// overload that allows you to specify an ExtractExistingFileAction parameter.
         /// </para>
         ///
@@ -131,8 +131,8 @@ namespace PMU.Compression.Zip
         /// </code>
         /// </example>
         ///
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.ExtractProgress"/>
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.ExtractExistingFile"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.ExtractProgress"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.ExtractExistingFile"/>
         ///
         /// <param name="path">
         /// The path to which the contents of the zipfile will be extracted.

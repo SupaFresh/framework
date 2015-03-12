@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace PMU.Net
+namespace PMDCP.Net
 {
     public class FileDownloadingEventArgs : EventArgs
     {

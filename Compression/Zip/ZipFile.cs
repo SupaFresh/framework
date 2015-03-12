@@ -44,14 +44,14 @@ using System.Collections.Generic;
 using Interop=System.Runtime.InteropServices;
 
 
-namespace PMU.Compression.Zip
+namespace PMDCP.Compression.Zip
 {
     /// <summary>
     ///   The ZipFile type represents a zip archive file.  This is the main type in the
     ///   DotNetZip class library. This class reads and writes zip files, as defined in
     ///   the format for zip described by PKWare.  The compression for this
     ///   implementation is provided by a managed-code version of Zlib,
-    ///   included with DotNetZip in the classes in the PMU.Compression.Zlib namespace.
+    ///   included with DotNetZip in the classes in the PMDCP.Compression.Zlib namespace.
     /// </summary>
 
     [Interop.GuidAttribute("ebc25cf6-9120-4283-b972-0e5520d00005")]
@@ -316,9 +316,9 @@ namespace PMU.Compression.Zip
         ///   of data. The strategy parameter can affect the compression ratio and the
         ///   speed of compression but not the correctness of the compresssion.  For
         ///   more information see <see
-        ///   cref="PMU.Compression.Zlib.CompressionStrategy">PMU.Compression.Zlib.CompressionStrategy</see>.
+        ///   cref="PMDCP.Compression.Zlib.CompressionStrategy">PMDCP.Compression.Zlib.CompressionStrategy</see>.
         /// </remarks>
-        public PMU.Compression.Zlib.CompressionStrategy Strategy
+        public PMDCP.Compression.Zlib.CompressionStrategy Strategy
         {
             get { return _Strategy; }
             set { _Strategy = value; }
@@ -389,7 +389,7 @@ namespace PMU.Compression.Zip
         ///    alone, and accept the default.
         ///  </para>
         /// </remarks>
-        public PMU.Compression.Zlib.CompressionLevel CompressionLevel
+        public PMDCP.Compression.Zlib.CompressionLevel CompressionLevel
         {
             get;
             set;
@@ -1188,7 +1188,7 @@ namespace PMU.Compression.Zip
         /// </code>
         /// </example>
         ///
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.DefaultEncoding">DefaultEncoding</seealso>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.DefaultEncoding">DefaultEncoding</seealso>
         public System.Text.Encoding ProvisionalAlternateEncoding
         {
             get
@@ -1205,7 +1205,7 @@ namespace PMU.Compression.Zip
         /// The default text encoding used in zip archives.  It is numeric 437, also
         /// known as IBM437.
         /// </summary>
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.ProvisionalAlternateEncoding"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.ProvisionalAlternateEncoding"/>
         public readonly static System.Text.Encoding DefaultEncoding = System.Text.Encoding.GetEncoding("IBM437");
 
 
@@ -1487,8 +1487,8 @@ namespace PMU.Compression.Zip
         ///
         /// </example>
         ///
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.Encryption">ZipFile.Encryption</seealso>
-        /// <seealso cref="PMU.Compression.Zip.ZipEntry.Password">ZipEntry.Password</seealso>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.Encryption">ZipFile.Encryption</seealso>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipEntry.Password">ZipEntry.Password</seealso>
         public String Password
         {
             set
@@ -1528,7 +1528,7 @@ namespace PMU.Compression.Zip
         ///   to be extracted does not already exist.
         /// </para>
         /// </remarks>
-        /// <seealso cref="PMU.Compression.Zip.ZipEntry.ExtractExistingFile"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipEntry.ExtractExistingFile"/>
         public ExtractExistingFileAction ExtractExistingFile
         {
             get;
@@ -1625,8 +1625,8 @@ namespace PMU.Compression.Zip
         /// </code>
         /// </example>
         ///
-        /// <seealso cref="PMU.Compression.Zip.ZipEntry.ZipErrorAction"/>
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.ZipError"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipEntry.ZipErrorAction"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.ZipError"/>
 
         public ZipErrorAction ZipErrorAction
         {
@@ -1760,8 +1760,8 @@ namespace PMU.Compression.Zip
         ///
         /// </example>
         ///
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.Password">ZipFile.Password</seealso>
-        /// <seealso cref="PMU.Compression.Zip.ZipEntry.Encryption">ZipEntry.Encryption</seealso>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.Password">ZipFile.Password</seealso>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipEntry.Encryption">ZipEntry.Encryption</seealso>
         public EncryptionAlgorithm Encryption
         {
             get
@@ -1797,7 +1797,7 @@ namespace PMU.Compression.Zip
         ///   the <c>ZipFile</c> or on each <c>ZipEntry</c> to determine the level of
         ///   compression used. This is done at the time the entry is added to the
         ///   <c>ZipFile</c>. Setting the property to
-        ///   <c>PMU.Compression.Zlib.CompressionLevel.None</c> means no compression will be used.
+        ///   <c>PMDCP.Compression.Zlib.CompressionLevel.None</c> means no compression will be used.
         /// </para>
         ///
         /// <para>
@@ -1994,7 +1994,7 @@ namespace PMU.Compression.Zip
         ///     Encryption. This is primarily because encryption tends to slow down
         ///     the entire pipeline. Also, multi-threaded compression gives less of an
         ///     advantage when using lower compression levels, for example <see
-        ///     cref="PMU.Compression.Zlib.CompressionLevel.BestSpeed"/>.  You may have to perform
+        ///     cref="PMDCP.Compression.Zlib.CompressionLevel.BestSpeed"/>.  You may have to perform
         ///     some tests to determine the best approach for your situation.
         ///   </para>
         ///
@@ -2157,7 +2157,7 @@ namespace PMU.Compression.Zip
         ///
         /// </remarks>
         ///
-        /// <exception cref="PMU.Compression.Zip.ZipException">
+        /// <exception cref="PMDCP.Compression.Zip.ZipException">
         /// Thrown if name refers to an existing file that is not a valid zip file.
         /// </exception>
         ///
@@ -2230,7 +2230,7 @@ namespace PMU.Compression.Zip
         ///
         /// </remarks>
         ///
-        /// <exception cref="PMU.Compression.Zip.ZipException">
+        /// <exception cref="PMDCP.Compression.Zip.ZipException">
         /// Thrown if name refers to an existing file that is not a valid zip file.
         /// </exception>
         ///
@@ -2374,7 +2374,7 @@ namespace PMU.Compression.Zip
         ///
         /// </remarks>
         ///
-        /// <exception cref="PMU.Compression.Zip.ZipException">
+        /// <exception cref="PMDCP.Compression.Zip.ZipException">
         /// Thrown if name refers to an existing file that is not a valid zip file.
         /// </exception>
         ///
@@ -2466,7 +2466,7 @@ namespace PMU.Compression.Zip
         ///
         /// </remarks>
         ///
-        /// <exception cref="PMU.Compression.Zip.ZipException">
+        /// <exception cref="PMDCP.Compression.Zip.ZipException">
         /// Thrown if <c>fileName</c> refers to an existing file that is not a valid zip file.
         /// </exception>
         ///
@@ -2547,7 +2547,7 @@ namespace PMU.Compression.Zip
             _StatusMessageTextWriter = statusMessageWriter;
             _contentsChanged = true;
             AddDirectoryWillTraverseReparsePoints = true;  // workitem 8617
-            CompressionLevel = PMU.Compression.Zlib.CompressionLevel.Default;
+            CompressionLevel = PMDCP.Compression.Zlib.CompressionLevel.Default;
 #if !NETCF
             ParallelDeflateThreshold = 512 * 1024;
 #endif
@@ -2689,7 +2689,7 @@ namespace PMU.Compression.Zip
         ///   End Using
         /// </code>
         /// </example>
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.RemoveEntry(string)"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.RemoveEntry(string)"/>
         ///
         /// <exception cref="System.ArgumentException">
         ///   Thrown if the caller attempts to assign a non-null value to the indexer.
@@ -2781,7 +2781,7 @@ namespace PMU.Compression.Zip
         ///   to swap forward slashes for backslashes.
         /// </remarks>
         ///
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.this[string]"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.this[string]"/>
         ///
         /// <example>
         ///   This example shows one way to test if a filename is already contained
@@ -3014,7 +3014,7 @@ namespace PMU.Compression.Zip
         /// The <c>ZipEntry</c> to remove from the zip.
         /// </param>
         ///
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.RemoveSelectedEntries(string)"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.RemoveSelectedEntries(string)"/>
         ///
         public void RemoveEntry(ZipEntry entry)
         {
@@ -3313,7 +3313,7 @@ namespace PMU.Compression.Zip
         internal string _Password;
         private bool _emitNtfsTimes = true;
         private bool _emitUnixTimes;
-        private PMU.Compression.Zlib.CompressionStrategy _Strategy = PMU.Compression.Zlib.CompressionStrategy.Default;
+        private PMDCP.Compression.Zlib.CompressionStrategy _Strategy = PMDCP.Compression.Zlib.CompressionStrategy.Default;
         private bool _fileAlreadyExists;
         private string _temporaryFileName;
         private bool _contentsChanged;
@@ -3333,7 +3333,7 @@ namespace PMU.Compression.Zip
         private int _BufferSize = IoBufferSizeDefault;
 
 #if !NETCF
-        internal PMU.Compression.Zlib.ParallelDeflateOutputStream ParallelDeflater;
+        internal PMDCP.Compression.Zlib.ParallelDeflateOutputStream ParallelDeflater;
         private long _ParallelDeflateThreshold;
 #endif
 

@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Net;
 
-namespace PMU.Sockets.Tcp
+namespace PMDCP.Sockets.Tcp
 {
     public class TcpEndPointIDGenerator : ITcpIDGenerator<EndPoint>
     {

@@ -29,7 +29,7 @@
 using System;
 using System.IO;
 
-namespace PMU.Compression.Zip
+namespace PMDCP.Compression.Zip
 {
     public partial class ZipEntry
     {
@@ -66,7 +66,7 @@ namespace PMU.Compression.Zip
             // change for workitem 8098
             ze._RelativeOffsetOfLocalHeader = ze.ArchiveStream.Position;
 
-            int signature = PMU.Compression.Zip.SharedUtilities.ReadEntrySignature(ze.ArchiveStream);
+            int signature = PMDCP.Compression.Zip.SharedUtilities.ReadEntrySignature(ze.ArchiveStream);
             bytesRead += 4;
 
             // Return false if this is not a local file header signature.
@@ -99,7 +99,7 @@ namespace PMU.Compression.Zip
             ze._CompressionMethod_FromZipFile = ze._CompressionMethod = (Int16)(block[i++] + block[i++] * 256);
             ze._TimeBlob = block[i++] + block[i++] * 256 + block[i++] * 256 * 256 + block[i++] * 256 * 256 * 256;
             // transform the time data into something usable (a DateTime)
-            ze._LastModified = PMU.Compression.Zip.SharedUtilities.PackedToDateTime(ze._TimeBlob);
+            ze._LastModified = PMDCP.Compression.Zip.SharedUtilities.PackedToDateTime(ze._TimeBlob);
             ze._timestamp |= ZipEntryTimestamp.DOS;
 
             if ((ze._BitField & 0x01) == 0x01)
@@ -186,7 +186,7 @@ namespace PMU.Compression.Zip
                     if (ze._container.ZipFile != null)
                         ze._container.ZipFile.OnReadBytes(ze);
 
-                    long d = PMU.Compression.Zip.SharedUtilities.FindSignature(ze.ArchiveStream, ZipConstants.ZipEntryDataDescriptorSignature);
+                    long d = PMDCP.Compression.Zip.SharedUtilities.FindSignature(ze.ArchiveStream, ZipConstants.ZipEntryDataDescriptorSignature);
                     if (d == -1) return false;
 
                     // total size of data read (through all loops of this).
@@ -387,7 +387,7 @@ namespace PMU.Compression.Zip
         {
             // in some cases, the zip file begins with "PK00".  This is a throwback and is rare,
             // but we handle it anyway. We do not change behavior based on it.
-            uint datum = (uint)PMU.Compression.Zip.SharedUtilities.ReadInt(s);
+            uint datum = (uint)PMDCP.Compression.Zip.SharedUtilities.ReadInt(s);
             if (datum != ZipConstants.PackedToRemovableMedia)
             {
                 s.Seek(-4, SeekOrigin.Current); // unread the block
@@ -405,13 +405,13 @@ namespace PMU.Compression.Zip
             //    by the compressed length and the uncompressed length (4 bytes for each
             //    of those three elements).  Need to check that here.
             //
-            uint datum = (uint)PMU.Compression.Zip.SharedUtilities.ReadInt(s);
+            uint datum = (uint)PMDCP.Compression.Zip.SharedUtilities.ReadInt(s);
             if (datum == entry._Crc32)
             {
-                int sz = PMU.Compression.Zip.SharedUtilities.ReadInt(s);
+                int sz = PMDCP.Compression.Zip.SharedUtilities.ReadInt(s);
                 if (sz == entry._CompressedSize)
                 {
-                    sz = PMU.Compression.Zip.SharedUtilities.ReadInt(s);
+                    sz = PMDCP.Compression.Zip.SharedUtilities.ReadInt(s);
                     if (sz == entry._UncompressedSize)
                     {
                         // ignore everything and discard it.

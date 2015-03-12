@@ -20,7 +20,7 @@
 // ------------------------------------------------------------------
 //
 
-namespace PMU.Compression.Zip
+namespace PMDCP.Compression.Zip
 {
     /// <summary>
     /// An enum that specifies the source of the ZipEntry. 
@@ -39,8 +39,8 @@ namespace PMU.Compression.Zip
         FileSystem,
 
         /// <summary>
-        /// The entry was instantiated via <see cref="PMU.Compression.Zip.ZipFile.AddEntry(string,string)"/> or
-        /// <see cref="PMU.Compression.Zip.ZipFile.AddEntry(string,System.IO.Stream)"/> .
+        /// The entry was instantiated via <see cref="PMDCP.Compression.Zip.ZipFile.AddEntry(string,string)"/> or
+        /// <see cref="PMDCP.Compression.Zip.ZipFile.AddEntry(string,System.IO.Stream)"/> .
         /// </summary>
         Stream,
 
@@ -56,7 +56,7 @@ namespace PMU.Compression.Zip
         
         /// <summary>
         /// The content for the ZipEntry will be obtained from the stream dispensed by the <c>OpenDelegate</c>.
-        /// The entry was instantiated via <see cref="PMU.Compression.Zip.ZipFile.AddEntry(string,OpenDelegate,CloseDelegate)"/>.
+        /// The entry was instantiated via <see cref="PMDCP.Compression.Zip.ZipFile.AddEntry(string,OpenDelegate,CloseDelegate)"/>.
         /// </summary>
         JitStream,
         

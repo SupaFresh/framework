@@ -27,7 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace PMU.Compression.Zip
+namespace PMDCP.Compression.Zip
 {
     /// <summary>
     ///   Delegate in which the application writes the <c>ZipEntry</c> content for the named entry.
@@ -38,7 +38,7 @@ namespace PMU.Compression.Zip
     ///
     /// <remarks>
     ///   When you add an entry and specify a <c>WriteDelegate</c>, via <see
-    ///   cref="PMU.Compression.Zip.ZipFile.AddEntry(string, WriteDelegate)"/>, the application
+    ///   cref="PMDCP.Compression.Zip.ZipFile.AddEntry(string, WriteDelegate)"/>, the application
     ///   code provides the logic that writes the entry data directly into the zip file.
     /// </remarks>
     ///
@@ -79,7 +79,7 @@ namespace PMU.Compression.Zip
     /// End Sub
     /// </code> 
     /// </example>
-    /// <seealso cref="PMU.Compression.Zip.ZipFile.AddEntry(string, WriteDelegate)"/>
+    /// <seealso cref="PMDCP.Compression.Zip.ZipFile.AddEntry(string, WriteDelegate)"/>
     public delegate void WriteDelegate(string entryName, System.IO.Stream stream);
 
     
@@ -92,12 +92,12 @@ namespace PMU.Compression.Zip
     /// </param>
     /// 
     /// <remarks>
-    ///   When you add an entry via <see cref="PMU.Compression.Zip.ZipFile.AddEntry(string,
+    ///   When you add an entry via <see cref="PMDCP.Compression.Zip.ZipFile.AddEntry(string,
     ///   OpenDelegate, CloseDelegate)"/>, the application code provides the logic that
     ///   opens and closes the stream for the given ZipEntry. 
     /// </remarks>
     ///
-    /// <seealso cref="PMU.Compression.Zip.ZipFile.AddEntry(string, OpenDelegate, CloseDelegate)"/>
+    /// <seealso cref="PMDCP.Compression.Zip.ZipFile.AddEntry(string, OpenDelegate, CloseDelegate)"/>
     public delegate System.IO.Stream OpenDelegate(string entryName);
     
     /// <summary>
@@ -111,12 +111,12 @@ namespace PMU.Compression.Zip
     /// <param name="stream">The stream to be closed.</param>
     ///
     /// <remarks>
-    ///   When you add an entry via <see cref="PMU.Compression.Zip.ZipFile.AddEntry(string,
+    ///   When you add an entry via <see cref="PMDCP.Compression.Zip.ZipFile.AddEntry(string,
     ///   OpenDelegate, CloseDelegate)"/>, the application code provides the logic that
     ///   opens and closes the stream for the given ZipEntry. 
     /// </remarks>
     ///
-    /// <seealso cref="PMU.Compression.Zip.ZipFile.AddEntry(string, OpenDelegate, CloseDelegate)"/>
+    /// <seealso cref="PMDCP.Compression.Zip.ZipFile.AddEntry(string, OpenDelegate, CloseDelegate)"/>
     public delegate void CloseDelegate(string entryName, System.IO.Stream stream);
     
     /// <summary>
@@ -132,8 +132,8 @@ namespace PMU.Compression.Zip
     ///   on any other factor.
     /// </para>
     /// </remarks>
-    /// <seealso cref="PMU.Compression.Zip.ZipFile.SetCompression"/>
-    public delegate PMU.Compression.Zlib.CompressionLevel SetCompressionCallback(string localFileName, string fileNameInArchive);
+    /// <seealso cref="PMDCP.Compression.Zip.ZipFile.SetCompression"/>
+    public delegate PMDCP.Compression.Zlib.CompressionLevel SetCompressionCallback(string localFileName, string fileNameInArchive);
 
     /// <summary>
     /// In an EventArgs type, indicates which sort of progress event is being reported. 

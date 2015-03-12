@@ -13,13 +13,13 @@
 // You should have received a copy of the GNU General Public License
 // along with Mystery Dungeon eXtended.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace PMU.Sockets
+namespace PMDCP.Sockets
 {
     using System;
     using System.Collections.Generic;
     using System.Text;
 
-    using PMU.Core;
+    using PMDCP.Core;
 
     public class TcpPacket : IPacket
     {

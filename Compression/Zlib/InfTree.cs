@@ -62,7 +62,7 @@
 
 
 using System;
-namespace PMU.Compression.Zlib
+namespace PMDCP.Compression.Zlib
 {
         
         sealed class InfTree

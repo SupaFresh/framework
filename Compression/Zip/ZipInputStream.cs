@@ -21,7 +21,7 @@
 // ------------------------------------------------------------------
 //
 // This module defines the ZipInputStream class, which is a stream metaphor for
-// reading zip files.  This class does not depend on PMU.Compression.Zip.ZipFile, but rather
+// reading zip files.  This class does not depend on PMDCP.Compression.Zip.ZipFile, but rather
 // stands alongside it as an alternative "container" for ZipEntry, when reading zips.
 //
 // It adds one interesting method to the normal "stream" interface: GetNextEntry.
@@ -34,7 +34,7 @@ using System.Threading;
 using System.Collections.Generic;
 using System.IO;
 
-namespace PMU.Compression.Zip
+namespace PMDCP.Compression.Zip
 {
     /// <summary>
     ///   Provides a stream metaphor for reading zip files.
@@ -760,7 +760,7 @@ namespace PMU.Compression.Zip
         private bool _firstEntry;
         private bool _needSetup;
         private ZipContainer _container;
-        private PMU.Compression.Zlib.CrcCalculatorStream _crcStream;
+        private PMDCP.Compression.Zlib.CrcCalculatorStream _crcStream;
         private Int64 _LeftToRead;
         private String _password;
         private Int64 _endOfEntry;

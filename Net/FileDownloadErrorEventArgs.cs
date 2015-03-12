@@ -13,14 +13,14 @@
 // You should have received a copy of the GNU General Public License
 // along with Mystery Dungeon eXtended.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace PMU.Net
+namespace PMDCP.Net
 {
     using System;
     using System.Collections.Generic;
     using System.Text;
 
     /// <summary>
-    /// Provides data for the <see cref="PMU.Net.FileDownloader.DownloadFailed" /> event
+    /// Provides data for the <see cref="PMDCP.Net.FileDownloader.DownloadFailed" /> event
     /// </summary>
     public class FileDownloadErrorEventArgs : EventArgs
     {

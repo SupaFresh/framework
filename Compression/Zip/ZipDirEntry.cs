@@ -31,7 +31,7 @@
 
 using System;
 
-namespace PMU.Compression.Zip
+namespace PMDCP.Compression.Zip
 {
 
     partial class ZipEntry
@@ -84,7 +84,7 @@ namespace PMU.Compression.Zip
                     .Append(string.Format("  Bit Field: 0x{0:X4}\n", this._BitField))
                     .Append(string.Format("  Encrypted?: {0}\n", this._sourceIsEncrypted))
                     .Append(string.Format("  Timeblob: 0x{0:X8} ({1})\n", this._TimeBlob,
-                                          PMU.Compression.Zip.SharedUtilities.PackedToDateTime(this._TimeBlob)) )
+                                          PMDCP.Compression.Zip.SharedUtilities.PackedToDateTime(this._TimeBlob)) )
                     .Append(string.Format("  CRC: 0x{0:X8}\n", this._Crc32))
                     .Append(string.Format("  Is Text?: {0}\n", this._IsText))
                     .Append(string.Format("  Is Directory?: {0}\n", this._IsDirectory))
@@ -115,7 +115,7 @@ namespace PMU.Compression.Zip
             System.IO.Stream s = zf.ReadStream;
             System.Text.Encoding expectedEncoding = zf.ProvisionalAlternateEncoding;
 
-            int signature = PMU.Compression.Zip.SharedUtilities.ReadSignature(s);
+            int signature = PMDCP.Compression.Zip.SharedUtilities.ReadSignature(s);
             // return null if this is not a local file header signature
             if (IsNotValidZipDirEntrySig(signature))
             {
@@ -153,7 +153,7 @@ namespace PMU.Compression.Zip
                 zde._BitField = (short)(block[i++] + block[i++] * 256);
                 zde._CompressionMethod = (Int16)(block[i++] + block[i++] * 256);
                 zde._TimeBlob = block[i++] + block[i++] * 256 + block[i++] * 256 * 256 + block[i++] * 256 * 256 * 256;
-                zde._LastModified = PMU.Compression.Zip.SharedUtilities.PackedToDateTime(zde._TimeBlob);
+                zde._LastModified = PMDCP.Compression.Zip.SharedUtilities.PackedToDateTime(zde._TimeBlob);
                 zde._timestamp |= ZipEntryTimestamp.DOS;
 
                 zde._Crc32 = block[i++] + block[i++] * 256 + block[i++] * 256 * 256 + block[i++] * 256 * 256 * 256;
@@ -183,11 +183,11 @@ namespace PMU.Compression.Zip
             if ((zde._BitField & 0x0800) == 0x0800)
             {
                 // UTF-8 is in use
-                zde._FileNameInArchive = PMU.Compression.Zip.SharedUtilities.Utf8StringFromBuffer(block);
+                zde._FileNameInArchive = PMDCP.Compression.Zip.SharedUtilities.Utf8StringFromBuffer(block);
             }
             else
             {
-                zde._FileNameInArchive = PMU.Compression.Zip.SharedUtilities.StringFromBuffer(block, expectedEncoding);
+                zde._FileNameInArchive = PMDCP.Compression.Zip.SharedUtilities.StringFromBuffer(block, expectedEncoding);
             }
 
             // Console.WriteLine("\nEntry : {0}", zde._LocalFileName);
@@ -256,11 +256,11 @@ namespace PMU.Compression.Zip
                 if ((zde._BitField & 0x0800) == 0x0800)
                 {
                     // UTF-8 is in use
-                    zde._Comment = PMU.Compression.Zip.SharedUtilities.Utf8StringFromBuffer(block);
+                    zde._Comment = PMDCP.Compression.Zip.SharedUtilities.Utf8StringFromBuffer(block);
                 }
                 else
                 {
-                    zde._Comment = PMU.Compression.Zip.SharedUtilities.StringFromBuffer(block, expectedEncoding);
+                    zde._Comment = PMDCP.Compression.Zip.SharedUtilities.StringFromBuffer(block, expectedEncoding);
                 }
             }
             //zde._LengthOfDirEntry = bytesRead;

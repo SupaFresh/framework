@@ -19,7 +19,7 @@ using System.Text;
 
 using MySql.Data.MySqlClient;
 
-namespace PMU.DatabaseConnector.MySql
+namespace PMDCP.DatabaseConnector.MySql
 {
     public class MySql : IDatabase
     {

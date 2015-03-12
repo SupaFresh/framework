@@ -28,7 +28,7 @@
 using System;
 using System.IO;
 
-namespace PMU.Compression.Zip
+namespace PMDCP.Compression.Zip
 {
     internal class ZipSegmentedStream : System.IO.Stream, System.IDisposable
     {

@@ -17,9 +17,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Net;
-using PMU.Core;
+using PMDCP.Core;
 
-namespace PMU.Sockets.Tcp
+namespace PMDCP.Sockets.Tcp
 {
     public class TcpClientCollection<TClientID>
     {

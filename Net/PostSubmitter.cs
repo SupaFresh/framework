@@ -20,7 +20,7 @@ using System.Web;
 using System.Net;
 using System.Collections.Specialized;
 
-namespace PMU.Net
+namespace PMDCP.Net
 {
     /// <summary>
     /// Submits post data to a url.

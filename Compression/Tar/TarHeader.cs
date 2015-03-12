@@ -69,7 +69,7 @@ struct header
 using System;
 using System.Text;
 
-namespace PMU.Compression.Tar 
+namespace PMDCP.Compression.Tar 
 {
 	
 	

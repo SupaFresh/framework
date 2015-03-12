@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace PMU.DatabaseConnector
+namespace PMDCP.DatabaseConnector
 {
     public class SettingsDatabase
     {

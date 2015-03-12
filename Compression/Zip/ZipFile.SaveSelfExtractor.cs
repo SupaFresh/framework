@@ -66,7 +66,7 @@ using System.IO;
 using System.Collections.Generic;
 
 
-namespace PMU.Compression.Zip
+namespace PMDCP.Compression.Zip
 {
 #if !NO_SFX
     /// <summary>
@@ -307,7 +307,7 @@ namespace PMU.Compression.Zip
         ///   The default behavvior is to Throw.
         /// </para>
         /// </remarks>
-        public PMU.Compression.Zip.ExtractExistingFileAction ExtractExistingFile
+        public PMDCP.Compression.Zip.ExtractExistingFileAction ExtractExistingFile
         {
             get;set;    
         }
@@ -437,9 +437,9 @@ namespace PMU.Compression.Zip
                 ReferencedAssemblies= new List<string>{
                     "System.dll", "System.Windows.Forms.dll", "System.Drawing.dll"},
                 CopyThroughResources = new List<string>{
-                    "PMU.Compression.Zip.WinFormsSelfExtractorStub.resources",
-                    "PMU.Compression.Zip.Forms.PasswordDialog.resources",
-                    "PMU.Compression.Zip.Forms.ZipContentsDialog.resources"},
+                    "PMDCP.Compression.Zip.WinFormsSelfExtractorStub.resources",
+                    "PMDCP.Compression.Zip.Forms.PasswordDialog.resources",
+                    "PMDCP.Compression.Zip.Forms.ZipContentsDialog.resources"},
                 ResourcesToCompile = new List<string>{
                     "WinFormsSelfExtractorStub.cs",
                     "WinFormsSelfExtractorStub.Designer.cs", // .Designer.cs?
@@ -463,7 +463,7 @@ namespace PMU.Compression.Zip
         //string _defaultExtractLocation;
         //string _postExtractCmdLine;
         //         string _SetDefaultLocationCode =
-        //         "namespace PMU.Compression.Zip { public partial class WinFormsSelfExtractorStub { partial void _SetDefaultExtractLocation() {" +
+        //         "namespace PMDCP.Compression.Zip { public partial class WinFormsSelfExtractorStub { partial void _SetDefaultExtractLocation() {" +
         //         " txtExtractDirectory.Text = \"@@VALUE\"; } }}";
 
 
@@ -670,7 +670,7 @@ namespace PMU.Compression.Zip
 
                 StubExe = GenerateTempPathname("exe");
 
-                // get the PMU.Compression.Zip assembly
+                // get the PMDCP.Compression.Zip assembly
                 Assembly a1 = typeof(ZipFile).Assembly;
 
                 Microsoft.CSharp.CSharpCodeProvider csharp = new Microsoft.CSharp.CSharpCodeProvider();
@@ -696,7 +696,7 @@ namespace PMU.Compression.Zip
                 if (settings == null)
                     throw new BadStateException(String.Format("While saving a Self-Extracting Zip, Cannot find that flavor ({0})?", options.Flavor));
 
-                // This is the list of referenced assemblies.  PMU.Compression.Zip is needed here.
+                // This is the list of referenced assemblies.  PMDCP.Compression.Zip is needed here.
                 // Also if it is the winforms (gui) extractor, we need other referenced assemblies,
                 // like System.Windows.Forms.dll, etc.
                 System.CodeDom.Compiler.CompilerParameters cp = new System.CodeDom.Compiler.CompilerParameters();
@@ -731,7 +731,7 @@ namespace PMU.Compression.Zip
 
 
                 // all the source code is embedded in the DLL as a zip file.
-                using (ZipFile zip = ZipFile.Read(a2.GetManifestResourceStream("PMU.Compression.Zip.Resources.ZippedResources.zip")))
+                using (ZipFile zip = ZipFile.Read(a2.GetManifestResourceStream("PMDCP.Compression.Zip.Resources.ZippedResources.zip")))
                 {
                     // // debugging: enumerate the files in the embedded zip
                     // Console.WriteLine("Entries in the embbedded zip:");

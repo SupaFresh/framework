@@ -39,7 +39,7 @@ using System;
 using System.Runtime.Serialization;
 #endif
 
-namespace PMU.Compression
+namespace PMDCP.Compression
 {
 	/// <summary>
 	/// SharpZipBaseException is the base exception class for the SharpZipLibrary.

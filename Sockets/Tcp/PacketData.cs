@@ -16,9 +16,9 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using PMU.Core;
+using PMDCP.Core;
 
-namespace PMU.Sockets.Tcp
+namespace PMDCP.Sockets.Tcp
 {
     public class PacketData
     {

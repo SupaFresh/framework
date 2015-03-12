@@ -18,9 +18,9 @@ using System.Collections.Generic;
 using System.Text;
 using System.Net;
 using System.Net.Sockets;
-using PMU.Core;
+using PMDCP.Core;
 
-namespace PMU.Sockets.Udp
+namespace PMDCP.Sockets.Udp
 {
     public class UdpClient
     {

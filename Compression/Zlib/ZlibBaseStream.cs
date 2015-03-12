@@ -27,7 +27,7 @@
 using System;
 using System.IO;
 
-namespace PMU.Compression.Zlib
+namespace PMDCP.Compression.Zlib
 {
 
     internal enum ZlibStreamFlavor { ZLIB = 1950, DEFLATE = 1951, GZIP = 1952 }
@@ -50,7 +50,7 @@ namespace PMU.Compression.Zlib
         protected internal CompressionStrategy Strategy = CompressionStrategy.Default;
 
         // workitem 7159
-        PMU.Compression.Zlib.CRC32 crc;
+        PMDCP.Compression.Zlib.CRC32 crc;
         protected internal string _GzipFileName;
         protected internal string _GzipComment;
         protected internal DateTime _GzipMtime;

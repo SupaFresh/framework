@@ -27,7 +27,7 @@
 
 using System;
 
-namespace PMU.Compression.Zip
+namespace PMDCP.Compression.Zip
 {
     /// <summary> 
     /// This class implements the "traditional" or "classic" PKZip encryption,
@@ -315,7 +315,7 @@ namespace PMU.Compression.Zip
 
         // private fields for the crypto stuff:
         private UInt32[] _Keys = { 0x12345678, 0x23456789, 0x34567890 };
-        private PMU.Compression.Zlib.CRC32 crc32 = new PMU.Compression.Zlib.CRC32();
+        private PMDCP.Compression.Zlib.CRC32 crc32 = new PMDCP.Compression.Zlib.CRC32();
 
     }
 

@@ -30,7 +30,7 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 
-namespace PMU.Compression.Zip
+namespace PMDCP.Compression.Zip
 {
     public partial class ZipFile
     {
@@ -71,9 +71,9 @@ namespace PMU.Compression.Zip
         ///
         /// </remarks>
         ///
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.AddFile(string)"/>
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.AddDirectory(string)"/>
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.UpdateItem(string)"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.AddFile(string)"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.AddDirectory(string)"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.UpdateItem(string)"/>
         ///
         /// <overloads>This method has two overloads.</overloads>
         /// <param name="fileOrDirectoryName">
@@ -141,9 +141,9 @@ namespace PMU.Compression.Zip
         ///   insert the item at the root path within the archive.
         /// </param>
         ///
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.AddFile(string, string)"/>
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.AddDirectory(string, string)"/>
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.UpdateItem(string, string)"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.AddFile(string, string)"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.AddDirectory(string, string)"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.UpdateItem(string, string)"/>
         ///
         /// <example>
         ///   This example shows how to zip up a set of files into a flat hierarchy,
@@ -282,9 +282,9 @@ namespace PMU.Compression.Zip
         ///
         /// <overloads>This method has two overloads.</overloads>
         ///
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.AddItem(string)"/>
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.AddDirectory(string)"/>
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.UpdateFile(string)"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.AddItem(string)"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.AddDirectory(string)"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.UpdateFile(string)"/>
         ///
         /// <param name="fileName">
         ///   The name of the file to add. It should refer to a file in the filesystem.
@@ -381,9 +381,9 @@ namespace PMU.Compression.Zip
         /// </code>
         /// </example>
         ///
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.AddItem(string,string)"/>
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.AddDirectory(string, string)"/>
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.UpdateFile(string,string)"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.AddItem(string,string)"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.AddDirectory(string, string)"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.UpdateFile(string,string)"/>
         ///
         /// <param name="fileName">
         ///   The name of the file to add.  The name of the file may be a relative path
@@ -421,8 +421,8 @@ namespace PMU.Compression.Zip
         ///   that ICollection to this method.
         /// </param>
         ///
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.SelectEntries(String)" />
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.RemoveSelectedEntries(String)" />
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.SelectEntries(String)" />
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.RemoveSelectedEntries(String)" />
         public void RemoveEntries(System.Collections.Generic.ICollection<ZipEntry> entriesToRemove)
         {
             foreach (ZipEntry e in entriesToRemove)
@@ -442,8 +442,8 @@ namespace PMU.Compression.Zip
         ///   that provide the names of entries to be removed.
         /// </param>
         ///
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.SelectEntries(String)" />
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.RemoveSelectedEntries(String)" />
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.SelectEntries(String)" />
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.RemoveSelectedEntries(String)" />
         public void RemoveEntries(System.Collections.Generic.ICollection<String> entriesToRemove)
         {
             foreach (String e in entriesToRemove)
@@ -507,7 +507,7 @@ namespace PMU.Compression.Zip
         /// </code>
         /// </example>
         ///
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.AddSelectedFiles(String, String)" />
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.AddSelectedFiles(String, String)" />
         public void AddFiles(System.Collections.Generic.IEnumerable<String> fileNames)
         {
             this.AddFiles(fileNames, null);
@@ -586,7 +586,7 @@ namespace PMU.Compression.Zip
         ///   archive.
         /// </param>
         ///
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.AddSelectedFiles(String, String)" />
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.AddSelectedFiles(String, String)" />
         public void AddFiles(System.Collections.Generic.IEnumerable<String> fileNames, String directoryPathInArchive)
         {
             AddFiles(fileNames, false, directoryPathInArchive);
@@ -647,7 +647,7 @@ namespace PMU.Compression.Zip
         ///   with <paramref name="preserveDirHierarchy"/> = <c>true</c> will result in the
         ///   full direcory paths being included in the entries added to the ZipFile.
         /// </param>
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.AddSelectedFiles(String, String)" />
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.AddSelectedFiles(String, String)" />
         public void AddFiles(System.Collections.Generic.IEnumerable<String> fileNames,
                              bool preserveDirHierarchy,
                              String directoryPathInArchive)
@@ -715,7 +715,7 @@ namespace PMU.Compression.Zip
         ///   archive.
         /// </param>
         ///
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.AddSelectedFiles(String, String)" />
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.AddSelectedFiles(String, String)" />
         public void UpdateFiles(System.Collections.Generic.IEnumerable<String> fileNames, String directoryPathInArchive)
         {
             OnAddStarted();
@@ -796,9 +796,9 @@ namespace PMU.Compression.Zip
         /// </code>
         /// </example>
         ///
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.AddFile(string)"/>
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.UpdateDirectory(string)"/>
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.UpdateItem(string)"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.AddFile(string)"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.UpdateDirectory(string)"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.UpdateItem(string)"/>
         ///
         /// <param name="fileName">
         ///   The name of the file to add or update. It should refer to a file in the
@@ -849,9 +849,9 @@ namespace PMU.Compression.Zip
         /// </para>
         /// </remarks>
         ///
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.AddFile(string,string)"/>
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.UpdateDirectory(string,string)"/>
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.UpdateItem(string,string)"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.AddFile(string,string)"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.UpdateDirectory(string,string)"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.UpdateItem(string,string)"/>
         ///
         /// <param name="fileName">
         ///   The name of the file to add or update. It should refer to a file in the
@@ -899,9 +899,9 @@ namespace PMU.Compression.Zip
         ///   contents and the new files.
         /// </remarks>
         ///
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.UpdateFile(string)"/>
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.AddDirectory(string)"/>
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.UpdateItem(string)"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.UpdateFile(string)"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.AddDirectory(string)"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.UpdateItem(string)"/>
         ///
         /// <param name="directoryName">
         ///   The path to the directory to be added to the zip archive, or updated in
@@ -932,9 +932,9 @@ namespace PMU.Compression.Zip
         ///   contents and the new files.
         /// </remarks>
         ///
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.UpdateFile(string,string)"/>
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.AddDirectory(string,string)"/>
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.UpdateItem(string,string)"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.UpdateFile(string,string)"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.AddDirectory(string,string)"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.UpdateItem(string,string)"/>
         ///
         /// <param name="directoryName">
         ///   The path to the directory to be added to the zip archive, or updated in the
@@ -986,9 +986,9 @@ namespace PMU.Compression.Zip
         /// </para>
         /// </remarks>
         ///
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.AddItem(string)"/>
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.UpdateFile(string)"/>
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.UpdateDirectory(string)"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.AddItem(string)"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.UpdateFile(string)"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.UpdateDirectory(string)"/>
         ///
         /// <param name="itemName">the path to the file or directory to be added or updated.</param>
         public void UpdateItem(string itemName)
@@ -1028,9 +1028,9 @@ namespace PMU.Compression.Zip
         /// </para>
         /// </remarks>
         ///
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.AddItem(string, string)"/>
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.UpdateFile(string, string)"/>
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.UpdateDirectory(string, string)"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.AddItem(string, string)"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.UpdateFile(string, string)"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.UpdateDirectory(string, string)"/>
         ///
         /// <param name="itemName">The path for the File or Directory to be added or updated.</param>
         /// <param name="directoryPathInArchive">
@@ -1242,7 +1242,7 @@ namespace PMU.Compression.Zip
         /// </code>
         /// </example>
         ///
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.UpdateEntry(string, System.IO.Stream)"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.UpdateEntry(string, System.IO.Stream)"/>
         ///
         /// <param name="entryName">
         ///   The name, including any path, which is shown in the zip file for the added
@@ -1313,7 +1313,7 @@ namespace PMU.Compression.Zip
         /// DataSet ds1 = new DataSet();
         /// da.Fill(ds1, "Invoices");
         ///
-        /// using(PMU.Compression.Zip.ZipFile zip = new PMU.Compression.Zip.ZipFile())
+        /// using(PMDCP.Compression.Zip.ZipFile zip = new PMDCP.Compression.Zip.ZipFile())
         /// {
         ///     zip.AddEntry(zipEntryName, (name,stream) => ds1.WriteXml(stream) );
         ///     zip.Save(zipFileName);
@@ -1333,7 +1333,7 @@ namespace PMU.Compression.Zip
         /// <code lang="C#">
         /// using (var input = File.Open(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite ))
         /// {
-        ///     using(PMU.Compression.Zip.ZipFile zip = new PMU.Compression.Zip.ZipFile())
+        ///     using(PMDCP.Compression.Zip.ZipFile zip = new PMDCP.Compression.Zip.ZipFile())
         ///     {
         ///         zip.AddEntry(zipEntryName, (name,output) =>
         ///             {
@@ -1423,7 +1423,7 @@ namespace PMU.Compression.Zip
         ///   logic for the OpenDelegate would probably be more involved.
         ///
         /// <code lang="C#">
-        /// using(PMU.Compression.Zip.ZipFile zip = new PMU.Compression.Zip.ZipFile())
+        /// using(PMDCP.Compression.Zip.ZipFile zip = new PMDCP.Compression.Zip.ZipFile())
         /// {
         ///     zip.AddEntry(zipEntryName,
         ///                  (name) =>  File.Open(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite ),
@@ -1618,8 +1618,8 @@ namespace PMU.Compression.Zip
         ///
         /// </remarks>
         ///
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.AddEntry(string, System.IO.Stream)"/>
-        /// <seealso cref="PMU.Compression.Zip.ZipEntry.InputStream"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.AddEntry(string, System.IO.Stream)"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipEntry.InputStream"/>
         ///
         /// <param name="entryName">
         ///   The name, including any path, to use within the archive for the entry.
@@ -1746,10 +1746,10 @@ namespace PMU.Compression.Zip
         ///
         /// </remarks>
         ///
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.AddItem(string)"/>
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.AddFile(string)"/>
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.UpdateDirectory(string)"/>
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.AddDirectory(string, string)"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.AddItem(string)"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.AddFile(string)"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.UpdateDirectory(string)"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.AddDirectory(string, string)"/>
         ///
         /// <overloads>This method has 2 overloads.</overloads>
         ///
@@ -1809,9 +1809,9 @@ namespace PMU.Compression.Zip
         /// </code>
         /// </example>
         ///
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.AddItem(string, string)"/>
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.AddFile(string, string)"/>
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.UpdateDirectory(string, string)"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.AddItem(string, string)"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.AddFile(string, string)"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.UpdateDirectory(string, string)"/>
         ///
         /// <param name="directoryName">The name of the directory to add.</param>
         ///

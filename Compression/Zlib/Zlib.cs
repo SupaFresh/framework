@@ -67,7 +67,7 @@
 using System;
 using Interop=System.Runtime.InteropServices;
 
-namespace PMU.Compression.Zlib
+namespace PMDCP.Compression.Zlib
 {
 
     /// <summary>

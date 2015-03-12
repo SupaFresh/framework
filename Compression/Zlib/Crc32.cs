@@ -38,7 +38,7 @@ using System;
 using Interop=System.Runtime.InteropServices;
 
 
-namespace PMU.Compression.Zlib
+namespace PMDCP.Compression.Zlib
 {
     /// <summary>
     /// Calculates a 32bit Cyclic Redundancy Checksum (CRC) using the same polynomial

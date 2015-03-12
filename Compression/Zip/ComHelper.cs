@@ -26,7 +26,7 @@
 
 using Interop=System.Runtime.InteropServices;
 
-namespace PMU.Compression.Zip
+namespace PMDCP.Compression.Zip
 {
     /// <summary>
     /// This class exposes a set of COM-accessible wrappers for static

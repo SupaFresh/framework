@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Net;
 
-namespace PMU.Sockets.Gnp
+namespace PMDCP.Sockets.Gnp
 {
     public class DataReceivedEventArgs : EventArgs
     {

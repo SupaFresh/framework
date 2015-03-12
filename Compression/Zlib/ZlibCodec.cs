@@ -67,7 +67,7 @@
 using System;
 using Interop=System.Runtime.InteropServices;
 
-namespace PMU.Compression.Zlib
+namespace PMDCP.Compression.Zlib
 {
     /// <summary>
     /// Encoder and Decoder for ZLIB and DEFLATE (IETF RFC1950 and RFC1951).

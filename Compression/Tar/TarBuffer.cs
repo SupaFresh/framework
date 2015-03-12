@@ -35,7 +35,7 @@
 using System;
 using System.IO;
 
-namespace PMU.Compression.Tar 
+namespace PMDCP.Compression.Tar 
 {
 	
 	/// <summary>

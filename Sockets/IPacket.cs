@@ -14,7 +14,7 @@
 // along with Mystery Dungeon eXtended.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-namespace PMU.Sockets
+namespace PMDCP.Sockets
 {
     public interface IPacket
     {

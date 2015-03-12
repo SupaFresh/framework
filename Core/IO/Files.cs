@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace PMU.Core.IO
+namespace PMDCP.Core.IO
 {
     public class Files
     {

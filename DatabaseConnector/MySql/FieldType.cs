@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace PMU.DatabaseConnector.MySql
+namespace PMDCP.DatabaseConnector.MySql
 {
     public enum FieldType
     {

@@ -21,7 +21,7 @@
 // ------------------------------------------------------------------
 //
 // This module defines the ZipOutputStream class, which is a stream metaphor for
-// generating zip files.  This class does not depend on PMU.Compression.Zip.ZipFile, but rather
+// generating zip files.  This class does not depend on PMDCP.Compression.Zip.ZipFile, but rather
 // stands alongside it as an alternative "container" for ZipEntry.  It replicates a
 // subset of the properties, including these:
 //
@@ -46,7 +46,7 @@ using System.Threading;
 using System.Collections.Generic;
 using System.IO;
 
-namespace PMU.Compression.Zip
+namespace PMDCP.Compression.Zip
 {
     /// <summary>
     ///   Provides a stream metaphor for generating zip files.
@@ -325,12 +325,12 @@ namespace PMU.Compression.Zip
         {
             // workitem 9307
             _outputStream = stream.CanRead ? stream : new CountingStream(stream);
-            CompressionLevel = PMU.Compression.Zlib.CompressionLevel.Default;
+            CompressionLevel = PMDCP.Compression.Zlib.CompressionLevel.Default;
             _encryption = EncryptionAlgorithm.None;
             _entriesWritten = new Dictionary<String, ZipEntry>(StringComparer.Ordinal);
             _zip64 = Zip64Option.Never;
             _leaveUnderlyingStreamOpen = leaveOpen;
-            Strategy = PMU.Compression.Zlib.CompressionStrategy.Default;
+            Strategy = PMDCP.Compression.Zlib.CompressionStrategy.Default;
             _name = "unknown";
 #if !NETCF
             ParallelDeflateThreshold = -1L;
@@ -429,7 +429,7 @@ namespace PMU.Compression.Zip
         /// </remarks>
         ///
         /// <seealso cref="Password">ZipOutputStream.Password</seealso>
-        /// <seealso cref="PMU.Compression.Zip.ZipEntry.Encryption">ZipEntry.Encryption</seealso>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipEntry.Encryption">ZipEntry.Encryption</seealso>
         public EncryptionAlgorithm Encryption
         {
             get
@@ -480,9 +480,9 @@ namespace PMU.Compression.Zip
         ///   work better on different sorts of data. The strategy parameter can affect
         ///   the compression ratio and the speed of compression but not the correctness
         ///   of the compresssion.  For more information see <see
-        ///   cref="PMU.Compression.Zlib.CompressionStrategy "/>.
+        ///   cref="PMDCP.Compression.Zlib.CompressionStrategy "/>.
         /// </remarks>
-        public PMU.Compression.Zlib.CompressionStrategy Strategy
+        public PMDCP.Compression.Zlib.CompressionStrategy Strategy
         {
             get;
             set;
@@ -546,7 +546,7 @@ namespace PMU.Compression.Zip
         ///    alone, and accept the default.
         ///  </para>
         /// </remarks>
-        public PMU.Compression.Zlib.CompressionLevel CompressionLevel
+        public PMDCP.Compression.Zlib.CompressionLevel CompressionLevel
         {
             get;
             set;
@@ -808,7 +808,7 @@ namespace PMU.Compression.Zip
             set
             {
                 _provisionalAlternateEncoding = (value) ? System.Text.Encoding.GetEncoding("UTF-8") :
-                    PMU.Compression.Zip.ZipFile.DefaultEncoding;
+                    PMDCP.Compression.Zip.ZipFile.DefaultEncoding;
             }
         }
 
@@ -957,7 +957,7 @@ namespace PMU.Compression.Zip
         ///     Encryption. This is primarily because encryption tends to slow down
         ///     the entire pipeline. Also, multi-threaded compression gives less of an
         ///     advantage when using lower compression levels, for example <see
-        ///     cref="PMU.Compression.Zlib.CompressionLevel.BestSpeed"/>.  You may have to perform
+        ///     cref="PMDCP.Compression.Zlib.CompressionLevel.BestSpeed"/>.  You may have to perform
         ///     some tests to determine the best approach for your situation.
         ///   </para>
         ///
@@ -1398,12 +1398,12 @@ namespace PMU.Compression.Zip
         private CountingStream _outputCounter;
         private Stream _encryptor;
         private Stream _deflater;
-        private PMU.Compression.Zlib.CrcCalculatorStream _entryOutputStream;
+        private PMDCP.Compression.Zlib.CrcCalculatorStream _entryOutputStream;
         private bool _needToWriteEntryHeader;
         private string _name;
         private bool _DontIgnoreCase;
 #if !NETCF
-        internal PMU.Compression.Zlib.ParallelDeflateOutputStream ParallelDeflater;
+        internal PMDCP.Compression.Zlib.ParallelDeflateOutputStream ParallelDeflater;
         private long _ParallelDeflateThreshold;
 #endif
     }
@@ -1470,7 +1470,7 @@ namespace PMU.Compression.Zip
         }
 
 #if !NETCF
-        public PMU.Compression.Zlib.ParallelDeflateOutputStream ParallelDeflater
+        public PMDCP.Compression.Zlib.ParallelDeflateOutputStream ParallelDeflater
         {
             get
             {
@@ -1503,7 +1503,7 @@ namespace PMU.Compression.Zip
             }
         }
 
-        public PMU.Compression.Zlib.CompressionStrategy Strategy
+        public PMDCP.Compression.Zlib.CompressionStrategy Strategy
         {
             get
             {

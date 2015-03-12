@@ -27,7 +27,7 @@
 using System;
 using System.IO;
 
-namespace PMU.Compression.Zip
+namespace PMDCP.Compression.Zip
 {
     public partial class ZipFile
     {
@@ -497,9 +497,9 @@ namespace PMU.Compression.Zip
         ///
         /// </example>
         ///
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.ReadProgress"/>
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.AddProgress"/>
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.ExtractProgress"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.ReadProgress"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.AddProgress"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.ExtractProgress"/>
         public event EventHandler<SaveProgressEventArgs> SaveProgress;
 
 
@@ -627,9 +627,9 @@ namespace PMU.Compression.Zip
         /// </list>
         /// </remarks>
         ///
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.SaveProgress"/>
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.AddProgress"/>
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.ExtractProgress"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.SaveProgress"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.AddProgress"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.ExtractProgress"/>
         public event EventHandler<ReadProgressEventArgs> ReadProgress;
 
         private void OnReadStarted()
@@ -842,9 +842,9 @@ namespace PMU.Compression.Zip
         /// </code>
         /// </example>
         ///
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.SaveProgress"/>
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.ReadProgress"/>
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.AddProgress"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.SaveProgress"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.ReadProgress"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.AddProgress"/>
         public event EventHandler<ExtractProgressEventArgs> ExtractProgress;
 
 
@@ -1024,9 +1024,9 @@ namespace PMU.Compression.Zip
         ///
         /// </example>
         ///
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.SaveProgress"/>
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.ReadProgress"/>
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.ExtractProgress"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.SaveProgress"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.ReadProgress"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.ExtractProgress"/>
         public event EventHandler<AddProgressEventArgs> AddProgress;
 
         private void OnAddStarted()
@@ -1171,7 +1171,7 @@ namespace PMU.Compression.Zip
         /// </code>
         ///
         /// <code lang="VB">
-        /// Private Sub MyZipError(ByVal sender As Object, ByVal e As PMU.Compression.Zip.ZipErrorEventArgs)
+        /// Private Sub MyZipError(ByVal sender As Object, ByVal e As PMDCP.Compression.Zip.ZipErrorEventArgs)
         ///     ' At this point, the application could prompt the user for an action to take.
         ///     ' But in this case, this application will simply automatically skip the file, in case of error.
         ///     Console.WriteLine("Zip Error,  entry {0}", e.CurrentEntry.FileName)
@@ -1195,7 +1195,7 @@ namespace PMU.Compression.Zip
         /// </code>
         /// </example>
         ///
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.ZipErrorAction"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.ZipErrorAction"/>
         public event EventHandler<ZipErrorEventArgs> ZipError;
 
         internal bool OnZipErrorSaving(ZipEntry entry, Exception exc)

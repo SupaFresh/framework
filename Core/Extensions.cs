@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace PMU.Core
+namespace PMDCP.Core
 {
     public static class Extensions
     {
@@ -181,12 +181,12 @@ namespace PMU.Core
 
 namespace System.Runtime.CompilerServices
 {
-    /// <summary>
-    /// Extension attribute so extensions can be used in VS and still compile for .NET 2.0
-    /// </summary>
-    [AttributeUsage(AttributeTargets.Assembly | AttributeTargets.Class |
-        AttributeTargets.Method)]
-    public sealed class ExtensionAttribute : Attribute
-    {
-    }
+    ///// <summary>
+    ///// Extension attribute so extensions can be used in VS and still compile for .NET 2.0
+    ///// </summary>
+    //[AttributeUsage(AttributeTargets.Assembly | AttributeTargets.Class |
+    //    AttributeTargets.Method)]
+    //public sealed class ExtensionAttribute : Attribute
+    //{
+    //}
 }

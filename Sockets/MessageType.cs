@@ -15,7 +15,7 @@
 
 using System;
 
-namespace PMU.Sockets
+namespace PMDCP.Sockets
 {
 	/// <summary>
 	/// Description of MessageType.

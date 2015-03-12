@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Mystery Dungeon eXtended.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace PMU.Sockets.Tcp
+namespace PMDCP.Sockets.Tcp
 {
     using System;
     using System.Collections.Generic;
@@ -21,7 +21,7 @@ namespace PMU.Sockets.Tcp
     using System.Net.Sockets;
     using System.Text;
     using System.IO;
-    using PMU.Core;
+    using PMDCP.Core;
 
     public class TcpClient
     {

@@ -23,7 +23,7 @@ using System.Net;
 using System.Xml;
 using System.IO;
 
-namespace PMU.Net
+namespace PMDCP.Net
 {
     public class UPnP
     {

@@ -21,7 +21,7 @@ using System.Threading;
 using System.IO;
 
 
-namespace PMU.Compression.Zlib
+namespace PMDCP.Compression.Zlib
 {
         internal class WorkItem
         {
@@ -35,7 +35,7 @@ namespace PMU.Compression.Zlib
             public int compressedBytesAvailable;
             public ZlibCodec compressor;
 
-            public WorkItem(int size, PMU.Compression.Zlib.CompressionLevel compressLevel, CompressionStrategy strategy)
+            public WorkItem(int size, PMDCP.Compression.Zlib.CompressionLevel compressLevel, CompressionStrategy strategy)
             {
                 buffer= new byte[size];
                 // alloc 5 bytes overhead for every block (margin of safety= 2)
@@ -67,7 +67,7 @@ namespace PMU.Compression.Zlib
     /// </para>
     ///
     /// <para>
-    ///   This class is similar to <see cref="PMU.Compression.Zlib.DeflateStream"/>, except
+    ///   This class is similar to <see cref="PMDCP.Compression.Zlib.DeflateStream"/>, except
     ///   that this implementation uses an approach that employs multiple worker
     ///   threads to perform the DEFLATE.  On a multi-cpu or multi-core computer,
     ///   the performance of this class can be significantly higher than the
@@ -88,7 +88,7 @@ namespace PMU.Compression.Zlib
     /// </para>
     ///
     /// </remarks>
-    /// <seealso cref="PMU.Compression.Zlib.DeflateStream" />
+    /// <seealso cref="PMDCP.Compression.Zlib.DeflateStream" />
     public class ParallelDeflateOutputStream : System.IO.Stream
     {
 
@@ -109,7 +109,7 @@ namespace PMU.Compression.Zlib
         private int                         _pc;
         private int                         _Crc32;
         private Int64                       _totalBytesProcessed;
-        private PMU.Compression.Zlib.CompressionLevel _compressLevel;
+        private PMDCP.Compression.Zlib.CompressionLevel _compressLevel;
         private volatile Exception          _pendingException;
         private object                      _eLock = new Object();  // protects _pendingException
 
@@ -139,7 +139,7 @@ namespace PMU.Compression.Zlib
         /// </para>
         ///
         /// <para>
-        ///   This class is similar to <see cref="PMU.Compression.Zlib.DeflateStream"/>,
+        ///   This class is similar to <see cref="PMDCP.Compression.Zlib.DeflateStream"/>,
         ///   except that this implementation uses an approach that employs
         ///   multiple worker threads to perform the DEFLATE.  On a multi-cpu or
         ///   multi-core computer, the performance of this class can be
@@ -355,7 +355,7 @@ namespace PMU.Compression.Zlib
         ///   memory but result in less effective compression.  For example, using
         ///   the default buffer size of 128k, the compression delivered is within
         ///   1% of the compression delivered by the single-threaded <see
-        ///   cref="PMU.Compression.Zlib.DeflateStream"/>.  On the other hand, using a
+        ///   cref="PMDCP.Compression.Zlib.DeflateStream"/>.  On the other hand, using a
         ///   BufferSize of 8k can result in a compressed data stream that is 5%
         ///   larger than that delivered by the single-threaded
         ///   <c>DeflateStream</c>.  Excessively small buffer sizes can also cause
@@ -444,7 +444,7 @@ namespace PMU.Compression.Zlib
         /// </para>
         ///
         /// <para>
-        ///   To decompress data, use the <see cref="PMU.Compression.Zlib.DeflateStream"/> class.
+        ///   To decompress data, use the <see cref="PMDCP.Compression.Zlib.DeflateStream"/> class.
         /// </para>
         ///
         /// </remarks>
@@ -810,7 +810,7 @@ namespace PMU.Compression.Zlib
 
                     // repeatedly write buffers as they become ready
                     WorkItem workitem = null;
-                    PMU.Compression.Zlib.CRC32 c= new PMU.Compression.Zlib.CRC32();
+                    PMDCP.Compression.Zlib.CRC32 c= new PMDCP.Compression.Zlib.CRC32();
                     do
                     {
                         workitem = _pool[_nextToWrite % _pc];
@@ -974,7 +974,7 @@ namespace PMU.Compression.Zlib
                     if (workitem.status != (int)WorkItem.Status.Filled)
                         throw new InvalidOperationException();
 
-                    PMU.Compression.Zlib.CRC32 crc = new CRC32();
+                    PMDCP.Compression.Zlib.CRC32 crc = new CRC32();
 
                     // use the workitem:
                     // calc CRC on the buffer

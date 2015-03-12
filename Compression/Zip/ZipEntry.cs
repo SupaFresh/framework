@@ -30,7 +30,7 @@ using System;
 using System.IO;
 using Interop = System.Runtime.InteropServices;
 
-namespace PMU.Compression.Zip
+namespace PMDCP.Compression.Zip
 {
     /// <summary>
     /// Represents a single entry in a ZipFile. Typically, applications get a ZipEntry
@@ -54,7 +54,7 @@ namespace PMU.Compression.Zip
         public ZipEntry()
         {
             _CompressionMethod = (Int16)CompressionMethod.Deflate;
-            _CompressionLevel = PMU.Compression.Zlib.CompressionLevel.Default;
+            _CompressionLevel = PMDCP.Compression.Zlib.CompressionLevel.Default;
             _Encryption = EncryptionAlgorithm.None;
             _Source = ZipEntrySource.None;
         }
@@ -209,7 +209,7 @@ namespace PMU.Compression.Zip
                 _LastModified = (value.Kind == DateTimeKind.Unspecified)
                     ? DateTime.SpecifyKind(value, DateTimeKind.Local)
                     : value.ToLocalTime();
-                _Mtime = PMU.Compression.Zip.SharedUtilities.AdjustTime_Reverse(_LastModified).ToUniversalTime();
+                _Mtime = PMDCP.Compression.Zip.SharedUtilities.AdjustTime_Reverse(_LastModified).ToUniversalTime();
                 _metadataChanged = true;
             }
         }
@@ -368,7 +368,7 @@ namespace PMU.Compression.Zip
         ///
         /// <seealso cref="AccessedTime"/>
         /// <seealso cref="CreationTime"/>
-        /// <seealso cref="PMU.Compression.Zip.ZipEntry.LastModified"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipEntry.LastModified"/>
         /// <seealso cref="SetEntryTimes"/>
         public DateTime ModifiedTime
         {
@@ -1354,10 +1354,10 @@ namespace PMU.Compression.Zip
 
                 _CompressionMethod = (Int16)value;
 
-                if (_CompressionMethod == (Int16)PMU.Compression.Zip.CompressionMethod.None)
-                    _CompressionLevel = PMU.Compression.Zlib.CompressionLevel.None;
-                else if (CompressionLevel == PMU.Compression.Zlib.CompressionLevel.None)
-                    _CompressionLevel = PMU.Compression.Zlib.CompressionLevel.Default;
+                if (_CompressionMethod == (Int16)PMDCP.Compression.Zip.CompressionMethod.None)
+                    _CompressionLevel = PMDCP.Compression.Zlib.CompressionLevel.None;
+                else if (CompressionLevel == PMDCP.Compression.Zlib.CompressionLevel.None)
+                    _CompressionLevel = PMDCP.Compression.Zlib.CompressionLevel.Default;
 
                 _container.ZipFile.NotifyEntryChanged();
                 _restreamRequiredOnSave = true;
@@ -1402,7 +1402,7 @@ namespace PMU.Compression.Zip
         /// </remarks>
         ///
         /// <seealso cref="CompressionMethod"/>
-        public PMU.Compression.Zlib.CompressionLevel CompressionLevel
+        public PMDCP.Compression.Zlib.CompressionLevel CompressionLevel
         {
             get
             {
@@ -1411,14 +1411,14 @@ namespace PMU.Compression.Zip
             set
             {
                 //if (value == _CompressionLevel) return; // nothing to do
-                if (value == PMU.Compression.Zlib.CompressionLevel.Default && _CompressionMethod == (short)CompressionMethod.Deflate) return; // nothing to do
+                if (value == PMDCP.Compression.Zlib.CompressionLevel.Default && _CompressionMethod == (short)CompressionMethod.Deflate) return; // nothing to do
                 _CompressionLevel = value;
-                if (value == PMU.Compression.Zlib.CompressionLevel.None && _CompressionMethod == (short)CompressionMethod.None)
+                if (value == PMDCP.Compression.Zlib.CompressionLevel.None && _CompressionMethod == (short)CompressionMethod.None)
                     return; // nothing more to do
 
-                _CompressionMethod = (short)((_CompressionLevel == PMU.Compression.Zlib.CompressionLevel.None)
-                    ? PMU.Compression.Zip.CompressionMethod.None
-                    : PMU.Compression.Zip.CompressionMethod.Deflate);
+                _CompressionMethod = (short)((_CompressionLevel == PMDCP.Compression.Zlib.CompressionLevel.None)
+                    ? PMDCP.Compression.Zip.CompressionMethod.None
+                    : PMDCP.Compression.Zip.CompressionMethod.Deflate);
 
                 if (_container.ZipFile != null) _container.ZipFile.NotifyEntryChanged();
                 _restreamRequiredOnSave = true;
@@ -1437,7 +1437,7 @@ namespace PMU.Compression.Zip
         ///   creating.
         /// </remarks>
         ///
-        /// <seealso cref="PMU.Compression.Zip.ZipEntry.UncompressedSize"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipEntry.UncompressedSize"/>
         public Int64 CompressedSize
         {
             get { return _CompressedSize; }
@@ -1452,7 +1452,7 @@ namespace PMU.Compression.Zip
         ///   <c>ZipFile</c> that contains the ZipEntry.
         /// </remarks>
         ///
-        /// <seealso cref="PMU.Compression.Zip.ZipEntry.CompressedSize"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipEntry.CompressedSize"/>
         public Int64 UncompressedSize
         {
             get { return _UncompressedSize; }
@@ -1697,8 +1697,8 @@ namespace PMU.Compression.Zip
         /// Thrown in the setter if EncryptionAlgorithm.Unsupported is specified.
         /// </exception>
         ///
-        /// <seealso cref="PMU.Compression.Zip.ZipEntry.Password">ZipEntry.Password</seealso>
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.Encryption">ZipFile.Encryption</seealso>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipEntry.Password">ZipEntry.Password</seealso>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.Encryption">ZipFile.Encryption</seealso>
         public EncryptionAlgorithm Encryption
         {
             get
@@ -1859,8 +1859,8 @@ namespace PMU.Compression.Zip
         ///
         /// </example>
         ///
-        /// <seealso cref="PMU.Compression.Zip.ZipEntry.Encryption"/>
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.Password">ZipFile.Password</seealso>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipEntry.Encryption"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.Password">ZipFile.Password</seealso>
         public string Password
         {
             set
@@ -1927,7 +1927,7 @@ namespace PMU.Compression.Zip
         ///   </para>
         ///
         /// </remarks>
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.ExtractExistingFile"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.ExtractExistingFile"/>
         ///
         /// <example>
         ///   This example shows how to set the <c>ExtractExistingFile</c> property in
@@ -2006,8 +2006,8 @@ namespace PMU.Compression.Zip
         ///  </para>
         ///
         /// </remarks>
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.ZipErrorAction"/>
-        /// <seealso cref="PMU.Compression.Zip.ZipFile.ZipError"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.ZipErrorAction"/>
+        /// <seealso cref="PMDCP.Compression.Zip.ZipFile.ZipError"/>
         public ZipErrorAction ZipErrorAction
         {
             get;
@@ -2084,7 +2084,7 @@ namespace PMU.Compression.Zip
             }
             set
             {
-                _provisionalAlternateEncoding = (value) ? System.Text.Encoding.GetEncoding("UTF-8") : PMU.Compression.Zip.ZipFile.DefaultEncoding;
+                _provisionalAlternateEncoding = (value) ? System.Text.Encoding.GetEncoding("UTF-8") : PMDCP.Compression.Zip.ZipFile.DefaultEncoding;
             }
         }
 
@@ -2253,7 +2253,7 @@ namespace PMU.Compression.Zip
         private static ZipEntry Create(string nameInArchive, ZipEntrySource source, Object arg1, Object arg2)
         {
             if (String.IsNullOrEmpty(nameInArchive))
-                throw new PMU.Compression.Zip.ZipException("The entry name must be non-null and non-empty.");
+                throw new PMDCP.Compression.Zip.ZipException("The entry name must be non-null and non-empty.");
 
             ZipEntry entry = new ZipEntry();
 
@@ -2290,7 +2290,7 @@ namespace PMU.Compression.Zip
                 String filename = (arg1 as String);   // must not be null
 
                 if (String.IsNullOrEmpty(filename))
-                    throw new PMU.Compression.Zip.ZipException("The filename must be non-null and non-empty.");
+                    throw new PMDCP.Compression.Zip.ZipException("The filename must be non-null and non-empty.");
 
                 // The named file may or may not exist at this time.  For example, when
                 // adding a directory by name.  We test existence when necessary:
@@ -2298,7 +2298,7 @@ namespace PMU.Compression.Zip
 
 #if NETCF
                 // workitem 6878
-                // PMU.Compression.Zip.SharedUtilities.AdjustTime_Win32ToDotNet
+                // PMDCP.Compression.Zip.SharedUtilities.AdjustTime_Win32ToDotNet
                 entry._Mtime = File.GetLastWriteTime(filename).ToUniversalTime();
                 entry._Ctime = File.GetCreationTime(filename).ToUniversalTime();
                 entry._Atime = File.GetLastAccessTime(filename).ToUniversalTime();
@@ -2310,7 +2310,7 @@ namespace PMU.Compression.Zip
 
 #else
                 // workitem 6878??
-                // PMU.Compression.Zip.SharedUtilities.AdjustTime_Win32ToDotNet
+                // PMDCP.Compression.Zip.SharedUtilities.AdjustTime_Win32ToDotNet
                 entry._Mtime = File.GetLastWriteTimeUtc(filename);
                 entry._Ctime = File.GetCreationTimeUtc(filename);
                 entry._Atime = File.GetLastAccessTimeUtc(filename);
@@ -2555,7 +2555,7 @@ namespace PMU.Compression.Zip
         internal Int16 _BitField;
         internal Int16 _CompressionMethod;
         private Int16 _CompressionMethod_FromZipFile;
-        private PMU.Compression.Zlib.CompressionLevel _CompressionLevel;
+        private PMDCP.Compression.Zlib.CompressionLevel _CompressionLevel;
         internal string _Comment;
         private bool _IsDirectory;
         private byte[] _CommentBytes;

@@ -15,7 +15,7 @@
 
 using System;
 
-namespace PMU.Sockets.Tcp
+namespace PMDCP.Sockets.Tcp
 {
 	/// <summary>
 	/// Description of FileTransferInitiationEventArgs.

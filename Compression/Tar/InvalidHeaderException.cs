@@ -39,7 +39,7 @@ using System;
 using System.Runtime.Serialization;
 #endif
 
-namespace PMU.Compression.Tar {
+namespace PMDCP.Compression.Tar {
 	
 	/// <summary>
 	/// This exception is used to indicate that there is a problem

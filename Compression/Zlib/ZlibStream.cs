@@ -28,7 +28,7 @@
 using System;
 using System.IO;
 
-namespace PMU.Compression.Zlib
+namespace PMDCP.Compression.Zlib
 {
 
     /// <summary>
@@ -479,9 +479,9 @@ namespace PMU.Compression.Zlib
         {
             get
             {
-                if (this._baseStream._streamMode == PMU.Compression.Zlib.ZlibBaseStream.StreamMode.Writer)
+                if (this._baseStream._streamMode == PMDCP.Compression.Zlib.ZlibBaseStream.StreamMode.Writer)
                     return this._baseStream._z.TotalBytesOut;
-                if (this._baseStream._streamMode == PMU.Compression.Zlib.ZlibBaseStream.StreamMode.Reader)
+                if (this._baseStream._streamMode == PMDCP.Compression.Zlib.ZlibBaseStream.StreamMode.Reader)
                     return this._baseStream._z.TotalBytesIn;
                 return 0;
             }

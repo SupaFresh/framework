@@ -53,7 +53,7 @@ using System.Reflection;
 using System.ComponentModel;
 using System.Text.RegularExpressions;
 
-namespace PMU.Compression
+namespace PMDCP.Compression
 {
 
     /// <summary>
@@ -472,9 +472,9 @@ namespace PMU.Compression
     /// <para>
     ///   The FileSelector class is used internally by the ZipFile class for selecting
     ///   files for inclusion into the ZipFile, when the <see
-    ///   cref="PMU.Compression.Zip.ZipFile.AddSelectedFiles(String,String)"/> method, or one of
+    ///   cref="PMDCP.Compression.Zip.ZipFile.AddSelectedFiles(String,String)"/> method, or one of
     ///   its overloads, is called.  It's also used for the <see
-    ///   cref="PMU.Compression.Zip.ZipFile.ExtractSelectedEntries(String)"/> methods.  Typically, an
+    ///   cref="PMDCP.Compression.Zip.ZipFile.ExtractSelectedEntries(String)"/> methods.  Typically, an
     ///   application that creates or manipulates Zip archives will not directly
     ///   interact with the FileSelector class.
     /// </para>

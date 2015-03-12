@@ -19,9 +19,9 @@ using System.Text;
 using System.IO;
 using System.Net;
 using System.ComponentModel;
-using PMU.Core;
+using PMDCP.Core;
 
-namespace PMU.Net
+namespace PMDCP.Net
 {
     public class FileDownloader
     {

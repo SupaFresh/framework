@@ -34,7 +34,7 @@ using System.Collections.Generic;
 using System.Security.Cryptography;
 
 #if AESCRYPTO
-namespace PMU.Compression.Zip
+namespace PMDCP.Compression.Zip
 {
     /// <summary> 
     /// This is a helper class supporting WinZip AES encryption.  
@@ -169,7 +169,7 @@ namespace PMU.Compression.Zip
                 {
                     PasswordVerificationGenerated = (Int16)(GeneratedPV[0] + GeneratedPV[1] * 256);
                     if (PasswordVerificationGenerated != PasswordVerificationStored)
-                        throw new PMU.Compression.Zip.BadPasswordException();
+                        throw new PMDCP.Compression.Zip.BadPasswordException();
                 }
             }
         }
@@ -234,7 +234,7 @@ namespace PMU.Compression.Zip
             }
 
             if (invalid)
-                throw new PMU.Compression.Zip.BadStateException("The MAC does not match.");
+                throw new PMDCP.Compression.Zip.BadStateException("The MAC does not match.");
         }
 
     }

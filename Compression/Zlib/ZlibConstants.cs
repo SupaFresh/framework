@@ -63,7 +63,7 @@
 
 using System;
 
-namespace PMU.Compression.Zlib
+namespace PMDCP.Compression.Zlib
 {
     /// <summary>
     /// A bunch of constants used in the Zlib interface.

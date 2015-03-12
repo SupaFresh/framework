@@ -29,7 +29,7 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 
-namespace PMU.Compression.Zip
+namespace PMDCP.Compression.Zip
 {
 
     public partial class ZipFile
@@ -1096,7 +1096,7 @@ namespace PMU.Compression.Zip
             s.Seek(Offset64, SeekOrigin.Begin);
             //zf.SeekFromOrigin(Offset64);
 
-            uint datum = (uint)PMU.Compression.Zip.SharedUtilities.ReadInt(s);
+            uint datum = (uint)PMDCP.Compression.Zip.SharedUtilities.ReadInt(s);
             if (datum != ZipConstants.Zip64EndOfCentralDirectoryRecordSignature)
                 throw new BadReadException(String.Format("  ZipFile::Read(): Bad signature (0x{0:X8}) looking for ZIP64 EoCD Record at position 0x{1:X8}", datum, s.Position));
 
@@ -1115,7 +1115,7 @@ namespace PMU.Compression.Zip
 
         private static uint VerifyBeginningOfZipFile(Stream s)
         {
-            uint datum = (uint)PMU.Compression.Zip.SharedUtilities.ReadInt(s);
+            uint datum = (uint)PMDCP.Compression.Zip.SharedUtilities.ReadInt(s);
             // workitem 8337
 //             if (datum != ZipConstants.PackedToRemovableMedia              // weird edge case #1
 //                 && datum != ZipConstants.ZipEntryDataDescriptorSignature  // weird edge case #2
@@ -1250,7 +1250,7 @@ namespace PMU.Compression.Zip
         private static void ReadCentralDirectoryFooter(ZipFile zf)
         {
             Stream s = zf.ReadStream;
-            int signature = PMU.Compression.Zip.SharedUtilities.ReadSignature(s);
+            int signature = PMDCP.Compression.Zip.SharedUtilities.ReadSignature(s);
 
             byte[] block = null;
             int j = 0;
@@ -1293,7 +1293,7 @@ namespace PMU.Compression.Zip
                 s.Read(block, 0, block.Length);
                 // discard the result
 
-                signature = PMU.Compression.Zip.SharedUtilities.ReadSignature(s);
+                signature = PMDCP.Compression.Zip.SharedUtilities.ReadSignature(s);
                 if (signature != ZipConstants.Zip64EndOfCentralDirectoryLocatorSignature)
                     throw new ZipException("Inconsistent metadata in the ZIP64 Central Directory.");
 
@@ -1301,7 +1301,7 @@ namespace PMU.Compression.Zip
                 s.Read(block, 0, block.Length);
                 // discard the result
 
-                signature = PMU.Compression.Zip.SharedUtilities.ReadSignature(s);
+                signature = PMDCP.Compression.Zip.SharedUtilities.ReadSignature(s);
             }
 
             // Throw if this is not a signature for "end of central directory record"

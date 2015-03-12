@@ -35,7 +35,7 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 
-namespace PMU.Compression.Zip
+namespace PMDCP.Compression.Zip
 {
 
     partial class ZipFile
@@ -530,7 +530,7 @@ namespace PMU.Compression.Zip
             {
                 //if (Verbose) StatusMessageTextWriter.WriteLine("adding selection '{0}' from dir '{1}'...",
                 //selectionCriteria, directoryOnDisk);
-                //PMU.Compression.FileSelector ff = new PMU.Compression.FileSelector("*.*");
+                //PMDCP.Compression.FileSelector ff = new PMDCP.Compression.FileSelector("*.*");
                 //filesToAdd = ff.SelectFiles(selectionCriteria, recurseDirectories);
                 directoryOnDisk = selectionCriteria;
                 selectionCriteria = "*.*";
@@ -543,7 +543,7 @@ namespace PMU.Compression.Zip
             while (directoryOnDisk.EndsWith("\\")) directoryOnDisk = directoryOnDisk.Substring(0, directoryOnDisk.Length - 1);
             if (Verbose) StatusMessageTextWriter.WriteLine("adding selection '{0}' from dir '{1}'...",
                                                                selectionCriteria, directoryOnDisk);
-            PMU.Compression.FileSelector ff = new PMU.Compression.FileSelector(selectionCriteria,
+            PMDCP.Compression.FileSelector ff = new PMDCP.Compression.FileSelector(selectionCriteria,
                                                            AddDirectoryWillTraverseReparsePoints);
             var filesToAdd = ff.SelectFiles(directoryOnDisk, recurseDirectories);
                 
@@ -634,7 +634,7 @@ namespace PMU.Compression.Zip
         /// <returns>a collection of ZipEntry objects that conform to the inclusion spec</returns>
         public ICollection<ZipEntry> SelectEntries(String selectionCriteria)
         {
-            PMU.Compression.FileSelector ff = new PMU.Compression.FileSelector(selectionCriteria,
+            PMDCP.Compression.FileSelector ff = new PMDCP.Compression.FileSelector(selectionCriteria,
                                                            AddDirectoryWillTraverseReparsePoints);
             return ff.SelectEntries(this);
         }
@@ -707,7 +707,7 @@ namespace PMU.Compression.Zip
         /// <returns>a collection of ZipEntry objects that conform to the inclusion spec</returns>
         public ICollection<ZipEntry> SelectEntries(String selectionCriteria, string directoryPathInArchive)
         {
-            PMU.Compression.FileSelector ff = new PMU.Compression.FileSelector(selectionCriteria,
+            PMDCP.Compression.FileSelector ff = new PMDCP.Compression.FileSelector(selectionCriteria,
                                                            AddDirectoryWillTraverseReparsePoints);
             return ff.SelectEntries(this, directoryPathInArchive);
         }
@@ -1079,17 +1079,17 @@ namespace PMU.Compression.Zip
 
 
 
-namespace PMU.Compression
+namespace PMDCP.Compression
 {
     internal abstract partial class SelectionCriterion
     {
-        internal abstract bool Evaluate(PMU.Compression.Zip.ZipEntry entry);
+        internal abstract bool Evaluate(PMDCP.Compression.Zip.ZipEntry entry);
     }
 
 
     internal partial class NameCriterion : SelectionCriterion
     {
-        internal override bool Evaluate(PMU.Compression.Zip.ZipEntry entry)
+        internal override bool Evaluate(PMDCP.Compression.Zip.ZipEntry entry)
         {
             // swap forward slashes in the entry.FileName for backslashes
             string transformedFileName = entry.FileName.Replace("/", "\\");
@@ -1101,7 +1101,7 @@ namespace PMU.Compression
 
     internal partial class SizeCriterion : SelectionCriterion
     {
-        internal override bool Evaluate(PMU.Compression.Zip.ZipEntry entry)
+        internal override bool Evaluate(PMDCP.Compression.Zip.ZipEntry entry)
         {
             return _Evaluate(entry.UncompressedSize);
         }
@@ -1109,7 +1109,7 @@ namespace PMU.Compression
 
     internal partial class TimeCriterion : SelectionCriterion
     {
-        internal override bool Evaluate(PMU.Compression.Zip.ZipEntry entry)
+        internal override bool Evaluate(PMDCP.Compression.Zip.ZipEntry entry)
         {
             DateTime x;
             switch (Which)
@@ -1132,7 +1132,7 @@ namespace PMU.Compression
 
     internal partial class AttributesCriterion : SelectionCriterion
     {
-        internal override bool Evaluate(PMU.Compression.Zip.ZipEntry entry)
+        internal override bool Evaluate(PMDCP.Compression.Zip.ZipEntry entry)
         {
             FileAttributes fileAttrs = entry.Attributes;
             return _Evaluate(fileAttrs);
@@ -1142,7 +1142,7 @@ namespace PMU.Compression
 
     internal partial class CompoundCriterion : SelectionCriterion
     {
-        internal override bool Evaluate(PMU.Compression.Zip.ZipEntry entry)
+        internal override bool Evaluate(PMDCP.Compression.Zip.ZipEntry entry)
         {
             bool result = Left.Evaluate(entry);
             switch (Conjunction)
@@ -1167,7 +1167,7 @@ namespace PMU.Compression
 
     public partial class FileSelector
     {
-        private bool Evaluate(PMU.Compression.Zip.ZipEntry entry)
+        private bool Evaluate(PMDCP.Compression.Zip.ZipEntry entry)
         {
             bool result = _Criterion.Evaluate(entry);
             return result;
@@ -1201,11 +1201,11 @@ namespace PMU.Compression
         /// <param name="zip">The ZipFile from which to retrieve entries.</param>
         ///
         /// <returns>a collection of ZipEntry objects that conform to the criteria.</returns>
-        public ICollection<PMU.Compression.Zip.ZipEntry> SelectEntries(PMU.Compression.Zip.ZipFile zip)
+        public ICollection<PMDCP.Compression.Zip.ZipEntry> SelectEntries(PMDCP.Compression.Zip.ZipFile zip)
         {
-            var list = new List<PMU.Compression.Zip.ZipEntry>();
+            var list = new List<PMDCP.Compression.Zip.ZipEntry>();
 
-            foreach (PMU.Compression.Zip.ZipEntry e in zip)
+            foreach (PMDCP.Compression.Zip.ZipEntry e in zip)
             {
                 if (this.Evaluate(e))
                     list.Add(e);
@@ -1253,9 +1253,9 @@ namespace PMU.Compression
         /// </param>
         /// 
         /// <returns>a collection of ZipEntry objects that conform to the criteria.</returns>
-        public ICollection<PMU.Compression.Zip.ZipEntry> SelectEntries(PMU.Compression.Zip.ZipFile zip, string directoryPathInArchive)
+        public ICollection<PMDCP.Compression.Zip.ZipEntry> SelectEntries(PMDCP.Compression.Zip.ZipFile zip, string directoryPathInArchive)
         {
-            var list = new List<PMU.Compression.Zip.ZipEntry>();
+            var list = new List<PMDCP.Compression.Zip.ZipEntry>();
             // workitem 8559
             string slashSwapped = (directoryPathInArchive==null) ? null : directoryPathInArchive.Replace("/","\\");
             // workitem 9174
@@ -1264,7 +1264,7 @@ namespace PMU.Compression
                 while (slashSwapped.EndsWith("\\"))
                     slashSwapped= slashSwapped.Substring(0, slashSwapped.Length-1);
             }
-            foreach (PMU.Compression.Zip.ZipEntry e in zip)
+            foreach (PMDCP.Compression.Zip.ZipEntry e in zip)
             {
                 if (directoryPathInArchive == null || (Path.GetDirectoryName(e.FileName) == directoryPathInArchive)
                     || (Path.GetDirectoryName(e.FileName) == slashSwapped)) // workitem 8559
