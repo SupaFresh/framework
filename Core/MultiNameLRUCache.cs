@@ -17,8 +17,10 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace PMDCP.Core {
-    class MultiNameLRUCache<K, V> {
+namespace PMDCP.Core
+{
+    public class MultiNameLRUCache<K, V>
+    {
 
         #region Fields
 
@@ -31,7 +33,8 @@ namespace PMDCP.Core {
 
         #region Constructors
 
-        public MultiNameLRUCache(int capacity) {
+        public MultiNameLRUCache(int capacity)
+        {
             this.capacity = capacity;
         }
 
@@ -39,10 +42,13 @@ namespace PMDCP.Core {
 
         #region Methods
 
-        public void Add(K key, V val) {
-            lock (lockObject) {
+        public void Add(K key, V val)
+        {
+            lock (lockObject)
+            {
                 //remove excesses
-                if (values.Count >= capacity) {
+                if (values.Count >= capacity)
+                {
                     RemoveFirst();
                 }
                 //add to cache as normal
@@ -53,28 +59,36 @@ namespace PMDCP.Core {
             }
         }
 
-        public void AddAlias(K newKey, K oldKey) {
-            lock (lockObject) {
+        public void AddAlias(K newKey, K oldKey)
+        {
+            lock (lockObject)
+            {
                 ValueItem<K, V> node;
                 //make sure key exists
-                if (names.TryGetValue(oldKey, out node)) {
+                if (names.TryGetValue(oldKey, out node))
+                {
                     node.keys.AddLast(newKey);
                     names.Add(newKey, node);
                 }
             }
         }
 
-        public bool ContainsKey(K key) {
-            lock (lockObject) {
+        public bool ContainsKey(K key)
+        {
+            lock (lockObject)
+            {
                 return names.ContainsKey(key);
             }
         }
 
-        public V Get(K key) {
-            lock (lockObject) {
+        public V Get(K key)
+        {
+            lock (lockObject)
+            {
                 ValueItem<K, V> node;
-                if (names.TryGetValue(key, out node)) {
-                    
+                if (names.TryGetValue(key, out node))
+                {
+
                     V value = node.value;
 
                     values.Remove(node);
@@ -85,12 +99,14 @@ namespace PMDCP.Core {
             }
         }
 
-        protected void RemoveFirst() {
+        protected void RemoveFirst()
+        {
             // Remove from values
             LinkedListNode<ValueItem<K, V>> node = values.First;
             values.RemoveFirst();
             // Remove from keys
-            foreach (K key in node.Value.keys) {
+            foreach (K key in node.Value.keys)
+            {
                 names.Remove(key);
             }
         }
@@ -99,8 +115,9 @@ namespace PMDCP.Core {
 
     }
 
-    
-    internal class NameItem<K, V> {
+
+    public class NameItem<K, V>
+    {
         #region Fields
 
         public K key;
@@ -110,7 +127,8 @@ namespace PMDCP.Core {
 
         #region Constructors
 
-        public NameItem(K k, ValueItem<K, V> v) {
+        public NameItem(K k, ValueItem<K, V> v)
+        {
             key = k;
             value = v;
         }
@@ -118,7 +136,8 @@ namespace PMDCP.Core {
         #endregion Constructors
     }
 
-    internal class ValueItem<K, V> {
+    public class ValueItem<K, V>
+    {
         #region Fields
 
         public V value;
@@ -128,7 +147,8 @@ namespace PMDCP.Core {
 
         #region Constructors
 
-        public ValueItem(V v) {
+        public ValueItem(V v)
+        {
             value = v;
             keys = new LinkedList<K>();
         }
