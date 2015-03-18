@@ -51,7 +51,7 @@ namespace PMDCP.Net
             if (NetworkInterface.GetIsNetworkAvailable() == false) {
                 return success;
             }
-            string[] Mysite = { "www.PMDCPniverse.net" };
+            string[] Mysite = { "www.pmdcommunity.eu" };
             try {
                 using (Ping ping = new Ping()) {
                     foreach (string url in Mysite) {
