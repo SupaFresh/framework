@@ -45,9 +45,6 @@ namespace PMDCP.Core
                 case HashType.MD5:
                     hasher = new MD5CryptoServiceProvider();
                     break;
-                case HashType.RIPEMD160:
-                    hasher = new RIPEMD160Managed();
-                    break;
             }
             StringBuilder buff = new StringBuilder();
             try {
@@ -60,6 +57,7 @@ namespace PMDCP.Core
             } catch {
                 return "Error reading file." + new System.Random(DateTime.Now.Second * DateTime.Now.Millisecond).Next().ToString();
             }
+            hasher.Dispose();
             return buff.ToString();
         }
 
@@ -89,9 +87,6 @@ namespace PMDCP.Core
                 case HashType.MD5:
                     hasher = new MD5CryptoServiceProvider();
                     break;
-                case HashType.RIPEMD160:
-                    hasher = new RIPEMD160Managed();
-                    break;
             }
 
             StringBuilder buffer = new StringBuilder();
@@ -102,6 +97,7 @@ namespace PMDCP.Core
             foreach (Byte hashByte in hasher.Hash) {
                 buffer.Append(string.Format("{0:x2}", hashByte));
             }
+            hasher.Dispose();
             return buffer.ToString();
         }
     }
