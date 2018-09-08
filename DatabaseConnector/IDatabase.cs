@@ -27,7 +27,9 @@ namespace PMDCP.DatabaseConnector
         IDataColumn[] RetrieveRow(string tableName, string columns, string filterExpression);
         //List<IDataColumn[]> RetrieveRows(string tableName, string columns, string filterExpression);
         void AddRow(string tableName, IDataColumn[] columns);
+        [Obsolete("Obsolete in favor of Dapper-based implementation.", true)]
         void DeleteRow(string tableName, string filterExpression);
+        void DeleteRow(string tableName, string filterExpression, object data);
         void OpenConnection();
         void CloseConnection();
         object ExecuteQuery(string command);

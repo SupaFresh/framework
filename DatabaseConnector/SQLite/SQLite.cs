@@ -368,6 +368,10 @@ namespace PMDCP.DatabaseConnector.SQLite
             throw new NotImplementedException();
         }
 
+        public void DeleteRow(string tableName, string filterExpression, object data) {
+            throw new NotImplementedException();
+        }
+
         public bool IsTransactionActive {
             get { throw new NotImplementedException(); }
         }

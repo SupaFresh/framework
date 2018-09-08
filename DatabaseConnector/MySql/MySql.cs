@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Text;
 using Dapper;
 using MySql.Data.MySqlClient;
@@ -439,6 +440,7 @@ namespace PMDCP.DatabaseConnector.MySql
             }
         }
 
+        [Obsolete("Obsolete in favor of Dapper-based implementation.", true)]
         public void DeleteRow(string tableName, string filterExpression) {
             bool localConnection = false;
             if (ConnectionState == System.Data.ConnectionState.Closed) {
@@ -457,6 +459,29 @@ namespace PMDCP.DatabaseConnector.MySql
                     comm.CommandTimeout = 0;
                     comm.ExecuteNonQuery();
                 }
+            } finally {
+                if (localConnection) {
+                    CloseConnection();
+                }
+            }
+        }
+
+        public void DeleteRow(string tableName, string filterExpression, object data) {
+            bool localConnection = false;
+            if (ConnectionState == System.Data.ConnectionState.Closed) {
+                localConnection = true;
+                OpenConnection();
+            }
+            try {
+                var queryBuilder = new StringBuilder();
+                queryBuilder.Append("DELETE FROM ");
+                queryBuilder.Append(tableName);
+                if (!string.IsNullOrEmpty(filterExpression)) {
+                    queryBuilder.Append(" WHERE ");
+                    queryBuilder.Append(filterExpression);
+                }
+
+                connection.Execute(queryBuilder.ToString(), data, SelectTransaction(localConnection));
             } finally {
                 if (localConnection) {
                     CloseConnection();
@@ -740,17 +765,13 @@ namespace PMDCP.DatabaseConnector.MySql
                     queryBuilder.Append(" = @");
                     queryBuilder.Append(enumerator.Current.Name);
                 }
-                
+
                 if (!string.IsNullOrEmpty(filterExpression)) {
                     queryBuilder.Append(" WHERE ");
                     queryBuilder.Append(filterExpression);
                 }
 
-                if (!localConnection && activeTransaction != null) {
-                    connection.Execute(queryBuilder.ToString(), data, activeTransaction);
-                } else {
-                    connection.Execute(queryBuilder.ToString(), data);
-                }
+                connection.Execute(queryBuilder.ToString(), data, SelectTransaction(localConnection));
             } finally {
                 if (localConnection) {
                     CloseConnection();
@@ -768,6 +789,14 @@ namespace PMDCP.DatabaseConnector.MySql
 
         public bool IsTransactionActive {
             get { return activeTransaction != null; }
+        }
+
+        private IDbTransaction SelectTransaction(bool isLocalConnection) {
+            if (!isLocalConnection && activeTransaction != null) {
+                return activeTransaction;
+            } else {
+                return null;
+            }
         }
     }
 }
