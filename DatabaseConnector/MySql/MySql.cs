@@ -16,7 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-
+using Dapper;
 using MySql.Data.MySqlClient;
 
 namespace PMDCP.DatabaseConnector.MySql
@@ -710,6 +710,60 @@ namespace PMDCP.DatabaseConnector.MySql
             if (activeTransaction != null) {
                 command.Transaction = activeTransaction;
             }
+        }
+
+        public void UpdateRow(string tableName, IEnumerable<IGenericDataColumn> columns, string filterExpression, object data) {
+            bool localConnection = false;
+            if (ConnectionState == System.Data.ConnectionState.Closed) {
+                localConnection = true;
+                OpenConnection();
+            }
+            try {
+                var queryBuilder = new StringBuilder();
+                queryBuilder.Append("UPDATE ");
+                queryBuilder.Append(tableName);
+                queryBuilder.Append(" SET ");
+
+                var enumerator = columns.GetEnumerator();
+                // If the enumerable is empty, exit right away - no columns to update
+                if (!enumerator.MoveNext()) {
+                    return;
+                }
+
+                queryBuilder.Append(enumerator.Current.Name);
+                queryBuilder.Append(" = @");
+                queryBuilder.Append(enumerator.Current.Name);
+
+                while (enumerator.MoveNext()) {
+                    queryBuilder.Append(", ");
+                    queryBuilder.Append(enumerator.Current.Name);
+                    queryBuilder.Append(" = @");
+                    queryBuilder.Append(enumerator.Current.Name);
+                }
+                
+                if (!string.IsNullOrEmpty(filterExpression)) {
+                    queryBuilder.Append(" WHERE ");
+                    queryBuilder.Append(filterExpression);
+                }
+
+                if (!localConnection && activeTransaction != null) {
+                    connection.Execute(queryBuilder.ToString(), data, activeTransaction);
+                } else {
+                    connection.Execute(queryBuilder.ToString(), data);
+                }
+            } finally {
+                if (localConnection) {
+                    CloseConnection();
+                }
+            }
+        }
+
+        public void UpdateRow(string tableName, IEnumerable<IGenericDataColumn> columns, object data) {
+            UpdateRow(tableName, columns, null, data);
+        }
+
+        public IGenericDataColumn CreateColumn(bool primaryKey, string name) {
+            return new GenericDataColumn(name, primaryKey);
         }
 
         public bool IsTransactionActive {

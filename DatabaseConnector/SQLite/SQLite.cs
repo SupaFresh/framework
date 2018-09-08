@@ -352,6 +352,21 @@ namespace PMDCP.DatabaseConnector.SQLite
             throw new NotImplementedException();
         }
 
+        public void UpdateRow(string tableName, IEnumerable<IGenericDataColumn> columns, string filterExpression, object data) {
+            throw new NotImplementedException();
+        }
+
+        public void UpdateRow(string tableName, IEnumerable<IGenericDataColumn> columns, object data) {
+            throw new NotImplementedException();
+        }
+
+        public void UpdateOrInsert(string tableName, IDataColumn[] columns) {
+            throw new NotImplementedException();
+        }
+
+        public IGenericDataColumn CreateColumn(bool primaryKey, string name) {
+            throw new NotImplementedException();
+        }
 
         public bool IsTransactionActive {
             get { throw new NotImplementedException(); }

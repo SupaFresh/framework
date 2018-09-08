@@ -36,10 +36,13 @@ namespace PMDCP.DatabaseConnector
         bool TableExists(string tableName);
         void UpdateRow(string tableName, IDataColumn[] columns, string filterExpression);
         void UpdateRow(string tableName, IDataColumn[] columns);
+        void UpdateRow(string tableName, IEnumerable<IGenericDataColumn> columns, string filterExpression, object data);
+        void UpdateRow(string tableName, IEnumerable<IGenericDataColumn> columns, object data);
         void UpdateOrInsert(string tableName, IDataColumn[] columns, string filterExpression);
         void UpdateOrInsert(string tableName, IDataColumn[] columns);
         IDataField CreateField(string name, string type);
         IDataColumn CreateColumn(bool primaryKey, string name, string value);
+        IGenericDataColumn CreateColumn(bool primaryKey, string name);
         void BeginTransaction();
         void EndTransaction();
 
