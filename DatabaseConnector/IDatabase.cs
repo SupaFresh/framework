@@ -37,6 +37,7 @@ namespace PMDCP.DatabaseConnector
         void UpdateRow(string tableName, IDataColumn[] columns, string filterExpression);
         void UpdateRow(string tableName, IDataColumn[] columns);
         void UpdateOrInsert(string tableName, IDataColumn[] columns, string filterExpression);
+        void UpdateOrInsert(string tableName, IDataColumn[] columns);
         IDataField CreateField(string name, string type);
         IDataColumn CreateColumn(bool primaryKey, string name, string value);
         void BeginTransaction();
