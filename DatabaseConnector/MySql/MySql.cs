@@ -33,7 +33,7 @@ namespace PMDCP.DatabaseConnector.MySql
         string database;
 
         public static bool TestConnection(string server, int port, string database, string user, string pass) {
-            string connectionString = "Server=" + server + ";Port=" + port + ";Database=" + database + ";Uid=" + user + ";Pwd=" + pass + ";";
+            string connectionString = "Server=" + server + ";Port=" + port + ";Database=" + database + ";Uid=" + user + ";Pwd=" + pass + ";SslMode=none;";
             try {
                 MySqlConnection connection = new MySqlConnection(connectionString);
                 connection.Open();
@@ -53,7 +53,7 @@ namespace PMDCP.DatabaseConnector.MySql
         /// <param name="user">The user name</param>
         /// <param name="pass">The user password</param>
         public MySql(string server, int port, string database, string user, string pass) {
-            this.connectionString = "Server=" + server + ";Port=" + port + ";Database=" + database + ";Uid=" + user + ";Pwd=" + pass + ";";
+            this.connectionString = "Server=" + server + ";Port=" + port + ";Database=" + database + ";Uid=" + user + ";Pwd=" + pass + ";SslMode=none;";
             this.database = database;
 
             try {
