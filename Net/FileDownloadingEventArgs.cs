@@ -21,39 +21,23 @@ namespace PMDCP.Net
 {
     public class FileDownloadingEventArgs : EventArgs
     {
-        long fileSize;
-        string fileName;
-        int percent;
-        long position;
-        string filePath;
-
         public FileDownloadingEventArgs(long fileSize, string filePath, int percent, long position) {
-            this.fileSize = fileSize;
-            this.filePath = filePath;
-            this.fileName = System.IO.Path.GetFileName(filePath).Replace(".tmp", "");
-            this.percent = percent;
-            this.position = position;
+            this.FileSize = fileSize;
+            this.FilePath = filePath;
+            this.FileName = System.IO.Path.GetFileName(filePath).Replace(".tmp", "");
+            this.Percent = percent;
+            this.Position = position;
         }
 
-        public long FileSize {
-            get { return fileSize; }
-        }
+        public long FileSize { get; }
 
-        public string FileName {
-            get { return fileName; }
-        }
+        public string FileName { get; }
 
-        public string FilePath {
-            get { return filePath; }
-        }
+        public string FilePath { get; }
 
-        public int Percent {
-            get { return percent; }
-        }
+        public int Percent { get; }
 
-        public long Position {
-            get { return position; }
-        }
+        public long Position { get; }
 
     }
 }

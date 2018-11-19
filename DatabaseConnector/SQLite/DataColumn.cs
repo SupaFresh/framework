@@ -21,68 +21,40 @@ namespace PMDCP.DatabaseConnector.SQLite
 
     public class DataColumn : IDataColumn
     {
-        #region Fields
-
-        int index;
-        string name;
-        object value;
-        bool primaryKey;
-
-        #endregion Fields
-
         #region Constructors
 
         public DataColumn(int index, bool primaryKey, string name, object value) {
-            this.index = index;
-            this.name = name;
-            this.value = value;
+            this.Index = index;
+            this.Name = name;
+            this.Value = value;
 
-            this.primaryKey = primaryKey;
+            this.PrimaryKey = primaryKey;
         }
 
         public DataColumn(bool primaryKey, string name, object value) {
-            this.index = -1;
-            this.name = name;
-            this.value = value;
+            this.Index = -1;
+            this.Name = name;
+            this.Value = value;
 
-            this.primaryKey = primaryKey;
+            this.PrimaryKey = primaryKey;
         }
 
         #endregion Constructors
 
         #region Properties
 
-        public bool PrimaryKey {
-            get { return primaryKey; }
-            set { primaryKey = value; }
-        }
+        public bool PrimaryKey { get; set; }
 
-        public int Index {
-            get { return index; }
-        }
+        public int Index { get; }
 
-        public string Name {
-            get {
-                return name;
-            }
-            set {
-                this.name = value;
-            }
-        }
+        public string Name { get; set; }
 
-        public object Value {
-            get {
-                return value;
-            }
-            set {
-                this.value = value;
-            }
-        }
+        public object Value { get; set; }
 
         public string ValueString {
             get {
-                if (value != null) {
-                    return value.ToString();
+                if (Value != null) {
+                    return Value.ToString();
                 } else {
                     return null;
                 }

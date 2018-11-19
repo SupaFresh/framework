@@ -62,7 +62,10 @@ namespace PMDCP.Net
                         }
                     }
                 }
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
             }
             return success;
         }

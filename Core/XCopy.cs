@@ -22,60 +22,40 @@ namespace PMDCP.Core
 
     public class XCopy
     {
-        #region Fields
-
-        string destinationFile;
-        bool pdbSearch;
-        string sourceFile;
-        string xcopyPath;
-
-        #endregion Fields
-
         #region Constructors
 
         public XCopy(string xcopyPath) {
-            this.xcopyPath = xcopyPath;
+            this.XCopyPath = xcopyPath;
         }
 
         #endregion Constructors
 
         #region Properties
 
-        public string DestinationFile {
-            get { return destinationFile; }
-            set { destinationFile = value; }
-        }
+        public string DestinationFile { get; set; }
 
-        public bool PdbSearch {
-            get { return pdbSearch; }
-            set { pdbSearch = value; }
-        }
+        public bool PdbSearch { get; set; }
 
-        public string SourceFile {
-            get { return sourceFile; }
-            set { sourceFile = value; }
-        }
+        public string SourceFile { get; set; }
 
-        public string XCopyPath {
-            get { return xcopyPath; }
-        }
+        public string XCopyPath { get; }
 
         #endregion Properties
 
         #region Methods
 
         public void Copy() {
-            ProcessStartInfo processStartInfo = new ProcessStartInfo(xcopyPath);
+            ProcessStartInfo processStartInfo = new ProcessStartInfo(XCopyPath);
             processStartInfo.CreateNoWindow = true;
             processStartInfo.WindowStyle = ProcessWindowStyle.Hidden;
             StringBuilder arguments = new StringBuilder();
-            if (!string.IsNullOrEmpty(destinationFile)) {
-                arguments.Append(" /dstfile \"" + destinationFile + "\"");
+            if (!string.IsNullOrEmpty(DestinationFile)) {
+                arguments.Append(" /dstfile \"" + DestinationFile + "\"");
             }
-            if (!string.IsNullOrEmpty(sourceFile)) {
-                arguments.Append(" /srcfile \"" + sourceFile + "\"");
+            if (!string.IsNullOrEmpty(SourceFile)) {
+                arguments.Append(" /srcfile \"" + SourceFile + "\"");
             }
-            arguments.Append(" /pdbsearch " + pdbSearch);
+            arguments.Append(" /pdbsearch " + PdbSearch);
             processStartInfo.Arguments = arguments.ToString();
             try {
                 Process xcopyProcess = Process.Start(processStartInfo);

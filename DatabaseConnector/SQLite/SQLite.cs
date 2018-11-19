@@ -26,18 +26,17 @@ namespace PMDCP.DatabaseConnector.SQLite
         #region Fields
 
         SQLiteConnection connection;
-        string connectionString;
 
         #endregion Fields
 
         #region Constructors
 
         public SQLite(string connectionString) {
-            this.connectionString = connectionString;
+            this.ConnectionString = connectionString;
         }
 
         public SQLite(string filePath, bool readOnly) {
-            this.connectionString = "Data Source=" + filePath + ";Version=3;Read Only=" + readOnly + ";";
+            this.ConnectionString = "Data Source=" + filePath + ";Version=3;Read Only=" + readOnly + ";";
         }
 
         #endregion Constructors
@@ -54,14 +53,7 @@ namespace PMDCP.DatabaseConnector.SQLite
             }
         }
 
-        public string ConnectionString {
-            get {
-                return connectionString;
-            }
-            set {
-                connectionString = value;
-            }
-        }
+        public string ConnectionString { get; set; }
 
         #endregion Properties
 
@@ -193,7 +185,7 @@ namespace PMDCP.DatabaseConnector.SQLite
 
         public void OpenConnection() {
             if (ConnectionState == System.Data.ConnectionState.Closed) {
-                connection = new SQLiteConnection(connectionString);
+                connection = new SQLiteConnection(ConnectionString);
                 connection.Open();
             } else {
 

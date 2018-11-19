@@ -42,9 +42,6 @@ namespace PMDCP.Net
             Post
         }
 
-        private string m_url = string.Empty;
-        private NameValueCollection m_values = new NameValueCollection();
-        private PostTypeEnum m_type = PostTypeEnum.Get;
         /// <summary>
         /// Default constructor.
         /// </summary>
@@ -57,7 +54,7 @@ namespace PMDCP.Net
         /// <param name="url">The url where the post will be submitted to.</param>
         public PostSubmitter(string url)
             : this() {
-            m_url = url;
+            Url = url;
         }
 
         /// <summary>
@@ -67,52 +64,31 @@ namespace PMDCP.Net
         /// <param name="values">The values for the post.</param>
         public PostSubmitter(string url, NameValueCollection values)
             : this(url) {
-            m_values = values;
+            PostItems = values;
         }
 
         /// <summary>
         /// Gets or sets the url to submit the post to.
         /// </summary>
-        public string Url {
-            get {
-                return m_url;
-            }
-            set {
-                m_url = value;
-            }
-        }
+        public string Url { get; set; } = string.Empty;
         /// <summary>
         /// Gets or sets the name value collection of items to post.
         /// </summary>
-        public NameValueCollection PostItems {
-            get {
-                return m_values;
-            }
-            set {
-                m_values = value;
-            }
-        }
+        public NameValueCollection PostItems { get; set; } = new NameValueCollection();
         /// <summary>
         /// Gets or sets the type of action to perform against the url.
         /// </summary>
-        public PostTypeEnum Type {
-            get {
-                return m_type;
-            }
-            set {
-                m_type = value;
-            }
-        }
+        public PostTypeEnum Type { get; set; } = PostTypeEnum.Get;
         /// <summary>
         /// Posts the supplied data to specified url.
         /// </summary>
         /// <returns>a string containing the result of the post.</returns>
         public string Post() {
             StringBuilder parameters = new StringBuilder();
-            for (int i = 0; i < m_values.Count; i++) {
-                EncodeAndAddItem(ref parameters, m_values.GetKey(i), m_values[i]);
+            for (int i = 0; i < PostItems.Count; i++) {
+                EncodeAndAddItem(ref parameters, PostItems.GetKey(i), PostItems[i]);
             }
-            string result = PostData(m_url, parameters.ToString());
+            string result = PostData(Url, parameters.ToString());
             return result;
         }
         /// <summary>
@@ -121,7 +97,7 @@ namespace PMDCP.Net
         /// <param name="url">The url to post to.</param>
         /// <returns>a string containing the result of the post.</returns>
         public string Post(string url) {
-            m_url = url;
+            Url = url;
             return this.Post();
         }
         /// <summary>
@@ -131,7 +107,7 @@ namespace PMDCP.Net
         /// <param name="values">The values to post.</param>
         /// <returns>a string containing the result of the post.</returns>
         public string Post(string url, NameValueCollection values) {
-            m_values = values;
+            PostItems = values;
             return this.Post(url);
         }
         /// <summary>
@@ -142,7 +118,7 @@ namespace PMDCP.Net
         /// <returns>Returns the result of the post.</returns>
         private string PostData(string url, string postData) {
             HttpWebRequest request = null;
-            if (m_type == PostTypeEnum.Post) {
+            if (Type == PostTypeEnum.Post) {
                 Uri uri = new Uri(url);
                 request = (HttpWebRequest)WebRequest.Create(uri);
                 request.Method = "POST";

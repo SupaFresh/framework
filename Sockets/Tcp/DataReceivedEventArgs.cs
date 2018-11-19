@@ -21,37 +21,23 @@ namespace PMDCP.Sockets.Tcp
 {
     public class DataReceivedEventArgs : EventArgs
     {
-        #region Fields
-
-        string data;
-        byte[] byteData;
-        byte[] customHeader;
-
-        #endregion Fields
-
         #region Constructors
 
         public DataReceivedEventArgs(byte[] byteData, byte[] customHeader, string data) {
-            this.data = data;
-            this.byteData = byteData;
-            this.customHeader = customHeader;
+            this.Data = data;
+            this.ByteData = byteData;
+            this.CustomHeader = customHeader;
         }
 
         #endregion Constructors
 
         #region Properties
 
-        public string Data {
-            get { return data; }
-        }
+        public string Data { get; }
 
-        public byte[] ByteData {
-            get { return byteData; }
-        }
+        public byte[] ByteData { get; }
 
-        public byte[] CustomHeader {
-            get { return customHeader; }
-        }
+        public byte[] CustomHeader { get; }
 
         #endregion Properties
     }

@@ -31,11 +31,7 @@ namespace PMDCP.Net
 
         BackgroundWorker downloadBWorker;
 
-        bool downloadFailed;
-
-        public bool HasDownloadFailed {
-            get { return downloadFailed; }
-        }
+        public bool HasDownloadFailed { get; private set; }
 
         public void DownloadFile(string downloadPath, string filePath) {
             downloadBWorker = new BackgroundWorker();
@@ -91,7 +87,7 @@ namespace PMDCP.Net
                         theRequest = (HttpWebRequest)WebRequest.Create(downloadPath);
                         theResponse = (HttpWebResponse)theRequest.GetResponse();
                     } catch (Exception ex) {
-                        downloadFailed = true;
+                        HasDownloadFailed = true;
                         downloadBWorker.ReportProgress(0, new object[] { "error", ex });
                         return;
                     }
@@ -139,7 +135,7 @@ namespace PMDCP.Net
                 theRequest = (HttpWebRequest)WebRequest.Create(downloadUri);
                 theResponse = (HttpWebResponse)theRequest.GetResponse();
             } catch (Exception) {
-                downloadFailed = true;
+                HasDownloadFailed = true;
                 return;
             }
             long length = theResponse.ContentLength;

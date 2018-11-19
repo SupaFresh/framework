@@ -21,36 +21,29 @@ namespace PMDCP.DatabaseConnector.SQLite
 
     public class Field : IDataField
     {
-        #region Fields
-
-        string name;
-        string type;
-
-        #endregion Fields
-
         #region Constructors
 
         public Field(string name, string type)
         {
-            this.name = name;
-            this.type = type;
+            this.Name = name;
+            this.Type = type;
         }
 
         public Field(string name, FieldType type)
         {
-            this.name = name;
+            this.Name = name;
             switch (type) {
                 case FieldType.Text:
-                    this.type = "TEXT";
+                    this.Type = "TEXT";
                     break;
                 case FieldType.Numeric:
-                    this.type = "NUMERIC";
+                    this.Type = "NUMERIC";
                     break;
                 case FieldType.Blob:
-                    this.type = "BLOB";
+                    this.Type = "BLOB";
                     break;
                 case FieldType.IntegerPrimaryKey:
-                    this.type = "INTEGER PRIMARY KEY";
+                    this.Type = "INTEGER PRIMARY KEY";
                     break;
             }
         }
@@ -59,25 +52,9 @@ namespace PMDCP.DatabaseConnector.SQLite
 
         #region Properties
 
-        public string Name
-        {
-            get {
-                return this.name;
-            }
-            set {
-                this.name = value;
-            }
-        }
+        public string Name { get; set; }
 
-        public string Type
-        {
-            get {
-                return this.type;
-            }
-            set {
-                this.type = value;
-            }
-        }
+        public string Type { get; set; }
 
         #endregion Properties
     }

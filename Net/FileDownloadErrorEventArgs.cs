@@ -24,28 +24,18 @@ namespace PMDCP.Net
     /// </summary>
     public class FileDownloadErrorEventArgs : EventArgs
     {
-        #region Fields
-
-        Exception exception;
-
-        #endregion Fields
-
         #region Constructors
 
         public FileDownloadErrorEventArgs(Exception exception)
         {
-            this.exception = exception;
+            this.Exception = exception;
         }
 
         #endregion Constructors
 
         #region Properties
 
-        public Exception Exception
-        {
-            get { return exception; }
-            set { exception = value; }
-        }
+        public Exception Exception { get; set; }
 
         #endregion Properties
     }

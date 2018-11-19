@@ -21,18 +21,14 @@ namespace PMDCP.Core
 {
     public class TickCount
     {
-        int tick;
-
-        public int Tick {
-            get { return tick; }
-        }
+        public int Tick { get; }
 
         public TickCount(int tick) {
-            this.tick = tick;
+            this.Tick = tick;
         }
 
         public bool Elapsed(int storedTick, int interval) {
-            return (this.tick > storedTick + interval);
+            return (this.Tick > storedTick + interval);
         }
 
         public bool Elapsed(TickCount storedTick, int interval) {

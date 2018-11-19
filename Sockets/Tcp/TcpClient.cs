@@ -189,7 +189,9 @@ namespace PMDCP.Sockets.Tcp
                     }
 
                 }
-            } catch (Exception ex) {
+            }
+            catch (Exception)
+            {
                 //if (socket.Connected == false) {
                 if (ConnectionBroken != null)
                     ConnectionBroken(this, EventArgs.Empty);
@@ -407,7 +409,10 @@ namespace PMDCP.Sockets.Tcp
                 socket.NoDelay = true;
 
                 StartReceivingLoop();
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
             }
         }
 

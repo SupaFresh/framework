@@ -58,13 +58,7 @@ namespace PMDCP.Compression.Zlib
         /// indicates the total number of bytes read on the CRC stream.
         /// This is used when writing the ZipDirEntry when compressing files.
         /// </summary>
-        public Int64 TotalBytesRead
-        {
-            get
-            {
-                return _TotalBytesRead;
-            }
-        }
+        public Int64 TotalBytesRead { get; private set; }
 
         /// <summary>
         /// Indicates the current CRC for all blocks slurped in.
@@ -107,16 +101,16 @@ namespace PMDCP.Compression.Zlib
                 byte[] buffer = new byte[BUFFER_SIZE];
                 int readSize = BUFFER_SIZE;
 
-                _TotalBytesRead = 0;
+                TotalBytesRead = 0;
                 int count = input.Read(buffer, 0, readSize);
                 if (output != null) output.Write(buffer, 0, count);
-                _TotalBytesRead += count;
+                TotalBytesRead += count;
                 while (count > 0)
                 {
                     SlurpBlock(buffer, 0, count);
                     count = input.Read(buffer, 0, readSize);
                     if (output != null) output.Write(buffer, 0, count);
-                    _TotalBytesRead += count;
+                    TotalBytesRead += count;
                 }
 
                 return (Int32)(~_RunningCrc32Result);
@@ -158,7 +152,7 @@ namespace PMDCP.Compression.Zlib
                 int x = offset + i;
                 _RunningCrc32Result = ((_RunningCrc32Result) >> 8) ^ crc32Table[(block[x]) ^ ((_RunningCrc32Result) & 0x000000FF)];
             }
-            _TotalBytesRead += count;
+            TotalBytesRead += count;
         }
 
 
@@ -290,10 +284,6 @@ namespace PMDCP.Compression.Zlib
             return;
         }
 
-
-
-        // private member vars
-        private Int64 _TotalBytesRead;
         private static readonly UInt32[] crc32Table;
         private const int BUFFER_SIZE = 8192;
         private UInt32 _RunningCrc32Result = 0xFFFFFFFF;
@@ -329,7 +319,6 @@ namespace PMDCP.Compression.Zlib
         internal System.IO.Stream _innerStream;
         private CRC32 _Crc32;
         private Int64 _lengthLimit = -99;
-        private bool _leaveOpen;
 
         /// <summary>
         /// Gets the total number of bytes run through the CRC32 calculator.
@@ -415,7 +404,7 @@ namespace PMDCP.Compression.Zlib
             _innerStream = stream;
             _Crc32 = new CRC32();
             _lengthLimit = length;
-            _leaveOpen = leaveOpen;
+            LeaveOpen = leaveOpen;
         }
 
         /// <summary>
@@ -430,11 +419,7 @@ namespace PMDCP.Compression.Zlib
         /// Indicates whether the underlying stream will be left open when the
         /// CrcCalculatorStream is Closed.
         /// </summary>
-        public bool LeaveOpen
-        {
-            get { return _leaveOpen; }
-            set { _leaveOpen = value; }
-        }
+        public bool LeaveOpen { get; set; }
 
         /// <summary>
         /// Read from the stream
@@ -564,7 +549,7 @@ namespace PMDCP.Compression.Zlib
         public override void Close()
         {
             base.Close();
-            if (!_leaveOpen)
+            if (!LeaveOpen)
                 _innerStream.Close();
         }
 

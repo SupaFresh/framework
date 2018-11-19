@@ -356,9 +356,9 @@ namespace SevenZip.Compression.LZMA
 			int pb = remainder / 5;
 			if (pb > Base.kNumPosStatesBitsMax)
 				throw new InvalidParamException();
-			UInt32 dictionarySize = 0;
+            uint dictionarySize = 0;
 			for (int i = 0; i < 4; i++)
-				dictionarySize += ((UInt32)(properties[1 + i])) << (i * 8);
+				dictionarySize += ((uint)(properties[1 + i])) << (i * 8);
 			SetDictionarySize(dictionarySize);
 			SetLiteralProperties(lp, lc);
 			SetPosBitsProperties(pb);

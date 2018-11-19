@@ -39,7 +39,9 @@ namespace PMDCP.DatabaseConnector.MySql
                 connection.Open();
                 connection.Close();
                 return true;
-            } catch (Exception ex) {
+            }
+            catch (Exception)
+            {
                 return false;
             }
         }

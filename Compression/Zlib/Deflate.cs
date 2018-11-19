@@ -482,7 +482,7 @@ namespace PMDCP.Compression.Zlib
             int n; // iterates over all tree elements
             int prevlen = -1; // last emitted length
             int curlen; // length of current code
-            int nextlen = (int)tree[0 * 2 + 1]; // length of next code
+            int nextlen = tree[0 * 2 + 1]; // length of next code
             int count = 0; // repeat count of the current code
             int max_count = 7; // max repeat count
             int min_count = 4; // min repeat count
@@ -491,11 +491,11 @@ namespace PMDCP.Compression.Zlib
             {
                 max_count = 138; min_count = 3;
             }
-            tree[(max_code + 1) * 2 + 1] = (short)0x7fff; // guard //??
+            tree[(max_code + 1) * 2 + 1] = 0x7fff; // guard //??
 
             for (n = 0; n <= max_code; n++)
             {
-                curlen = nextlen; nextlen = (int)tree[(n + 1) * 2 + 1];
+                curlen = nextlen; nextlen = tree[(n + 1) * 2 + 1];
                 if (++count < max_count && curlen == nextlen)
                 {
                     continue;

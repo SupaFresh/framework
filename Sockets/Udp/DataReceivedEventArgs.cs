@@ -22,31 +22,21 @@ namespace PMDCP.Sockets.Udp
 
     public class DataReceivedEventArgs : EventArgs
     {
-        #region Fields
 
-        string data;
-        EndPoint remoteEndPoint;
-
-        public EndPoint RemoteEndPoint {
-            get { return remoteEndPoint; }
-        }
-
-        #endregion Fields
+        public EndPoint RemoteEndPoint { get; }
 
         #region Constructors
 
         public DataReceivedEventArgs(string data, EndPoint remoteEndPoint) {
-            this.data = data;
-            this.remoteEndPoint = remoteEndPoint;
+            this.Data = data;
+            this.RemoteEndPoint = remoteEndPoint;
         }
 
         #endregion Constructors
 
         #region Properties
 
-        public string Data {
-            get { return data; }
-        }
+        public string Data { get; }
 
         #endregion Properties
     }

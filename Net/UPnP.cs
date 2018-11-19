@@ -27,11 +27,7 @@ namespace PMDCP.Net
 {
     public class UPnP
     {
-        static TimeSpan _timeout = new TimeSpan(0, 0, 0, 3);
-        public static TimeSpan TimeOut {
-            get { return _timeout; }
-            set { _timeout = value; }
-        }
+        public static TimeSpan TimeOut { get; set; } = new TimeSpan(0, 0, 0, 3);
         static string _descUrl, _serviceUrl, _eventUrl;
         public static bool Discover() {
             Socket s = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
@@ -66,7 +62,7 @@ namespace PMDCP.Net
                         }
                     }
                 } while (length > 0);
-            } while (start.Subtract(DateTime.Now) < _timeout);
+            } while (start.Subtract(DateTime.Now) < TimeOut);
             return false;
         }
 

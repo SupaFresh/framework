@@ -22,43 +22,27 @@ namespace PMDCP.Sockets.Gnp
 {
     public class DataReceivedEventArgs : EventArgs
     {
-        #region Fields
-
-        string data;
-        byte[] byteData;
-        byte[] customHeader;
-        EndPoint dataSource;
-
-        #endregion Fields
 
         #region Constructors
 
         public DataReceivedEventArgs(byte[] byteData, byte[] customHeader, string data, EndPoint dataSource) {
-            this.data = data;
-            this.byteData = byteData;
-            this.customHeader = customHeader;
-            this.dataSource = dataSource;
+            this.Data = data;
+            this.ByteData = byteData;
+            this.CustomHeader = customHeader;
+            this.DataSource = dataSource;
         }
 
         #endregion Constructors
 
         #region Properties
 
-        public string Data {
-            get { return data; }
-        }
+        public string Data { get; }
 
-        public byte[] ByteData {
-            get { return byteData; }
-        }
+        public byte[] ByteData { get; }
 
-        public byte[] CustomHeader {
-            get { return customHeader; }
-        }
+        public byte[] CustomHeader { get; }
 
-        public EndPoint DataSource {
-            get { return dataSource; }
-        }
+        public EndPoint DataSource { get; }
 
         #endregion Properties
     }

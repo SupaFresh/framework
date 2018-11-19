@@ -8,7 +8,7 @@ namespace SevenZip.Compression.RangeCoder
 
 		System.IO.Stream Stream;
 
-		public UInt64 Low;
+		public ulong Low;
 		public uint Range;
 		uint _cacheSize;
 		byte _cache;
@@ -64,7 +64,7 @@ namespace SevenZip.Compression.RangeCoder
 
 		public void ShiftLow()
 		{
-			if ((uint)Low < (uint)0xFF000000 || (uint)(Low >> 32) == 1)
+			if ((uint)Low < 0xFF000000 || (uint)(Low >> 32) == 1)
 			{
 				byte temp = _cache;
 				do

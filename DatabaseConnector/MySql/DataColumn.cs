@@ -21,57 +21,45 @@ namespace PMDCP.DatabaseConnector.MySql
 
     public class DataColumn : IDataColumn
     {
-        #region Fields
 
-        int index;
-        string name;
+        #region Fields
         object value;
-        bool primaryKey;
 
         #endregion Fields
 
         #region Constructors
 
         public DataColumn(int index, bool primaryKey, string name, object value) {
-            this.index = index;
-            this.name = name;
+            this.Index = index;
+            this.Name = name;
 
             if (value is DBNull) {
                 value = null;
             }
             this.value = value;
 
-            this.primaryKey = primaryKey;
+            this.PrimaryKey = primaryKey;
         }
 
         public DataColumn(bool primaryKey, string name, object value) {
-            this.index = -1;
-            this.name = name;
+            this.Index = -1;
+            this.Name = name;
 
             if (value is DBNull) {
                 value = null;
             }
             this.value = value;
 
-            this.primaryKey = primaryKey;
+            this.PrimaryKey = primaryKey;
         }
 
         #endregion Constructors
 
         #region Properties
 
-        public int Index {
-            get { return index; }
-        }
+        public int Index { get; }
 
-        public string Name {
-            get {
-                return name;
-            }
-            set {
-                this.name = value;
-            }
-        }
+        public string Name { get; set; }
 
         public string ValueString {
             get {
@@ -95,12 +83,7 @@ namespace PMDCP.DatabaseConnector.MySql
             }
         }
 
-        public bool PrimaryKey {
-            get { return primaryKey; }
-            set {
-                primaryKey = value;
-            }
-        }
+        public bool PrimaryKey { get; set; }
 
         #endregion Properties
     }
