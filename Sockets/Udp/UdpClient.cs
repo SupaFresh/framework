@@ -24,19 +24,14 @@ namespace PMDCP.Sockets.Udp
 {
     public class UdpClient
     {
-        //Socket sendSocket;
-        //Socket receiveSocket;
-        Socket socket;
         EndPoint bindEndPoint;
 
-        public Socket Socket {
-            get { return socket; }
-        }
+        public Socket Socket { get; }
 
         public event EventHandler<DataReceivedEventArgs> DataReceived;
 
         public UdpClient() {
-            socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+            Socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
         }
 
         public void Send(byte[] data, string address, int port) {
@@ -48,11 +43,11 @@ namespace PMDCP.Sockets.Udp
         }
 
         public void Send(byte[] data, EndPoint endPoint) {
-            socket.BeginSendTo(data, 0, data.Length, SocketFlags.None, endPoint, new AsyncCallback(SendCallback), this);
+            Socket.BeginSendTo(data, 0, data.Length, SocketFlags.None, endPoint, new AsyncCallback(SendCallback), this);
         }
 
         private void SendCallback(IAsyncResult result) {
-            socket.EndSendTo(result);
+            Socket.EndSendTo(result);
         }
 
         public void Listen(int port) {
@@ -62,8 +57,8 @@ namespace PMDCP.Sockets.Udp
         public void Listen(EndPoint bindEndPoint) {
             this.bindEndPoint = bindEndPoint;
             byte[] recBuffer = new byte[256];
-            socket.Bind(bindEndPoint);
-            socket.BeginReceiveFrom(recBuffer, 0, recBuffer.Length,
+            Socket.Bind(bindEndPoint);
+            Socket.BeginReceiveFrom(recBuffer, 0, recBuffer.Length,
                 SocketFlags.None, ref bindEndPoint,
                 new AsyncCallback(MessageReceivedCallback), recBuffer);
 
@@ -72,7 +67,7 @@ namespace PMDCP.Sockets.Udp
         public void StartListenLoop(EndPoint bindEndPoint) {
             this.bindEndPoint = bindEndPoint;
             byte[] recBuffer = new byte[256];
-            socket.BeginReceiveFrom(recBuffer, 0, recBuffer.Length,
+            Socket.BeginReceiveFrom(recBuffer, 0, recBuffer.Length,
                 SocketFlags.None, ref bindEndPoint,
                 new AsyncCallback(MessageReceivedCallback), recBuffer);
         }
@@ -81,16 +76,15 @@ namespace PMDCP.Sockets.Udp
             EndPoint remoteEndPoint = new IPEndPoint(0, 0);
             byte[] recBuffer = result.AsyncState as byte[];
             try {
-                int bytesRead = socket.EndReceiveFrom(result,
+                int bytesRead = Socket.EndReceiveFrom(result,
                     ref remoteEndPoint);
-                if (DataReceived != null)
-                    DataReceived(this, new DataReceivedEventArgs(new ByteArray(recBuffer, bytesRead).ToString(), remoteEndPoint));
+                DataReceived?.Invoke(this, new DataReceivedEventArgs(new ByteArray(recBuffer, bytesRead).ToString(), remoteEndPoint));
             } catch (SocketException e) {
                 Console.WriteLine("Error: {0} {1}", e.ErrorCode, e.Message);
             }
 
             byte[] newBuffer = new byte[256];
-            socket.BeginReceiveFrom(newBuffer, 0, newBuffer.Length,
+            Socket.BeginReceiveFrom(newBuffer, 0, newBuffer.Length,
                 SocketFlags.None, ref bindEndPoint,
                 new AsyncCallback(MessageReceivedCallback), newBuffer);
         }

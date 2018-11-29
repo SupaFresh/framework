@@ -14,27 +14,18 @@
 // along with Mystery Dungeon eXtended.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace PMDCP.Sockets.Gnp
 {
     public class ConnectionReceivedEventArgs : EventArgs
     {
-        GnpClient gnpClient;
-        Object id;
-
-        public ConnectionReceivedEventArgs(Object id, GnpClient gnpClient) {
-            this.gnpClient = gnpClient;
-            this.id = id;
+        public ConnectionReceivedEventArgs(object id, GnpClient gnpClient) {
+            GnpClient = gnpClient;
+            ID = id;
         }
 
-        public GnpClient GnpClient {
-            get { return gnpClient; }
-        }
+        public GnpClient GnpClient { get; }
 
-        public Object ID {
-            get { return id; }
-        }
+        public object ID { get; }
     }
 }

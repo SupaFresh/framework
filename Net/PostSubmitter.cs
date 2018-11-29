@@ -98,7 +98,7 @@ namespace PMDCP.Net
         /// <returns>a string containing the result of the post.</returns>
         public string Post(string url) {
             Url = url;
-            return this.Post();
+            return Post();
         }
         /// <summary>
         /// Posts the supplied data to specified url.
@@ -108,7 +108,7 @@ namespace PMDCP.Net
         /// <returns>a string containing the result of the post.</returns>
         public string Post(string url, NameValueCollection values) {
             PostItems = values;
-            return this.Post(url);
+            return Post(url);
         }
         /// <summary>
         /// Posts data to a specified url. Note that this assumes that you have already url encoded the post data.

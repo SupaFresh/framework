@@ -16,8 +16,6 @@
 namespace PMDCP.Net
 {
     using System;
-    using System.Collections.Generic;
-    using System.Text;
 
     /// <summary>
     /// Provides data for the <see cref="PMDCP.Net.FileDownloader.DownloadFailed" /> event
@@ -28,7 +26,7 @@ namespace PMDCP.Net
 
         public FileDownloadErrorEventArgs(Exception exception)
         {
-            this.Exception = exception;
+            Exception = exception;
         }
 
         #endregion Constructors

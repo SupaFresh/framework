@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace PMDCP.DatabaseConnector
+﻿namespace PMDCP.DatabaseConnector
 {
     public class GenericDataColumn : IGenericDataColumn
     {
@@ -13,8 +9,8 @@ namespace PMDCP.DatabaseConnector
         public bool PrimaryKey { get; set; }
 
         public GenericDataColumn(string name, bool primaryKey) {
-            this.Name = name;
-            this.PrimaryKey = primaryKey;
+            Name = name;
+            PrimaryKey = primaryKey;
         }
     }
 }

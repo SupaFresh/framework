@@ -14,19 +14,17 @@
 // along with Mystery Dungeon eXtended.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace PMDCP.Net
 {
     public class FileDownloadingEventArgs : EventArgs
     {
         public FileDownloadingEventArgs(long fileSize, string filePath, int percent, long position) {
-            this.FileSize = fileSize;
-            this.FilePath = filePath;
-            this.FileName = System.IO.Path.GetFileName(filePath).Replace(".tmp", "");
-            this.Percent = percent;
-            this.Position = position;
+            FileSize = fileSize;
+            FilePath = filePath;
+            FileName = System.IO.Path.GetFileName(filePath).Replace(".tmp", "");
+            Percent = percent;
+            Position = position;
         }
 
         public long FileSize { get; }

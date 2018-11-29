@@ -37,7 +37,7 @@ namespace PMDCP.Core
         /// </summary>
         /// <param name="bBoolean">Boolean to convert</param>
         /// <returns></returns>
-        public static byte[] BooleanToByteArray(Boolean bBoolean) {
+        public static byte[] BooleanToByteArray(bool bBoolean) {
             return new byte[] { (byte)(bBoolean ? 0x01 : 0x00) };
         }
         /// <summary>
@@ -232,7 +232,7 @@ namespace PMDCP.Core
         /// <param name="array1">Array 1</param>
         /// <param name="array2">Array 2</param>
         /// <returns></returns>
-        public static Boolean CompareByteArray(byte[] array1, byte[] array2) {
+        public static bool CompareByteArray(byte[] array1, byte[] array2) {
             return array1.Equals(array2);
         }
         /// <summary>

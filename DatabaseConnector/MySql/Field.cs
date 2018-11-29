@@ -25,25 +25,25 @@ namespace PMDCP.DatabaseConnector.MySql
 
         public Field(string name, string type)
         {
-            this.Name = name;
-            this.Type = type;
+            Name = name;
+            Type = type;
         }
 
         public Field(string name, FieldType type)
         {
-            this.Name = name;
+            Name = name;
             switch (type) {
                 case FieldType.Text:
-                    this.Type = "TEXT";
+                    Type = "TEXT";
                     break;
                 case FieldType.Numeric:
-                    this.Type = "NUMERIC";
+                    Type = "NUMERIC";
                     break;
                 case FieldType.Blob:
-                    this.Type = "BLOB";
+                    Type = "BLOB";
                     break;
                 case FieldType.IntegerPrimaryKey:
-                    this.Type = "INTEGER PRIMARY KEY";
+                    Type = "INTEGER PRIMARY KEY";
                     break;
             }
         }

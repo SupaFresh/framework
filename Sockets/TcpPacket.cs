@@ -26,25 +26,22 @@ namespace PMDCP.Sockets
         #region Fields
 
         public const char SEP_CHAR = (char)0;
-
-        string header;
         bool inParamSegment;
         StringBuilder packet;
         long size = -1;
-        byte[] customHeader;
 
         #endregion Fields
 
         #region Constructors
 
         public TcpPacket(string header) {
-            this.header = header;
-            packet = new StringBuilder(this.header);
+            Header = header;
+            packet = new StringBuilder(Header);
             packet.Append(SEP_CHAR);
         }
 
         public TcpPacket() {
-            this.header = null;
+            Header = null;
             packet = new StringBuilder();
         }
 
@@ -56,9 +53,7 @@ namespace PMDCP.Sockets
             get { return Sockets.ConnectionType.Tcp; }
         }
 
-        public string Header {
-            get { return header; }
-        }
+        public string Header { get; private set; }
 
         public string PacketString {
             get { return packet.ToString(); }
@@ -77,10 +72,7 @@ namespace PMDCP.Sockets
             }
         }
 
-        public Byte[] CustomHeader {
-            get { return customHeader; }
-            set { customHeader = value; }
-        }
+        public Byte[] CustomHeader { get; set; }
 
         #endregion Properties
 
@@ -112,16 +104,16 @@ namespace PMDCP.Sockets
         }
 
         public void AppendParameter(int parameter) {
-            if (string.IsNullOrEmpty(this.header)) {
-                header = parameter.ToString();
+            if (string.IsNullOrEmpty(Header)) {
+                Header = parameter.ToString();
             }
             packet.Append(parameter.ToString());
             packet.Append(SEP_CHAR);
         }
 
         public void AppendParameter(string parameter) {
-            if (string.IsNullOrEmpty(this.header)) {
-                header = parameter;
+            if (string.IsNullOrEmpty(Header)) {
+                Header = parameter;
             }
             packet.Append(parameter);
             packet.Append(SEP_CHAR);

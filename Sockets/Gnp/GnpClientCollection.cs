@@ -13,54 +13,47 @@
 // You should have received a copy of the GNU General Public License
 // along with Mystery Dungeon eXtended.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Text;
 using PMDCP.Core;
 
 namespace PMDCP.Sockets.Gnp
 {
     public class GnpClientCollection<TClientID>
     {
-         ListPair<TClientID, GnpClient> clients;
-
-         public GnpClientCollection() {
-             clients = new ListPair<TClientID, GnpClient>();
+        public GnpClientCollection() {
+             Clients = new ListPair<TClientID, GnpClient>();
         }
 
          public GnpClient GetGnpClient(TClientID clientID) {
-            int index = clients.IndexOfKey(clientID);
+            int index = Clients.IndexOfKey(clientID);
             if (index > -1) {
-                return clients.ValueByIndex(index);
+                return Clients.ValueByIndex(index);
             } else {
                 return null;
             }
         }
 
          public int IndexOf(TClientID clientID) {
-             return clients.IndexOfKey(clientID);
+             return Clients.IndexOfKey(clientID);
          }
 
-         public ListPair<TClientID, GnpClient> Clients {
-            get { return clients; }
-        }
+        public ListPair<TClientID, GnpClient> Clients { get; }
 
         public int Count {
-            get { return clients.Count; }
+            get { return Clients.Count; }
         }
 
         public GnpClient this[TClientID clientID] {
-            get { return clients.GetValue(clientID); }
+            get { return Clients.GetValue(clientID); }
         }
 
         public GnpClient this[int index] {
-            get { return clients.ValueByIndex(index); }
+            get { return Clients.ValueByIndex(index); }
         }
 
         public void AddGnpClient(TClientID clientID, GnpClient gnpClient) {
-            if (clients.ContainsKey(clientID) == false) {
+            if (Clients.ContainsKey(clientID) == false) {
                 // If the collection does not contain a client with the same ID, add it
-                clients.Add(clientID, gnpClient);
+                Clients.Add(clientID, gnpClient);
             }
         }
     }

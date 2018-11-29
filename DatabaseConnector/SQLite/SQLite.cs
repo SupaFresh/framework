@@ -32,11 +32,11 @@ namespace PMDCP.DatabaseConnector.SQLite
         #region Constructors
 
         public SQLite(string connectionString) {
-            this.ConnectionString = connectionString;
+            ConnectionString = connectionString;
         }
 
         public SQLite(string filePath, bool readOnly) {
-            this.ConnectionString = "Data Source=" + filePath + ";Version=3;Read Only=" + readOnly + ";";
+            ConnectionString = "Data Source=" + filePath + ";Version=3;Read Only=" + readOnly + ";";
         }
 
         #endregion Constructors

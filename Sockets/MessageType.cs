@@ -13,14 +13,13 @@
 // You should have received a copy of the GNU General Public License
 // along with Mystery Dungeon eXtended.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
 
 namespace PMDCP.Sockets
 {
-	/// <summary>
-	/// Description of MessageType.
-	/// </summary>
-	public enum MessageType
+    /// <summary>
+    /// Description of MessageType.
+    /// </summary>
+    public enum MessageType
 	{
 		Generic,
 		FileTransfer

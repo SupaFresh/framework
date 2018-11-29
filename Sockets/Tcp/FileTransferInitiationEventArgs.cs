@@ -22,28 +22,15 @@ namespace PMDCP.Sockets.Tcp
 	/// </summary>
 	public class FileTransferInitiationEventArgs : EventArgs
 	{
-		string fileName;
-		
-		public string FileName {
-			get { return fileName; }
-			set { fileName = value; }
-		}
-		bool accept = false;
-		
-		public bool Accept {
-			get { return accept; }
-			set { accept = value; }
-		}
-		string destinationDirectory;
-		
-		public string DestinationDirectory {
-			get { return destinationDirectory; }
-			set { destinationDirectory = value; }
-		}
-		
-		internal FileTransferInitiationEventArgs(string fileName)
+        public string FileName { get; set; }
+
+        public bool Accept { get; set; } = false;
+
+        public string DestinationDirectory { get; set; }
+
+        internal FileTransferInitiationEventArgs(string fileName)
 		{
-			this.fileName = fileName;
+			FileName = fileName;
 		}
 	}
 }

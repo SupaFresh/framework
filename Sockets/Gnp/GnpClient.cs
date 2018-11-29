@@ -28,17 +28,14 @@ namespace PMDCP.Sockets.Gnp
         private const int MaxUDPSize = 0x10000;
 
         EndPoint destinationEndPoint;
-        Socket socket;
         bool listening = false;
 
-        public Socket Socket {
-            get { return socket; }
-        }
+        public Socket Socket { get; private set; }
 
         public event EventHandler<DataReceivedEventArgs> DataReceived;
 
         public GnpClient(Socket socket) {
-            this.socket = socket;
+            Socket = socket;
 
             StartReceivingLoop();
         }
@@ -54,11 +51,11 @@ namespace PMDCP.Sockets.Gnp
         }
 
         private void Initialize() {
-            socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+            Socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
         }
 
         public void Listen(EndPoint endPoint) {
-            socket.Bind(endPoint);
+            Socket.Bind(endPoint);
 
             listening = true;
             StartReceivingLoop();
@@ -79,18 +76,18 @@ namespace PMDCP.Sockets.Gnp
             EndPoint tempRemoteEP;
 
             tempRemoteEP = new IPEndPoint(IPAddress.Any, 0);
-            socket.BeginReceiveFrom(buffer, 0, buffer.Length, SocketFlags.None, ref tempRemoteEP, new AsyncCallback(DataReceivedCallback), buffer);
+            Socket.BeginReceiveFrom(buffer, 0, buffer.Length, SocketFlags.None, ref tempRemoteEP, new AsyncCallback(DataReceivedCallback), buffer);
         }
 
         private void Connect(EndPoint destinationEndPoint) {
-            socket.Connect(destinationEndPoint);
+            Socket.Connect(destinationEndPoint);
 
             StartReceivingLoop();
         }
 
         private void DataReceivedCallback(IAsyncResult result) {
             EndPoint remoteEndPoint = new IPEndPoint(IPAddress.Any, 0); ;
-            int bytesReceived = socket.EndReceiveFrom(result, ref remoteEndPoint);
+            int bytesReceived = Socket.EndReceiveFrom(result, ref remoteEndPoint);
 
             byte[] buffer = (byte[])result.AsyncState;
 
@@ -104,24 +101,22 @@ namespace PMDCP.Sockets.Gnp
 
             IPEndPoint ipEndPoint = (IPEndPoint)remoteEndPoint;
             remoteEndPoint = new IPEndPoint(ipEndPoint.Address, 0);
-            socket.BeginReceiveFrom(buffer, 0, buffer.Length, SocketFlags.None, ref remoteEndPoint, new AsyncCallback(DataReceivedCallback), buffer);
+            Socket.BeginReceiveFrom(buffer, 0, buffer.Length, SocketFlags.None, ref remoteEndPoint, new AsyncCallback(DataReceivedCallback), buffer);
         }
 
         public void Send(byte[] data, EndPoint remoteEndPoint) {
-            socket.SendTo(data, remoteEndPoint);
+            Socket.SendTo(data, remoteEndPoint);
             //socket.SendTo(data, 0, data.Length, SocketFlags.None, remoteEndPoint, new AsyncCallback(SendCallback), buffer);
         }
 
         public void Send(byte[] data) {
-            Send(data, this.destinationEndPoint);
+            Send(data, destinationEndPoint);
         }
 
         private void ProcessIncomingData(byte[] data, EndPoint remoteEndPoint) {
             string val = ByteEncoder.ByteArrayToString(data);
 
-            if (DataReceived != null) {
-                DataReceived(this, new DataReceivedEventArgs(data, null, val, remoteEndPoint));
-            }
+            DataReceived?.Invoke(this, new DataReceivedEventArgs(data, null, val, remoteEndPoint));
         }
 
         public void InjectData(byte[] data, EndPoint remoteEndPoint) {

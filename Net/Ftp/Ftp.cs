@@ -35,7 +35,7 @@ namespace PMDCP.Net.Ftp
         public Ftp(string remoteHost, string remoteUser, string remotePassword, bool debug) {
             this.remoteHost = remoteHost;
             this.remoteUser = remoteUser;
-            this.remotePass = remotePassword;
+            remotePass = remotePassword;
         }
 
         /// <summary>

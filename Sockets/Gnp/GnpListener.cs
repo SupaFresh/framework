@@ -37,7 +37,7 @@ namespace PMDCP.Sockets.Gnp
         }
 
         private void Initialize() {
-            this.clientCollection = new GnpClientCollection<TClientID>();
+            clientCollection = new GnpClientCollection<TClientID>();
         }
 
         public void Listen(int port) {
@@ -72,9 +72,7 @@ namespace PMDCP.Sockets.Gnp
 
                 clientCollection.AddGnpClient(id, dataClient);
 
-                if (ConnectionReceived != null) {
-                    ConnectionReceived(this, new ConnectionReceivedEventArgs(id, dataClient));
-                }
+                ConnectionReceived?.Invoke(this, new ConnectionReceivedEventArgs(id, dataClient));
             }
 
             dataClient.InjectData(e.ByteData, e.DataSource);

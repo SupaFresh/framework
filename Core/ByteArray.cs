@@ -67,7 +67,7 @@ namespace PMDCP.Core
 		/// Adds a Boolean to the end of the byte array
 		/// </summary>
 		/// <param name="newBool">Boolean to add</param>
-		public void AppendTo(Boolean newBool) {
+		public void AppendTo(bool newBool) {
 			byte[] newArray;
 			newArray = BooleanToByteArray(newBool);
 			byteArray = AppendToByteArray(byteArray, newArray);
@@ -154,30 +154,30 @@ namespace PMDCP.Core
 		/// </summary>
 		/// <returns></returns>
 		public char ToChar() {
-			return ByteArrayToChar(this.ToArray());
+			return ByteArrayToChar(ToArray());
 		}
 		/// <summary>
 		/// Converts the ByteArray into a 32 bit signed integer. This only works if the array's size is 4.
 		/// </summary>
 		/// <returns>The ByteArray in integer form</returns>
 		public int ToInt() {
-			return ByteArrayToInt(this.ToArray(), 0);
+			return ByteArrayToInt(ToArray(), 0);
 		}
 		/// <summary>
 		/// Converts the ByteArray into a 64 bit signed integer. This only works if the array's size is 8
 		/// </summary>
 		/// <returns>The ByteArray in long form</returns>
 		public long ToLong() {
-			return ByteArrayToLong(this.ToArray(), 0);
+			return ByteArrayToLong(ToArray(), 0);
 		}
 		public short ToShort() {
-			return ByteArrayToShort(this.ToArray(), 0);
+			return ByteArrayToShort(ToArray(), 0);
 		}
 		public override String ToString() {
-			return ByteArrayToString(this.ToArray());
+			return ByteArrayToString(ToArray());
 		}
 		public byte ToByte() {
-			return this.ToArray()[0];
+			return ToArray()[0];
 		}
 
 		/// <summary>

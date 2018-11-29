@@ -24,19 +24,19 @@ namespace PMDCP.DatabaseConnector.SQLite
         #region Constructors
 
         public DataColumn(int index, bool primaryKey, string name, object value) {
-            this.Index = index;
-            this.Name = name;
-            this.Value = value;
+            Index = index;
+            Name = name;
+            Value = value;
 
-            this.PrimaryKey = primaryKey;
+            PrimaryKey = primaryKey;
         }
 
         public DataColumn(bool primaryKey, string name, object value) {
-            this.Index = -1;
-            this.Name = name;
-            this.Value = value;
+            Index = -1;
+            Name = name;
+            Value = value;
 
-            this.PrimaryKey = primaryKey;
+            PrimaryKey = primaryKey;
         }
 
         #endregion Constructors

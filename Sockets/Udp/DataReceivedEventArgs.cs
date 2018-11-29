@@ -16,8 +16,6 @@
 namespace PMDCP.Sockets.Udp
 {
     using System;
-    using System.Collections.Generic;
-    using System.Text;
     using System.Net;
 
     public class DataReceivedEventArgs : EventArgs
@@ -28,8 +26,8 @@ namespace PMDCP.Sockets.Udp
         #region Constructors
 
         public DataReceivedEventArgs(string data, EndPoint remoteEndPoint) {
-            this.Data = data;
-            this.RemoteEndPoint = remoteEndPoint;
+            Data = data;
+            RemoteEndPoint = remoteEndPoint;
         }
 
         #endregion Constructors

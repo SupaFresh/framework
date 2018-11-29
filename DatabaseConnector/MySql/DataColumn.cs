@@ -30,27 +30,27 @@ namespace PMDCP.DatabaseConnector.MySql
         #region Constructors
 
         public DataColumn(int index, bool primaryKey, string name, object value) {
-            this.Index = index;
-            this.Name = name;
+            Index = index;
+            Name = name;
 
             if (value is DBNull) {
                 value = null;
             }
             this.value = value;
 
-            this.PrimaryKey = primaryKey;
+            PrimaryKey = primaryKey;
         }
 
         public DataColumn(bool primaryKey, string name, object value) {
-            this.Index = -1;
-            this.Name = name;
+            Index = -1;
+            Name = name;
 
             if (value is DBNull) {
                 value = null;
             }
             this.value = value;
 
-            this.PrimaryKey = primaryKey;
+            PrimaryKey = primaryKey;
         }
 
         #endregion Constructors

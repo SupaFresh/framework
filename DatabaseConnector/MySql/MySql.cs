@@ -27,9 +27,6 @@ namespace PMDCP.DatabaseConnector.MySql
         public MySqlConnection connection;
 
         MySqlTransaction activeTransaction;
-
-        string connectionString;
-        bool isConnected;
         string database;
 
         public static bool TestConnection(string server, int port, string database, string user, string pass) {
@@ -55,18 +52,18 @@ namespace PMDCP.DatabaseConnector.MySql
         /// <param name="user">The user name</param>
         /// <param name="pass">The user password</param>
         public MySql(string server, int port, string database, string user, string pass) {
-            this.connectionString = "Server=" + server + ";Port=" + port + ";Database=" + database + ";Uid=" + user + ";Pwd=" + pass + ";SslMode=none;";
+            ConnectionString = "Server=" + server + ";Port=" + port + ";Database=" + database + ";Uid=" + user + ";Pwd=" + pass + ";SslMode=none;";
             this.database = database;
 
             try {
-                connection = new MySqlConnection(this.connectionString);
+                connection = new MySqlConnection(this.ConnectionString);
             } catch (Exception excp) {
                 Exception myExcp = new Exception("Error connecting you to " +
                     "the my sql server. Internal error message: " + excp.Message, excp);
                 throw myExcp;
             }
 
-            this.isConnected = false;
+            IsConnected = false;
         }
 
         /// <summary>
@@ -76,10 +73,10 @@ namespace PMDCP.DatabaseConnector.MySql
         /// <param name="connStr">A connection string to provide to connect
         /// to the database</param>
         public MySql(string connStr) {
-            this.connectionString = connStr;
+            ConnectionString = connStr;
 
             try {
-                connection = new MySqlConnection(this.connectionString);
+                connection = new MySqlConnection(ConnectionString);
             } catch (Exception excp) {
                 Exception myExcp = new Exception("Error connecting you to " +
                     "the my sql server. Error: " + excp.Message, excp);
@@ -87,7 +84,7 @@ namespace PMDCP.DatabaseConnector.MySql
                 throw myExcp;
             }
 
-            this.isConnected = false;
+            IsConnected = false;
         }
 
         /// <summary>
@@ -96,11 +93,11 @@ namespace PMDCP.DatabaseConnector.MySql
         public void OpenConnection() {
             bool success = true;
 
-            if (this.isConnected == false) {
+            if (IsConnected == false) {
                 try {
-                    this.connection.Open();
+                    connection.Open();
                 } catch (Exception excp) {
-                    this.isConnected = false;
+                    IsConnected = false;
                     success = false;
                     Exception myException = new Exception("Error opening connection" +
                         " to the sql server. Error: " + excp.Message, excp);
@@ -109,7 +106,7 @@ namespace PMDCP.DatabaseConnector.MySql
                 }
 
                 if (success) {
-                    this.isConnected = true;
+                    IsConnected = true;
                 }
             }
         }
@@ -118,8 +115,8 @@ namespace PMDCP.DatabaseConnector.MySql
         /// Closes the connection to the sql connection.
         /// </summary>
         public void CloseConnection() {
-            if (this.isConnected) {
-                this.connection.Close();
+            if (IsConnected) {
+                connection.Close();
             }
         }
 
@@ -127,11 +124,7 @@ namespace PMDCP.DatabaseConnector.MySql
         /// Gets the current state (boolean) of the connection.
         /// True for open, false for closed.
         /// </summary>
-        public bool IsConnected {
-            get {
-                return this.isConnected;
-            }
-        }
+        public bool IsConnected { get; private set; }
 
         public string VerifyValueString(string value) {
             if (value == null) {
@@ -154,7 +147,7 @@ namespace PMDCP.DatabaseConnector.MySql
             string Query = "INSERT INTO users(usr_name, usr_pass) values" +
                 "('" + username + "','" + password + "')";
 
-            MySqlCommand addUser = new MySqlCommand(Query, this.connection);
+            MySqlCommand addUser = new MySqlCommand(Query, connection);
             AddCommandToTransaction(addUser);
             try {
                 addUser.CommandTimeout = 0;
@@ -182,7 +175,7 @@ namespace PMDCP.DatabaseConnector.MySql
             string Query = "SELECT COUNT(*) FROM users where (usr_Name=" +
                 "'" + username + "' and usr_Pass='" + password + "') LIMIT 1";
 
-            MySqlCommand verifyUser = new MySqlCommand(Query, this.connection);
+            MySqlCommand verifyUser = new MySqlCommand(Query, connection);
 
             try {
                 verifyUser.CommandTimeout = 0;
@@ -220,7 +213,7 @@ namespace PMDCP.DatabaseConnector.MySql
             string Query = "SELECT COUNT(*) FROM users where (usr_Name=" +
                 "'" + username + "') LIMIT 1";
 
-            MySqlCommand verifyUser = new MySqlCommand(Query, this.connection);
+            MySqlCommand verifyUser = new MySqlCommand(Query, connection);
 
             try {
                 verifyUser.CommandTimeout = 0;
@@ -702,14 +695,7 @@ namespace PMDCP.DatabaseConnector.MySql
             return new DataColumn(primaryKey, name, value);
         }
 
-        public string ConnectionString {
-            get {
-                return this.connectionString;
-            }
-            set {
-                this.connectionString = value;
-            }
-        }
+        public string ConnectionString { get; set; }
 
 
         public void BeginTransaction() {

@@ -21,45 +21,41 @@ namespace PMDCP.DatabaseConnector
 {
     public class SettingsDatabase
     {
-        IDatabase database;
-
-        public IDatabase Database {
-            get { return database; }
-        }
+        public IDatabase Database { get; }
 
         public SettingsDatabase(IDatabase database) {
-            this.database = database;
+            this.Database = database;
         }
 
         public void SaveSetting(string table, string key, string value) {
             bool localConnection = false;
-            if (database.ConnectionState == System.Data.ConnectionState.Closed) {
+            if (Database.ConnectionState == System.Data.ConnectionState.Closed) {
                 localConnection = true;
-                database.OpenConnection();
+                Database.OpenConnection();
             }
             try {
-                if (!database.TableExists(table)) {
-                    database.CreateTable(table, new IDataField[] { database.CreateField("Key", "TEXT"), database.CreateField("Value", "TEXT") });
+                if (!Database.TableExists(table)) {
+                    Database.CreateTable(table, new IDataField[] { Database.CreateField("Key", "TEXT"), Database.CreateField("Value", "TEXT") });
                 }
-                database.UpdateOrInsert(table, new IDataColumn[] { database.CreateColumn(true, "Key", key), database.CreateColumn(false, "Value", value) }, "Key='" + key + "'");
+                Database.UpdateOrInsert(table, new IDataColumn[] { Database.CreateColumn(true, "Key", key), Database.CreateColumn(false, "Value", value) }, "Key='" + key + "'");
             } finally {
                 if (localConnection) {
-                    database.CloseConnection();
+                    Database.CloseConnection();
                 }
             }
         }
 
         public string RetrieveSetting(string table, string key) {
             bool localConnection = false;
-            if (database.ConnectionState == System.Data.ConnectionState.Closed) {
+            if (Database.ConnectionState == System.Data.ConnectionState.Closed) {
                 localConnection = true;
-                database.OpenConnection();
+                Database.OpenConnection();
             }
             try {
-                if (!database.TableExists(table)) {
+                if (!Database.TableExists(table)) {
                     return null;
                 }
-                IDataColumn[] retrievedRow = database.RetrieveRow(table, "Value", "Key='" + key + "'");
+                IDataColumn[] retrievedRow = Database.RetrieveRow(table, "Value", "Key='" + key + "'");
                 if (retrievedRow != null) {
                     return (string)retrievedRow[0].Value;
                 } else {
@@ -67,7 +63,7 @@ namespace PMDCP.DatabaseConnector
                 }
             } finally {
                 if (localConnection) {
-                    database.CloseConnection();
+                    Database.CloseConnection();
                 }
             }
         }

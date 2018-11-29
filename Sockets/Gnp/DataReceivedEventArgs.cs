@@ -14,8 +14,6 @@
 // along with Mystery Dungeon eXtended.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Net;
 
 namespace PMDCP.Sockets.Gnp
@@ -26,10 +24,10 @@ namespace PMDCP.Sockets.Gnp
         #region Constructors
 
         public DataReceivedEventArgs(byte[] byteData, byte[] customHeader, string data, EndPoint dataSource) {
-            this.Data = data;
-            this.ByteData = byteData;
-            this.CustomHeader = customHeader;
-            this.DataSource = dataSource;
+            Data = data;
+            ByteData = byteData;
+            CustomHeader = customHeader;
+            DataSource = dataSource;
         }
 
         #endregion Constructors

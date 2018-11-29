@@ -24,16 +24,15 @@ namespace PMDCP.Sockets.Tcp
     public class TcpClientCollection<TClientID>
     {
         Object lockObject = new object();
-        Dictionary<TClientID, TcpClient> clients;
 
         public TcpClientCollection() {
-            clients = new Dictionary<TClientID, TcpClient>();
+            Clients = new Dictionary<TClientID, TcpClient>();
         }
 
         public TcpClient GetTcpClient(TClientID clientID) {
             lock (lockObject) {
                 TcpClient tcpClient = null;
-                if (clients.TryGetValue(clientID, out tcpClient)) {
+                if (Clients.TryGetValue(clientID, out tcpClient)) {
                     return tcpClient;
                 } else {
                     return null;
@@ -43,18 +42,16 @@ namespace PMDCP.Sockets.Tcp
 
         public IEnumerable<TcpClient> EnumerateAllClients() {
             lock (lockObject) {
-                foreach (TcpClient client in clients.Values) {
+                foreach (TcpClient client in Clients.Values) {
                     yield return client;
                 }
             }
         }
 
-        public Dictionary<TClientID, TcpClient> Clients {
-            get { return clients; }
-        }
+        public Dictionary<TClientID, TcpClient> Clients { get; }
 
         public int Count {
-            get { return clients.Count; }
+            get { return Clients.Count; }
         }
 
         public TcpClient this[TClientID clientID] {
@@ -63,9 +60,9 @@ namespace PMDCP.Sockets.Tcp
         
         public void AddTcpClient(TClientID clientID, TcpClient tcpClient) {
             lock (lockObject) {
-                if (clients.ContainsKey(clientID) == false) {
+                if (Clients.ContainsKey(clientID) == false) {
                     // If the collection does not contain a client with the same ID, add it
-                    clients.Add(clientID, tcpClient);
+                    Clients.Add(clientID, tcpClient);
                     tcpClient.ConnectionBroken += new EventHandler(tcpClient_ConnectionBroken);
                 }
             }
@@ -74,8 +71,8 @@ namespace PMDCP.Sockets.Tcp
         void tcpClient_ConnectionBroken(object sender, EventArgs e) {
             lock (lockObject) {
                 TClientID clientID = (TClientID)((TcpClient)sender).ID;
-                if (clientID != null && clients.ContainsKey(clientID)) {
-                    clients.Remove(clientID);
+                if (clientID != null && Clients.ContainsKey(clientID)) {
+                    Clients.Remove(clientID);
                 }
             }
         }

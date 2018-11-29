@@ -14,27 +14,18 @@
 // along with Mystery Dungeon eXtended.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace PMDCP.Sockets.Tcp
 {
     public class ConnectionReceivedEventArgs : EventArgs
     {
-        TcpClient tcpClient;
-        Object id;
-
-        public ConnectionReceivedEventArgs(Object id, TcpClient tcpClient) {
-            this.tcpClient = tcpClient;
-            this.id = id;
+        public ConnectionReceivedEventArgs(object id, TcpClient tcpClient) {
+            TcpClient = tcpClient;
+            ID = id;
         }
 
-        public TcpClient TcpClient {
-            get { return tcpClient; }
-        }
+        public TcpClient TcpClient { get; }
 
-        public Object ID {
-            get { return id; }
-        }
+        public object ID { get; }
     }
 }

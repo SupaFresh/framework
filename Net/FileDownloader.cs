@@ -57,19 +57,16 @@ namespace PMDCP.Net
             switch ((string)data[0]) {
                 case "downloading": {
                         FileDownloadingEventArgs downloadInfo = data[1] as FileDownloadingEventArgs;
-                        if (DownloadUpdate != null)
-                            DownloadUpdate(this, downloadInfo);
+                        DownloadUpdate?.Invoke(this, downloadInfo);
                     }
                     break;
                 case "done": {
                         FileDownloadingEventArgs downloadInfo = data[1] as FileDownloadingEventArgs;
-                        if (DownloadComplete != null)
-                            DownloadComplete(this, downloadInfo);
+                        DownloadComplete?.Invoke(this, downloadInfo);
                     }
                     break;
                 case "error": {
-                        if (DownloadFailed != null)
-                            DownloadFailed(this, new FileDownloadErrorEventArgs(data[1] as Exception));
+                        DownloadFailed?.Invoke(this, new FileDownloadErrorEventArgs(data[1] as Exception));
                     }
                     break;
             }

@@ -28,9 +28,6 @@ namespace PMDCP.Sockets.Tcp
         #region Fields
 
         const int BUFFER_SIZE = 1248;
-        //const int HEADER_SIZE = 4;
-        Socket socket;
-        TcpSocketState socketState;
         ByteArray byteBuffer;
         byte[] packetCustomHeader;
         bool inPacket;
@@ -41,8 +38,6 @@ namespace PMDCP.Sockets.Tcp
         int receivedPacketSize;
         bool inFileTransfer;
         bool buildingPacketData;
-        int customHeaderSize;
-        Object clientID;
 
         public event EventHandler<DataReceivedEventArgs> DataReceived;
         public event EventHandler<FileTransferInitiationEventArgs> FileTransferInitiation;
@@ -53,7 +48,7 @@ namespace PMDCP.Sockets.Tcp
         #region Constructors
 
         public TcpClient(Socket socket) {
-            this.socket = socket;
+            Socket = socket;
 
             Initialize();
 
@@ -61,7 +56,7 @@ namespace PMDCP.Sockets.Tcp
         }
 
         public TcpClient() {
-            socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            Socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
             Initialize();
         }
@@ -69,47 +64,35 @@ namespace PMDCP.Sockets.Tcp
         private void Initialize() {
             byteBuffer = new ByteArray();
 
-            socket.NoDelay = true;
+            Socket.NoDelay = true;
         }
 
         #endregion Constructors
 
         #region Properties
 
-        public Socket Socket {
-            get { return socket; }
-        }
+        public Socket Socket { get; private set; }
 
-        public TcpSocketState SocketState {
-            get { return socketState; }
-        }
+        public TcpSocketState SocketState { get; private set; }
 
-        public int CustomHeaderSize {
-            get { return customHeaderSize; }
-            set { customHeaderSize = value; }
-        }
+        public int CustomHeaderSize { get; set; }
 
-        public Object ID {
-            get { return clientID; }
-            internal set {
-                clientID = value;
-            }
-        }
+        public Object ID { get; internal set; }
 
         #endregion Properties
 
         #region Methods
 
         public void Close() {
-            socket.Close();
+            Socket.Close();
         }
 
         public void Connect(string ipAddressOrHostname, int port) {
-            if (socketState == TcpSocketState.Idle) {
+            if (SocketState == TcpSocketState.Idle) {
                 // Get host related information.
                 IPHostEntry hostEntry = Dns.GetHostEntry(ipAddressOrHostname);
 
-                socketState = TcpSocketState.Connecting;
+                SocketState = TcpSocketState.Connecting;
 
                 // Loop through the AddressList to obtain the supported AddressFamily. This is to avoid
                 // an exception that occurs when the host host IP Address is not compatible with the address family
@@ -139,7 +122,7 @@ namespace PMDCP.Sockets.Tcp
                 tempSocket.EndConnect(result);
             } catch { }
             if (tempSocket.Connected) {
-                socket = tempSocket;
+                Socket = tempSocket;
                 StartReceivingLoop();
                 TempSocketConnectComplete();
             } else {
@@ -151,14 +134,14 @@ namespace PMDCP.Sockets.Tcp
         }
 
         private void TempSocketConnectComplete() {
-            socketState = TcpSocketState.Idle;
+            SocketState = TcpSocketState.Idle;
         }
 
         public void Connect(IPAddress ipAddress, int port) {
-            if (socketState != TcpSocketState.Connecting) {
-                socketState = TcpSocketState.Connecting;
-                socket.Connect(ipAddress, port);
-                socketState = TcpSocketState.Idle;
+            if (SocketState != TcpSocketState.Connecting) {
+                SocketState = TcpSocketState.Connecting;
+                Socket.Connect(ipAddress, port);
+                SocketState = TcpSocketState.Idle;
                 //socket.BeginConnect(ipAddress, port, new AsyncCallback(ConnectCallback), null);
 
                 StartReceivingLoop();
@@ -167,25 +150,24 @@ namespace PMDCP.Sockets.Tcp
 
         private void ConnectCallback(IAsyncResult result) {
             // We are connected!
-            socket.EndConnect(result);
-            socketState = TcpSocketState.Idle;
+            Socket.EndConnect(result);
+            SocketState = TcpSocketState.Idle;
         }
 
         private void DataReceivedCallback(IAsyncResult result) {
             try {
-                if (socket != null && socket.Connected) {
-                    int packetSize = socket.EndReceive(result);
+                if (Socket != null && Socket.Connected) {
+                    int packetSize = Socket.EndReceive(result);
                     if (packetSize > 0) {
                         byte[] buffer = result.AsyncState as byte[];
                         ProcessReceivedPacket(new ByteArray(buffer, packetSize), packetSize);
 
                         //byte[] newBuffer = new byte[BUFFER_SIZE];
                         buffer = new byte[BUFFER_SIZE];
-                        socket.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(DataReceivedCallback), buffer);
+                        Socket.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(DataReceivedCallback), buffer);
                     } else {
                         // Packet size is 0, so the connection was broken.
-                        if (ConnectionBroken != null)
-                            ConnectionBroken(this, EventArgs.Empty);
+                        ConnectionBroken?.Invoke(this, EventArgs.Empty);
                     }
 
                 }
@@ -193,8 +175,7 @@ namespace PMDCP.Sockets.Tcp
             catch (Exception)
             {
                 //if (socket.Connected == false) {
-                if (ConnectionBroken != null)
-                    ConnectionBroken(this, EventArgs.Empty);
+                ConnectionBroken?.Invoke(this, EventArgs.Empty);
                 //}
             }
         }
@@ -256,8 +237,8 @@ namespace PMDCP.Sockets.Tcp
                     }
                     totalPacketSize = packetBuffer.SubArray(1, 5).ToInt() + GetHeaderSize();
                     packetType = (MessageType)packetBuffer[5];
-                    byte[] packetCustomHeader = new byte[customHeaderSize];
-                    for (int i = 0; i < customHeaderSize; i++) {
+                    byte[] packetCustomHeader = new byte[CustomHeaderSize];
+                    for (int i = 0; i < CustomHeaderSize; i++) {
                         packetCustomHeader[i] = packetBuffer[6 + i];
                     }
 
@@ -266,15 +247,13 @@ namespace PMDCP.Sockets.Tcp
                         ByteArray fullPacket = packetBuffer.SubArray(GetHeaderSize(), totalPacketSize);
 
                         if (packetType == MessageType.Generic) {
-                            if (DataReceived != null)
-                                DataReceived(this, new DataReceivedEventArgs(fullPacket.ToArray(), packetCustomHeader, fullPacket.ToString()));
+                            DataReceived?.Invoke(this, new DataReceivedEventArgs(fullPacket.ToArray(), packetCustomHeader, fullPacket.ToString()));
                         } else if (packetType == MessageType.FileTransfer) {
                             int fileNameSize = fullPacket.SubArray(0, 4).ToInt();
                             string fileName = fullPacket.SubArray(4, 4 + fileNameSize).ToString();
 
                             FileTransferInitiationEventArgs e = new FileTransferInitiationEventArgs(fileName);
-                            if (FileTransferInitiation != null)
-                                FileTransferInitiation(this, e);
+                            FileTransferInitiation?.Invoke(this, e);
 
                             if (e.Accept) {
                                 byte[] fileBytes = fullPacket.SubArray(4 + fileNameSize, fullPacket.Length()).ToArray();
@@ -294,15 +273,13 @@ namespace PMDCP.Sockets.Tcp
                         ByteArray leftoverData = packetBuffer.SubArray(fullPacket.Length() + GetHeaderSize(), packetBuffer.Length());
 
                         if (packetType == MessageType.Generic) {
-                            if (DataReceived != null)
-                                DataReceived(this, new DataReceivedEventArgs(fullPacket.ToArray(), packetCustomHeader, fullPacket.ToString()));
+                            DataReceived?.Invoke(this, new DataReceivedEventArgs(fullPacket.ToArray(), packetCustomHeader, fullPacket.ToString()));
                         } else if (packetType == MessageType.FileTransfer) {
                             int fileNameSize = fullPacket.SubArray(0, 4).ToInt();
                             string fileName = fullPacket.SubArray(4, 4 + fileNameSize).ToString();
 
                             FileTransferInitiationEventArgs e = new FileTransferInitiationEventArgs(fileName);
-                            if (FileTransferInitiation != null)
-                                FileTransferInitiation(this, e);
+                            FileTransferInitiation?.Invoke(this, e);
 
                             if (e.Accept) {
                                 byte[] fileBytes = fullPacket.SubArray(4 + fileNameSize, fullPacket.Length()).ToArray();
@@ -330,8 +307,7 @@ namespace PMDCP.Sockets.Tcp
                             activeTransferFileName = packetBuffer.SubArray(10, 10 + fileNameSize).ToString();
 
                             FileTransferInitiationEventArgs e = new FileTransferInitiationEventArgs(activeTransferFileName);
-                            if (FileTransferInitiation != null)
-                                FileTransferInitiation(this, e);
+                            FileTransferInitiation?.Invoke(this, e);
 
                             if (e.Accept) {
                                 byte[] fileBytes = packetBuffer.SubArray(10 + fileNameSize, packetBuffer.Length()).ToArray();
@@ -358,55 +334,51 @@ namespace PMDCP.Sockets.Tcp
 
         public void Send(byte[] data, byte[] customHeader) {
             try {
-                if (socket.Connected) {
+                if (Socket.Connected) {
                     byte[] buffer = CreatePacketHeader(data.Length, MessageType.Generic, customHeader);
 
                     buffer = ByteEncoder.AppendToByteArray(buffer, data);
-                    socket.BeginSend(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(SendCallback), buffer);
+                    Socket.BeginSend(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(SendCallback), buffer);
                 }
             } catch {
-                if (ConnectionBroken != null) {
-                    ConnectionBroken(this, EventArgs.Empty);
-                }
+                ConnectionBroken?.Invoke(this, EventArgs.Empty);
             }
         }
 
         public void Send(byte[] data) {
             try {
-                if (socket.Connected) {
+                if (Socket.Connected) {
                     byte[] buffer = CreatePacketHeader(data.Length, MessageType.Generic);
                     buffer = ByteEncoder.AppendToByteArray(buffer, data);
 
-                    socket.BeginSend(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(SendCallback), buffer);
+                    Socket.BeginSend(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(SendCallback), buffer);
                 }
             } catch {
-                if (ConnectionBroken != null)
-                    ConnectionBroken(this, EventArgs.Empty);
+                ConnectionBroken?.Invoke(this, EventArgs.Empty);
             }
         }
 
         private void SendCallback(IAsyncResult result) {
             try {
-                socket.EndSend(result);
+                Socket.EndSend(result);
             } catch {
-                if (ConnectionBroken != null)
-                    ConnectionBroken(this, EventArgs.Empty);
+                ConnectionBroken?.Invoke(this, EventArgs.Empty);
             }
         }
 
         public void Listen(int port) {
             IPEndPoint iep = new IPEndPoint(IPAddress.Any, port);
-            socket.Bind(iep);
-            socket.Listen(10);
-            socket.BeginAccept(new AsyncCallback(ListenCallback), this);
+            Socket.Bind(iep);
+            Socket.Listen(10);
+            Socket.BeginAccept(new AsyncCallback(ListenCallback), this);
         }
 
         private void ListenCallback(IAsyncResult result) {
             try {
-                Socket client = socket.EndAccept(result);
-                socket.Close();
-                socket = client;
-                socket.NoDelay = true;
+                Socket client = Socket.EndAccept(result);
+                Socket.Close();
+                Socket = client;
+                Socket.NoDelay = true;
 
                 StartReceivingLoop();
             }
@@ -418,14 +390,14 @@ namespace PMDCP.Sockets.Tcp
 
         private void StartReceivingLoop() {
             byte[] buffer = new byte[BUFFER_SIZE];
-            socket.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(DataReceivedCallback), buffer);
+            Socket.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(DataReceivedCallback), buffer);
         }
 
         public void SendFile(string filePath) {
             try {
-                if (socket.Connected) {
+                if (Socket.Connected) {
                     FileInfo fileInfo = new FileInfo(filePath);
-                    NetworkStream ns = new NetworkStream(socket);
+                    NetworkStream ns = new NetworkStream(Socket);
                     byte[] nameBytes = ByteEncoder.StringToByteArray(Path.GetFileName(filePath));
                     ByteArray header = new ByteArray(CreatePacketHeader(4 + nameBytes.Length + (int)fileInfo.Length, MessageType.FileTransfer));
 
@@ -470,7 +442,7 @@ namespace PMDCP.Sockets.Tcp
                 + 4 // [int32] Size of packet
                 + 1 // [byte] Packet type
 
-                + customHeaderSize // custom header
+                + CustomHeaderSize // custom header
                 ;
         }
 
