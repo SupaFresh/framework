@@ -14,7 +14,6 @@
 // along with Mystery Dungeon eXtended.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System.Collections.Generic;
 using System.Text;
 
 namespace PMDCP.Core
@@ -76,7 +75,7 @@ namespace PMDCP.Core
         /// </summary>
         /// <param name="sString">String to convert</param>
         /// <returns></returns>
-        public static byte[] StringToByteArray(String sString) {
+        public static byte[] StringToByteArray(string sString) {
             return (sString == null) ? null : StringEncoding().GetBytes(sString);
         }
 
@@ -162,7 +161,7 @@ namespace PMDCP.Core
         /// </summary>
         /// <param name="byteArray">Byte array to convert</param>
         /// <returns></returns>
-        public static String ByteArrayToString(byte[] byteArray) {
+        public static string ByteArrayToString(byte[] byteArray) {
             return StringEncoding().GetString(byteArray);
         }
 
@@ -240,7 +239,7 @@ namespace PMDCP.Core
         /// </summary>
         /// <param name="sVal">String to convert</param>
         /// <returns></returns>
-        public static char[] StringToCharArray(String sVal) {
+        public static char[] StringToCharArray(string sVal) {
             return sVal.ToCharArray();
         }
         /// <summary>
@@ -248,15 +247,15 @@ namespace PMDCP.Core
         /// </summary>
         /// <param name="charArray">Array of Chars to convert</param>
         /// <returns></returns>
-        public static String CharArrayToString(char[] charArray) {
-            return new String(charArray);
+        public static string CharArrayToString(char[] charArray) {
+            return new string(charArray);
         }
         /// <summary>
         /// Converts an Integer to a 4 byte String
         /// </summary>
         /// <param name="val">Integer to convert</param>
         /// <returns></returns>
-        public static String AppendIntegerToString(int val) {
+        public static string AppendIntegerToString(int val) {
             byte[] comCode = IntToByteArray(val);
             char[] chrCode = ByteArrayToCharArray(comCode);
             return CharArrayToString(chrCode);

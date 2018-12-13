@@ -9,7 +9,7 @@
   <ItemGroup>
     <PackageReference Include="Dapper" Version="1.50.5" />
     <PackageReference Include="Mysql.Data" Version="8.0.13" />
-    <PackageReference Include="Npgsql" Version="4.0.3" />
+    <PackageReference Include="Npgsql" Version="4.0.4" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Data.SQLite, Version=1.0.66.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=x86">

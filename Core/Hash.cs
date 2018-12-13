@@ -50,7 +50,7 @@ namespace PMDCP.Core
             try {
                 using (FileStream f = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read, 8192)) {
                     hasher.ComputeHash(f);
-                    foreach (Byte hashByte in hasher.Hash) {
+                    foreach (byte hashByte in hasher.Hash) {
                         buff.Append(string.Format("{0:x2}", hashByte));
                     }
                 }
@@ -94,7 +94,7 @@ namespace PMDCP.Core
             //Retrieve a byte array based on the source text
             byte[] byteSourceText = unicodeEncoding.GetBytes(sourceText);
             hasher.ComputeHash(byteSourceText);
-            foreach (Byte hashByte in hasher.Hash) {
+            foreach (byte hashByte in hasher.Hash) {
                 buffer.Append(string.Format("{0:x2}", hashByte));
             }
             hasher.Dispose();

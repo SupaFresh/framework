@@ -21,12 +21,12 @@ namespace SevenZip
         // these are the default properties, keeping it simple for now:
         static object[] properties = 
                 {
-                    (Int32)(dictionary),
-                    (Int32)(2),
-                    (Int32)(3),
-                    (Int32)(0),
-                    (Int32)(2),
-                    (Int32)(128),
+                    (int)(dictionary),
+                    (int)(2),
+                    (int)(3),
+                    (int)(0),
+                    (int)(2),
+                    (int)(128),
                     "bt4",
                     eos
                 };
@@ -52,7 +52,7 @@ namespace SevenZip
             encoder.WriteCoderProperties(outputStream);
             long fileSize = inputStream.Length;
             for (int i = 0; i < 8; i++)
-                outputStream.WriteByte((Byte)(fileSize >> (8 * i)));
+                outputStream.WriteByte((byte)(fileSize >> (8 * i)));
 
             encoder.Code(inputStream, outputStream, -1, -1, null);
         }

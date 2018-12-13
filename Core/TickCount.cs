@@ -13,9 +13,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Mystery Dungeon eXtended.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace PMDCP.Core
 {
@@ -24,11 +21,11 @@ namespace PMDCP.Core
         public int Tick { get; }
 
         public TickCount(int tick) {
-            this.Tick = tick;
+            Tick = tick;
         }
 
         public bool Elapsed(int storedTick, int interval) {
-            return (this.Tick > storedTick + interval);
+            return (Tick > storedTick + interval);
         }
 
         public bool Elapsed(TickCount storedTick, int interval) {

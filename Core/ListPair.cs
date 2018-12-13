@@ -17,22 +17,15 @@ namespace PMDCP.Core
 {
     using System;
     using System.Collections.Generic;
-    using System.Text;
 
     public class ListPair<TKey, TValue> : IEnumerable<TValue>
     {
-        #region Fields
-
-        List<TKey> keys;
-        List<TValue> values;
-
-        #endregion Fields
 
         #region Constructors
 
         public ListPair() {
-            keys = new List<TKey>();
-            values = new List<TValue>();
+            Keys = new List<TKey>();
+            Values = new List<TValue>();
         }
 
         #endregion Constructors
@@ -40,16 +33,12 @@ namespace PMDCP.Core
         #region Properties
 
         public int Count {
-            get { return keys.Count; }
+            get { return Keys.Count; }
         }
 
-        public List<TKey> Keys {
-            get { return keys; }
-        }
+        public List<TKey> Keys { get; }
 
-        public List<TValue> Values {
-            get { return values; }
-        }
+        public List<TValue> Values { get; }
 
         #endregion Properties
 
@@ -57,23 +46,23 @@ namespace PMDCP.Core
 
         public TKey this[TValue val] {
             get {
-                int index = values.IndexOf(val);
-                return keys[index];
+                int index = Values.IndexOf(val);
+                return Keys[index];
             }
             set {
-                int index = values.IndexOf(val);
-                keys[index] = value;
+                int index = Values.IndexOf(val);
+                Keys[index] = value;
             }
         }
 
         public TValue this[TKey key] {
             get {
-                int index = keys.IndexOf(key);
-                return values[index];
+                int index = Keys.IndexOf(key);
+                return Values[index];
             }
             set {
-                int index = keys.IndexOf(key);
-                values[index] = value;
+                int index = Keys.IndexOf(key);
+                Values[index] = value;
             }
         }
 
@@ -83,9 +72,9 @@ namespace PMDCP.Core
 
         public void Add(TKey key, TValue value) {
             if (key != null) {
-                if (keys.Contains(key) == false) {
-                    keys.Add(key);
-                    values.Add(value);
+                if (Keys.Contains(key) == false) {
+                    Keys.Add(key);
+                    Values.Add(value);
                 } else {
                     throw (new ArgumentException("A key with the same value has already been added"));
                 }
@@ -95,73 +84,73 @@ namespace PMDCP.Core
         }
 
         public void Clear() {
-            keys.Clear();
-            values.Clear();
+            Keys.Clear();
+            Values.Clear();
         }
 
         public bool ContainsKey(TKey key) {
-            return keys.Contains(key);
+            return Keys.Contains(key);
         }
 
         public bool ContainsValue(TValue value) {
-            return values.Contains(value);
+            return Values.Contains(value);
         }
 
         public ListPair<TKey, TValue> Copy() {
             lock (this) {
                 ListPair<TKey, TValue> copy = new ListPair<TKey, TValue>();
-                for (int i = 0; i < keys.Count; i++) {
-                    copy.Add(keys[i], values[i]);
+                for (int i = 0; i < Keys.Count; i++) {
+                    copy.Add(Keys[i], Values[i]);
                 }
                 return copy;
             }
         }
 
         public IEnumerator<TValue> GetEnumerator() {
-            return values.GetEnumerator();
+            return Values.GetEnumerator();
         }
 
         public TKey GetKey(TValue value) {
-            int index = values.IndexOf(value);
+            int index = Values.IndexOf(value);
             if (index > -1) {
-                return keys[index];
+                return Keys[index];
             } else {
                 return default(TKey);
             }
         }
 
         public TValue GetValue(TKey key) {
-            int index = keys.IndexOf(key);
+            int index = Keys.IndexOf(key);
             if (index > -1) {
-                return values[index];
+                return Values[index];
             } else {
                 return default(TValue);
             }
         }
 
         public int IndexOfKey(TKey key) {
-            return keys.IndexOf(key);
+            return Keys.IndexOf(key);
         }
 
         public int IndexOfValue(TValue value) {
-            return values.IndexOf(value);
+            return Values.IndexOf(value);
         }
 
         public TKey KeyByIndex(int index) {
-            return keys[index];
+            return Keys[index];
         }
 
         public void RemoveAt(int index) {
-            keys.RemoveAt(index);
-            values.RemoveAt(index);
+            Keys.RemoveAt(index);
+            Values.RemoveAt(index);
         }
 
         public void RemoveAtKey(TKey key) {
             if (key != null) {
-                if (keys.Contains(key)) {
-                    int index = keys.IndexOf(key);
-                    keys.RemoveAt(index);
-                    values.RemoveAt(index);
+                if (Keys.Contains(key)) {
+                    int index = Keys.IndexOf(key);
+                    Keys.RemoveAt(index);
+                    Values.RemoveAt(index);
                 } else {
                     throw (new KeyNotFoundException());
                 }
@@ -172,10 +161,10 @@ namespace PMDCP.Core
 
         public void RemoveAtValue(TValue value) {
             if (value != null) {
-                if (values.Contains(value)) {
-                    int index = values.IndexOf(value);
-                    keys.RemoveAt(index);
-                    values.RemoveAt(index);
+                if (Values.Contains(value)) {
+                    int index = Values.IndexOf(value);
+                    Keys.RemoveAt(index);
+                    Values.RemoveAt(index);
                 } else {
                     throw (new KeyNotFoundException());
                 }
@@ -185,21 +174,21 @@ namespace PMDCP.Core
         }
 
         public void SetKey(TValue value, TKey newKey) {
-            int index = values.IndexOf(value);
-            keys[index] = newKey;
+            int index = Values.IndexOf(value);
+            Keys[index] = newKey;
         }
 
         public void SetValue(TKey key, TValue value) {
-            int index = keys.IndexOf(key);
-            values[index] = value;
+            int index = Keys.IndexOf(key);
+            Values[index] = value;
         }
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() {
-            return (IEnumerator<TValue>)values.GetEnumerator();
+            return Values.GetEnumerator();
         }
 
         public TValue ValueByIndex(int index) {
-            return values[index];
+            return Values[index];
         }
 
         #endregion Methods

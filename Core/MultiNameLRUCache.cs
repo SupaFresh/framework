@@ -13,9 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Mystery Dungeon eXtended.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace PMDCP.Core
 {
@@ -27,7 +25,7 @@ namespace PMDCP.Core
         Dictionary<K, ValueItem<K, V>> names = new Dictionary<K, ValueItem<K, V>>();
         LinkedList<ValueItem<K, V>> values = new LinkedList<ValueItem<K, V>>();
         int capacity;
-        Object lockObject = new object();
+        object lockObject = new object();
 
         #endregion Fields
 

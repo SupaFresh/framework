@@ -143,7 +143,7 @@ namespace PMDCP.Core
         }
 
         public static string ToHex(this System.Drawing.Color color) {
-            return String.Format("#{0:x2}{1:x2}{2:x2}{3:x2}", color.A, color.R, color.G, color.B);
+            return string.Format("#{0:x2}{1:x2}{2:x2}{3:x2}", color.A, color.R, color.G, color.B);
         }
 
         public static System.Drawing.Color ToColor(this string hexString) {

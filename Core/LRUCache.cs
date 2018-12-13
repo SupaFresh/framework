@@ -16,10 +16,7 @@
 // From: http://stackoverflow.com/questions/754233/is-it-there-any-lru-implementation-of-idictionary
 namespace PMDCP.Core
 {
-    using System;
     using System.Collections.Generic;
-    using System.Runtime.CompilerServices;
-    using System.Text;
 
     public class LRUCache<K, V>
     {
@@ -28,7 +25,7 @@ namespace PMDCP.Core
         Dictionary<K, LinkedListNode<LRUCacheItem<K, V>>> cacheMap = new Dictionary<K, LinkedListNode<LRUCacheItem<K, V>>>();
         int capacity;
         LinkedList<LRUCacheItem<K, V>> lruList = new LinkedList<LRUCacheItem<K, V>>();
-        Object lockObject = new object();
+        object lockObject = new object();
 
         #endregion Fields
 

@@ -13,13 +13,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Mystery Dungeon eXtended.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace PMDCP.Core
 {
-	public class ByteArray : ByteEncoder
+    public class ByteArray : ByteEncoder
 	{
 		private byte[] byteArray;
 		/// <summary>
@@ -104,7 +101,7 @@ namespace PMDCP.Core
 		/// Adds a String to the end of a byte array
 		/// </summary>
 		/// <param name="newString">String to add</param>
-		public void AppendTo(String newString) {
+		public void AppendTo(string newString) {
 			byte[] newArray;
 			newArray = StringToByteArray(newString);
 			byteArray = AppendToByteArray(byteArray, newArray);
@@ -173,7 +170,7 @@ namespace PMDCP.Core
 		public short ToShort() {
 			return ByteArrayToShort(ToArray(), 0);
 		}
-		public override String ToString() {
+		public override string ToString() {
 			return ByteArrayToString(ToArray());
 		}
 		public byte ToByte() {

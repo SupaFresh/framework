@@ -21,16 +21,11 @@ namespace PMDCP.Core
 {
     public class Command
     {
-        #region Fields
-
-        List<string> commandArgs = new List<string>();
-
-        #endregion Fields
 
         #region Constructors
 
         internal Command(List<string> command) {
-            commandArgs = command;
+            CommandArgs = command;
         }
 
         #endregion Constructors
@@ -40,23 +35,21 @@ namespace PMDCP.Core
         /// <summary>
         /// Gets the command line arguments for the program
         /// </summary>
-        public List<string> CommandArgs {
-            get { return commandArgs; }
-        }
+        public List<string> CommandArgs { get; } = new List<string>();
 
         #endregion Properties
 
         #region Indexers
 
         public string this[int index] {
-            get { return commandArgs[index]; }
+            get { return CommandArgs[index]; }
         }
 
         public string this[string argument] {
             get {
                 int index = FindCommandArg(argument);
-                if (index > -1 && commandArgs.Count > index + 1) {
-                    return commandArgs[index + 1];
+                if (index > -1 && CommandArgs.Count > index + 1) {
+                    return CommandArgs[index + 1];
                 } else {
                     return null;
                 }
@@ -73,7 +66,7 @@ namespace PMDCP.Core
         /// <param name="argToFind">The argument to look for</param>
         /// <returns>True if the argument exists; False if it doesn't exist.</returns>
         public bool ContainsCommandArg(string argToFind) {
-            return commandArgs.Contains(argToFind);
+            return CommandArgs.Contains(argToFind);
         }
 
         /// <summary>
@@ -82,7 +75,7 @@ namespace PMDCP.Core
         /// <param name="argToFind"></param>
         /// <returns>The index of the argument if it was found; otherwise, returns -1</returns>
         public int FindCommandArg(string argToFind) {
-            return commandArgs.IndexOf(argToFind);
+            return CommandArgs.IndexOf(argToFind);
         }
 
         #endregion Methods
