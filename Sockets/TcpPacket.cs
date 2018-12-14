@@ -15,8 +15,6 @@
 
 namespace PMDCP.Sockets
 {
-    using System;
-    using System.Collections.Generic;
     using System.Text;
 
     using PMDCP.Core;
@@ -72,7 +70,7 @@ namespace PMDCP.Sockets
             }
         }
 
-        public Byte[] CustomHeader { get; set; }
+        public byte[] CustomHeader { get; set; }
 
         #endregion Properties
 

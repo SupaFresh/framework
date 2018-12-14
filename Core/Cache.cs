@@ -15,7 +15,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace PMDCP.Core
 {
@@ -153,7 +152,7 @@ namespace PMDCP.Core
             }
 
             // Need to get current total size and see if this will fit.
-            int projectedUsage = v.BytesUsed + this.CurrentCacheUsage;
+            int projectedUsage = v.BytesUsed + CurrentCacheUsage;
             if (projectedUsage > maxBytes) {
                 System.Diagnostics.Debug.WriteLine(string.Format("Need to make space for {0} bytes, currently using {1}", v.BytesUsed, CurrentCacheUsage));
                 PurgeSpace(v.BytesUsed);

@@ -15,44 +15,33 @@
 
 namespace PMDCP.DatabaseConnector.MySql
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
-
     public class DataColumnCollection
     {
-        #region Fields
-
-        IDataColumn[] columns;
-
-        #endregion Fields
 
         #region Constructors
 
         public DataColumnCollection(int columnCount) {
-            columns = new IDataColumn[columnCount];
+            Columns = new IDataColumn[columnCount];
         }
 
         #endregion Constructors
 
         #region Properties
 
-        public IDataColumn[] Columns {
-            get { return columns; }
-        }
+        public IDataColumn[] Columns { get; }
 
         #endregion Properties
 
         #region Methods
 
         public void SetColumn(int columnIndex, IDataColumn column) {
-            columns[columnIndex] = column;
+            Columns[columnIndex] = column;
         }
 
         public IDataColumn FindByName(string name) {
-            for (int i = 0; i < columns.Length; i++) {
-                if (columns[i].Name == name) {
-                    return columns[i];
+            for (int i = 0; i < Columns.Length; i++) {
+                if (Columns[i].Name == name) {
+                    return Columns[i];
                 }
             }
             return null;
@@ -66,7 +55,7 @@ namespace PMDCP.DatabaseConnector.MySql
 
         public IDataColumn this[int index] {
             get {
-                return columns[index];
+                return Columns[index];
             }
         }
 

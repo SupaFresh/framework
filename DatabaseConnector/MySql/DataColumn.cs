@@ -16,8 +16,6 @@
 namespace PMDCP.DatabaseConnector.MySql
 {
     using System;
-    using System.Collections.Generic;
-    using System.Text;
 
     public class DataColumn : IDataColumn
     {

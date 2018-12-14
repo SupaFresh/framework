@@ -16,10 +16,8 @@
 namespace PMDCP.Sockets.Tcp
 {
     using System;
-    using System.Collections.Generic;
     using System.Net;
     using System.Net.Sockets;
-    using System.Text;
     using System.IO;
     using PMDCP.Core;
 
@@ -77,7 +75,7 @@ namespace PMDCP.Sockets.Tcp
 
         public int CustomHeaderSize { get; set; }
 
-        public Object ID { get; internal set; }
+        public object ID { get; internal set; }
 
         #endregion Properties
 
@@ -115,7 +113,7 @@ namespace PMDCP.Sockets.Tcp
         }
 
         private void TempSocketConnectCallback(IAsyncResult result) {
-            Object[] state = result.AsyncState as object[];
+            object[] state = result.AsyncState as object[];
             Socket tempSocket = state[0] as Socket;
 
             try {

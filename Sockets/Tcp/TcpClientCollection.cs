@@ -15,15 +15,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Net;
-using PMDCP.Core;
 
 namespace PMDCP.Sockets.Tcp
 {
     public class TcpClientCollection<TClientID>
     {
-        Object lockObject = new object();
+        object lockObject = new object();
 
         public TcpClientCollection() {
             Clients = new Dictionary<TClientID, TcpClient>();

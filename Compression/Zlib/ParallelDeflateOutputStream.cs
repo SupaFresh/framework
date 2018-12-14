@@ -107,11 +107,9 @@ namespace PMDCP.Compression.Zlib
         private bool                        _isDisposed;
         private bool                        _firstWriteDone;
         private int                         _pc;
-        private int                         _Crc32;
-        private Int64                       _totalBytesProcessed;
         private PMDCP.Compression.Zlib.CompressionLevel _compressLevel;
         private volatile Exception          _pendingException;
-        private object                      _eLock = new Object();  // protects _pendingException
+        private object                      _eLock = new object();  // protects _pendingException
 
         // This bitfield is used only when Trace is defined.
         //private TraceBits _DesiredTrace = TraceBits.Write | TraceBits.WriteBegin |
@@ -394,7 +392,7 @@ namespace PMDCP.Compression.Zlib
         /// <remarks>
         /// This value is meaningful only after a call to Close().
         /// </remarks>
-        public int Crc32 { get { return _Crc32; } }
+        public int Crc32 { get; private set; }
 
 
         /// <summary>
@@ -403,7 +401,7 @@ namespace PMDCP.Compression.Zlib
         /// <remarks>
         /// This value is meaningful only after a call to Close().
         /// </remarks>
-        public Int64 BytesProcessed { get { return _totalBytesProcessed; } }
+        public long BytesProcessed { get; private set; }
 
 
         private void _InitializePoolOfWorkItems()
@@ -423,7 +421,7 @@ namespace PMDCP.Compression.Zlib
 
         private void _KickoffWriter()
         {
-            if (!ThreadPool.QueueUserWorkItem(new WaitCallback(this._PerpetualWriterMethod)))
+            if (!ThreadPool.QueueUserWorkItem(new WaitCallback(_PerpetualWriterMethod)))
                 throw new Exception("Cannot enqueue writer thread.");
         }
 
@@ -634,7 +632,7 @@ namespace PMDCP.Compression.Zlib
         /// </remarks>
         public override void Close()
         {
-            TraceOutput(TraceBits.Session, "Close {0:X8}", this.GetHashCode());
+            TraceOutput(TraceBits.Session, "Close {0:X8}", GetHashCode());
 
             if (_isClosed) return;
 
@@ -691,7 +689,7 @@ namespace PMDCP.Compression.Zlib
         /// </remarks>
         new public void  Dispose()
         {
-            TraceOutput(TraceBits.Lifecycle, "Dispose  {0:X8}", this.GetHashCode());
+            TraceOutput(TraceBits.Lifecycle, "Dispose  {0:X8}", GetHashCode());
             _isDisposed= true;
             _pool = null;
             TraceOutput(TraceBits.Synch, "Synch    _sessionReset.Set()  Dispose");
@@ -752,7 +750,7 @@ namespace PMDCP.Compression.Zlib
         public void Reset(Stream stream)
         {
             TraceOutput(TraceBits.Session, "-------------------------------------------------------");
-            TraceOutput(TraceBits.Session, "Reset {0:X8} firstDone({1})", this.GetHashCode(), _firstWriteDone);
+            TraceOutput(TraceBits.Session, "Reset {0:X8} firstDone({1})", GetHashCode(), _firstWriteDone);
 
             if (!_firstWriteDone) return;
 
@@ -769,8 +767,8 @@ namespace PMDCP.Compression.Zlib
 
                 _noMoreInputForThisSegment= false;
                 _nextToFill= _nextToWrite= 0;
-                _totalBytesProcessed = 0L;
-                _Crc32= 0;
+                BytesProcessed = 0L;
+                Crc32= 0;
                 _isClosed= false;
 
                 TraceOutput(TraceBits.Synch, "Synch    _writingDone.Reset()         Reset");
@@ -810,7 +808,7 @@ namespace PMDCP.Compression.Zlib
 
                     // repeatedly write buffers as they become ready
                     WorkItem workitem = null;
-                    PMDCP.Compression.Zlib.CRC32 c= new PMDCP.Compression.Zlib.CRC32();
+                    CRC32 c = new CRC32();
                     do
                     {
                         workitem = _pool[_nextToWrite % _pc];
@@ -837,7 +835,7 @@ namespace PMDCP.Compression.Zlib
                                     workitem.status = (int)WorkItem.Status.Writing;
                                     _outStream.Write(workitem.compressed, 0, workitem.compressedBytesAvailable);
                                     c.Combine(workitem.crc, workitem.inputBytesAvailable);
-                                    _totalBytesProcessed += workitem.inputBytesAvailable;
+                                    BytesProcessed += workitem.inputBytesAvailable;
                                     _nextToWrite++;
                                     workitem.inputBytesAvailable= 0;
                                     workitem.status = (int)WorkItem.Status.Done;
@@ -937,7 +935,7 @@ namespace PMDCP.Compression.Zlib
 
                     compressor.EndDeflate();
 
-                    _Crc32 = c.Crc32Result;
+                    Crc32 = c.Crc32Result;
 
                     // signal that writing is complete:
                     TraceOutput(TraceBits.Synch, "Synch    _writingDone.Set()           PWM");
@@ -961,7 +959,7 @@ namespace PMDCP.Compression.Zlib
 
 
 
-        private void _DeflateOne(Object wi)
+        private void _DeflateOne(object wi)
         {
             WorkItem workitem = (WorkItem) wi;
             try
@@ -974,7 +972,7 @@ namespace PMDCP.Compression.Zlib
                     if (workitem.status != (int)WorkItem.Status.Filled)
                         throw new InvalidOperationException();
 
-                    PMDCP.Compression.Zlib.CRC32 crc = new CRC32();
+                    CRC32 crc = new CRC32();
 
                     // use the workitem:
                     // calc CRC on the buffer
@@ -998,7 +996,7 @@ namespace PMDCP.Compression.Zlib
                     Monitor.Pulse(workitem);
                 }
             }
-            catch (System.Exception exc1)
+            catch (Exception exc1)
             {
                 lock(_eLock)
                 {
@@ -1038,7 +1036,7 @@ namespace PMDCP.Compression.Zlib
         }
 
 
-        [System.Diagnostics.ConditionalAttribute("Trace")]
+        [System.Diagnostics.Conditional("Trace")]
         private void TraceOutput(TraceBits bits, string format, params object[] varParams)
         {
             if ((bits & _DesiredTrace) != 0)

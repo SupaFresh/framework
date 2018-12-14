@@ -79,7 +79,7 @@ namespace PMDCP.Compression.Zlib
     /// href="http://www.ietf.org/rfc/rfc1950.txt">RFC 1950 - ZLIB</see> and <see
     /// href="http://www.ietf.org/rfc/rfc1951.txt">RFC 1951 - DEFLATE</see>.
     /// </remarks>
-    [Interop.GuidAttribute("ebc25cf6-9120-4283-b972-0e5520d0000D")]
+    [Interop.Guid("ebc25cf6-9120-4283-b972-0e5520d0000D")]
     [Interop.ComVisible(true)]
 #if !NETCF    
     [Interop.ClassInterface(Interop.ClassInterfaceType.AutoDispatch)]
@@ -137,7 +137,7 @@ namespace PMDCP.Compression.Zlib
         /// <summary>
         /// used for diagnostics, when something goes wrong!
         /// </summary>
-        public System.String Message;
+        public string Message;
 
         internal DeflateManager dstate;
         internal InflateManager istate;
@@ -223,7 +223,7 @@ namespace PMDCP.Compression.Zlib
         /// <returns>Z_OK if everything goes well.</returns>
         public int InitializeInflate()
         {
-            return InitializeInflate(this.WindowBits);
+            return InitializeInflate(WindowBits);
         }
 
         /// <summary>
@@ -246,7 +246,7 @@ namespace PMDCP.Compression.Zlib
         /// <returns>Z_OK if everything goes well.</returns>
         public int InitializeInflate(bool expectRfc1950Header)
         {
-            return InitializeInflate(this.WindowBits, expectRfc1950Header);
+            return InitializeInflate(WindowBits, expectRfc1950Header);
         }
 
         /// <summary>
@@ -257,7 +257,7 @@ namespace PMDCP.Compression.Zlib
         /// <returns>Z_OK if all goes well.</returns>
         public int InitializeInflate(int windowBits)
         {
-            this.WindowBits = windowBits;            
+            WindowBits = windowBits;            
             return InitializeInflate(windowBits, true);
         }
 
@@ -282,7 +282,7 @@ namespace PMDCP.Compression.Zlib
         /// <returns>Z_OK if everything goes well.</returns>
         public int InitializeInflate(int windowBits, bool expectRfc1950Header)
         {
-            this.WindowBits = windowBits;
+            WindowBits = windowBits;
             if (dstate != null) throw new ZlibException("You may not call InitializeInflate() after calling InitializeDeflate().");
             istate = new InflateManager(expectRfc1950Header);
             return istate.Initialize(this, windowBits);
@@ -444,7 +444,7 @@ namespace PMDCP.Compression.Zlib
         /// <returns>Z_OK if all goes well.</returns>
         public int InitializeDeflate(CompressionLevel level)
         {
-            this.CompressLevel = level;
+            CompressLevel = level;
             return _InternalInitializeDeflate(true);
         }
 
@@ -465,7 +465,7 @@ namespace PMDCP.Compression.Zlib
         /// <returns>Z_OK if all goes well.</returns>
         public int InitializeDeflate(CompressionLevel level, bool wantRfc1950Header)
         {
-            this.CompressLevel = level;
+            CompressLevel = level;
             return _InternalInitializeDeflate(wantRfc1950Header);
         }
 
@@ -482,8 +482,8 @@ namespace PMDCP.Compression.Zlib
         /// <returns>Z_OK if all goes well.</returns>
         public int InitializeDeflate(CompressionLevel level, int bits)
         {
-            this.CompressLevel = level;
-            this.WindowBits = bits;
+            CompressLevel = level;
+            WindowBits = bits;
             return _InternalInitializeDeflate(true);
         }
 
@@ -499,18 +499,20 @@ namespace PMDCP.Compression.Zlib
         /// <returns>Z_OK if all goes well.</returns>
         public int InitializeDeflate(CompressionLevel level, int bits, bool wantRfc1950Header)
         {
-            this.CompressLevel = level;
-            this.WindowBits = bits;
+            CompressLevel = level;
+            WindowBits = bits;
             return _InternalInitializeDeflate(wantRfc1950Header);
         }
 
         private int _InternalInitializeDeflate(bool wantRfc1950Header)
         {
             if (istate != null) throw new ZlibException("You may not call InitializeDeflate() after calling InitializeInflate().");
-            dstate = new DeflateManager();
-            dstate.WantRfc1950HeaderBytes = wantRfc1950Header;
+            dstate = new DeflateManager
+            {
+                WantRfc1950HeaderBytes = wantRfc1950Header
+            };
 
-            return dstate.Initialize(this, this.CompressLevel, this.WindowBits, this.Strategy);
+            return dstate.Initialize(this, CompressLevel, WindowBits, Strategy);
         }
 
         /// <summary>
@@ -670,7 +672,7 @@ namespace PMDCP.Compression.Zlib
                 dstate.pending.Length < (dstate.nextPending + len) ||
                 OutputBuffer.Length < (NextOut + len))
             {
-                throw new ZlibException(String.Format("Invalid State. (pending.Length={0}, pendingCount={1})",
+                throw new ZlibException(string.Format("Invalid State. (pending.Length={0}, pendingCount={1})",
                     dstate.pending.Length, dstate.pendingCount));
             }
 

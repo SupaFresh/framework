@@ -15,10 +15,6 @@
 
 namespace PMDCP.DatabaseConnector.SQLite
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
-
     public class Field : IDataField
     {
         #region Constructors

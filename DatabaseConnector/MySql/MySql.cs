@@ -342,7 +342,7 @@ namespace PMDCP.DatabaseConnector.MySql
             }
         }
 
-        public IEnumerable<Object[]> RetrieveRowsEnumerableQuick(string query) {
+        public IEnumerable<object[]> RetrieveRowsEnumerableQuick(string query) {
             if (!string.IsNullOrEmpty(query)) {
                 bool localConnection = false;
                 if (ConnectionState == System.Data.ConnectionState.Closed) {
@@ -356,7 +356,7 @@ namespace PMDCP.DatabaseConnector.MySql
                             if (reader.HasRows) {
                                 List<DataColumnCollection> databaseRows = new List<DataColumnCollection>();
                                 while (reader.Read()) {
-                                    Object[] values = new object[reader.FieldCount];
+                                    object[] values = new object[reader.FieldCount];
                                     reader.GetValues(values);
                                     yield return values;
                                 }

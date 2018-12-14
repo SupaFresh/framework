@@ -19,7 +19,6 @@ namespace PMDCP.Sockets.Tcp
     using System.Collections.Generic;
     using System.Net;
     using System.Net.Sockets;
-    using System.Text;
 
     public class TcpListener<TClientID>
     {
@@ -92,7 +91,7 @@ namespace PMDCP.Sockets.Tcp
 
         private void Initialize() {
             Backlog = 10;
-            this.ClientCollection = new TcpClientCollection<TClientID>();
+            ClientCollection = new TcpClientCollection<TClientID>();
         }
 
         private void ListenCallback(IAsyncResult result) {

@@ -15,8 +15,6 @@
 
 namespace PMDCP.Core
 {
-    using System;
-    using System.Collections.Generic;
     using System.Diagnostics;
     using System.Text;
 
@@ -25,7 +23,7 @@ namespace PMDCP.Core
         #region Constructors
 
         public XCopy(string xcopyPath) {
-            this.XCopyPath = xcopyPath;
+            XCopyPath = xcopyPath;
         }
 
         #endregion Constructors
@@ -45,9 +43,11 @@ namespace PMDCP.Core
         #region Methods
 
         public void Copy() {
-            ProcessStartInfo processStartInfo = new ProcessStartInfo(XCopyPath);
-            processStartInfo.CreateNoWindow = true;
-            processStartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            ProcessStartInfo processStartInfo = new ProcessStartInfo(XCopyPath)
+            {
+                CreateNoWindow = true,
+                WindowStyle = ProcessWindowStyle.Hidden
+            };
             StringBuilder arguments = new StringBuilder();
             if (!string.IsNullOrEmpty(DestinationFile)) {
                 arguments.Append(" /dstfile \"" + DestinationFile + "\"");

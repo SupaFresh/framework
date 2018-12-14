@@ -14,58 +14,62 @@
 // along with Mystery Dungeon eXtended.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace PMDCP.Core
 {
     public static class Extensions
     {
         public static byte ToByte(this string str) {
-            byte result = 0;
-            if (!string.IsNullOrEmpty(str) && byte.TryParse(str, out result)) {
+            if (!string.IsNullOrEmpty(str) && byte.TryParse(str, out byte result))
+            {
                 return result;
-            } else
+            }
+            else
                 return 0;
         }
 
         public static byte ToByte(this string str, byte defaultVal) {
-            byte result = 0;
-            if (str != null && byte.TryParse(str, out result) == true) {
+            if (str != null && byte.TryParse(str, out byte result) == true)
+            {
                 return result;
-            } else
+            }
+            else
                 return defaultVal;
         }
 
         public static int ToInt(this string str) {
-            int result = 0;
-            if (!string.IsNullOrEmpty(str) && int.TryParse(str, out result)) {
+            if (!string.IsNullOrEmpty(str) && int.TryParse(str, out int result))
+            {
                 return result;
-            } else
+            }
+            else
                 return 0;
         }
 
         public static int ToInt(this string str, int defaultVal) {
-            int result = 0;
-            if (str != null && int.TryParse(str, out result) == true) {
+            if (str != null && int.TryParse(str, out int result) == true)
+            {
                 return result;
-            } else
+            }
+            else
                 return defaultVal;
         }
 
         public static double ToDbl(this string str) {
-            double result = 0;
-            if (str != null && double.TryParse(str, out result) == true) {
+            if (str != null && double.TryParse(str, out double result) == true)
+            {
                 return result;
-            } else
+            }
+            else
                 return 0;
         }
 
         public static double ToDbl(this string str, double defaultVal) {
-            double result = 0;
-            if (str != null && double.TryParse(str, out result) == true) {
+            if (str != null && double.TryParse(str, out double result) == true)
+            {
                 return result;
-            } else
+            }
+            else
                 return defaultVal;
         }
 
@@ -77,15 +81,15 @@ namespace PMDCP.Core
         }
 
         public static bool IsNumeric(this string str) {
-            int result;
-            return int.TryParse(str, out result);
+            return int.TryParse(str, out int result);
         }
 
         public static ulong ToUlng(this string str) {
-            ulong result = 0;
-            if (ulong.TryParse(str, out result) == true) {
+            if (ulong.TryParse(str, out ulong result) == true)
+            {
                 return result;
-            } else
+            }
+            else
                 return 0;
         }
 
@@ -134,10 +138,12 @@ namespace PMDCP.Core
         //}
 
         public static DateTime? ToDate(this string date) {
-            DateTime tmpDate;
-            if (DateTime.TryParse(date, out tmpDate)) {
+            if (DateTime.TryParse(date, out DateTime tmpDate))
+            {
                 return tmpDate;
-            } else {
+            }
+            else
+            {
                 return null;
             }
         }

@@ -14,12 +14,9 @@
 // along with Mystery Dungeon eXtended.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Net;
 using System.Net.Sockets;
 using PMDCP.Core;
-using System.Threading;
 
 namespace PMDCP.Sockets.Gnp
 {

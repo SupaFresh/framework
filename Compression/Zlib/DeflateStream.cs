@@ -309,11 +309,11 @@ namespace PMDCP.Compression.Zlib
         /// </remarks>
         virtual public FlushType FlushMode
         {
-            get { return (this._baseStream._flushMode); }
+            get { return (_baseStream._flushMode); }
             set
             {
                 if (_disposed) throw new ObjectDisposedException("DeflateStream");
-                this._baseStream._flushMode = value;
+                _baseStream._flushMode = value;
             }
         }
 
@@ -338,16 +338,16 @@ namespace PMDCP.Compression.Zlib
         {
             get
             {
-                return this._baseStream._bufferSize;
+                return _baseStream._bufferSize;
             }
             set
             {
                 if (_disposed) throw new ObjectDisposedException("DeflateStream");
-                if (this._baseStream._workingBuffer != null)
+                if (_baseStream._workingBuffer != null)
                     throw new ZlibException("The working buffer is already set.");
                 if (value < ZlibConstants.WorkingBufferSizeMin)
-                    throw new ZlibException(String.Format("Don't be silly. {0} bytes?? Use a bigger buffer, at least {1}.", value, ZlibConstants.WorkingBufferSizeMin));
-                this._baseStream._bufferSize = value;
+                    throw new ZlibException(string.Format("Don't be silly. {0} bytes?? Use a bigger buffer, at least {1}.", value, ZlibConstants.WorkingBufferSizeMin));
+                _baseStream._bufferSize = value;
             }
         }
 
@@ -363,12 +363,12 @@ namespace PMDCP.Compression.Zlib
         {
             get
             {
-                return this._baseStream.Strategy;
+                return _baseStream.Strategy;
             }
             set
             {
             if (_disposed) throw new ObjectDisposedException("DeflateStream");
-                this._baseStream.Strategy = value;
+                _baseStream.Strategy = value;
             }
         }
 
@@ -377,7 +377,7 @@ namespace PMDCP.Compression.Zlib
         {
             get
             {
-                return this._baseStream._z.TotalBytesIn;
+                return _baseStream._z.TotalBytesIn;
             }
         }
 
@@ -386,7 +386,7 @@ namespace PMDCP.Compression.Zlib
         {
             get
             {
-                return this._baseStream._z.TotalBytesOut;
+                return _baseStream._z.TotalBytesOut;
             }
         }
 
@@ -406,8 +406,8 @@ namespace PMDCP.Compression.Zlib
             {
                 if (!_disposed)
                 {
-                    if (disposing && (this._baseStream != null))
-                        this._baseStream.Close();
+                    if (disposing && (_baseStream != null))
+                        _baseStream.Close();
                     _disposed = true;
                 }
             }
@@ -493,10 +493,10 @@ namespace PMDCP.Compression.Zlib
         {
             get
             {
-                if (this._baseStream._streamMode == PMDCP.Compression.Zlib.ZlibBaseStream.StreamMode.Writer)
-                    return this._baseStream._z.TotalBytesOut;
-                if (this._baseStream._streamMode == PMDCP.Compression.Zlib.ZlibBaseStream.StreamMode.Reader)
-                    return this._baseStream._z.TotalBytesIn;
+                if (_baseStream._streamMode == PMDCP.Compression.Zlib.ZlibBaseStream.StreamMode.Writer)
+                    return _baseStream._z.TotalBytesOut;
+                if (_baseStream._streamMode == PMDCP.Compression.Zlib.ZlibBaseStream.StreamMode.Reader)
+                    return _baseStream._z.TotalBytesIn;
                 return 0;
             }
             set { throw new NotImplementedException(); }
@@ -599,11 +599,11 @@ namespace PMDCP.Compression.Zlib
         /// </summary>
         ///
         /// <remarks>
-        ///   Uncompress it with <see cref="DeflateStream.UncompressString(byte[])"/>.
+        ///   Uncompress it with <see cref="UncompressString(byte[])"/>.
         /// </remarks>
         ///
-        /// <seealso cref="DeflateStream.UncompressString(byte[])"/>
-        /// <seealso cref="DeflateStream.CompressBuffer(byte[])"/>
+        /// <seealso cref="UncompressString(byte[])"/>
+        /// <seealso cref="CompressBuffer(byte[])"/>
         ///
         /// <param name="s">
         ///   A string to compress. The string will first be encoded
@@ -611,7 +611,7 @@ namespace PMDCP.Compression.Zlib
         /// </param>
         ///
         /// <returns>The string in compressed form</returns>
-        public static byte[] CompressString(String s)
+        public static byte[] CompressString(string s)
         {
             using (var ms = new System.IO.MemoryStream())
             {
@@ -622,17 +622,17 @@ namespace PMDCP.Compression.Zlib
             }
         }
 
-                    
+
         /// <summary>
         ///   Compress a byte array into a new byte array using DEFLATE.
         /// </summary>
         ///
         /// <remarks>
-        ///   Uncompress it with <see cref="DeflateStream.UncompressBuffer(byte[])"/>.
+        ///   Uncompress it with <see cref="UncompressBuffer(byte[])"/>.
         /// </remarks>
         ///
-        /// <seealso cref="DeflateStream.CompressString(string)"/>
-        /// <seealso cref="DeflateStream.UncompressBuffer(byte[])"/>
+        /// <seealso cref="CompressString(string)"/>
+        /// <seealso cref="UncompressBuffer(byte[])"/>
         ///
         /// <param name="b">
         ///   A buffer to compress. 
@@ -656,15 +656,15 @@ namespace PMDCP.Compression.Zlib
         ///   Uncompress a DEFLATE'd byte array into a single string.
         /// </summary>
         ///
-        /// <seealso cref="DeflateStream.CompressString(String)"/>
-        /// <seealso cref="DeflateStream.UncompressBuffer(byte[])"/>
+        /// <seealso cref="CompressString(string)"/>
+        /// <seealso cref="UncompressBuffer(byte[])"/>
         ///
         /// <param name="compressed">
         ///   A buffer containing GZIP-compressed data.  
         /// </param>
         ///
         /// <returns>The uncompressed string</returns>
-        public static String UncompressString(byte[] compressed)
+        public static string UncompressString(byte[] compressed)
         {
             using (var input = new System.IO.MemoryStream(compressed))
             {
@@ -680,8 +680,8 @@ namespace PMDCP.Compression.Zlib
         ///   Uncompress a DEFLATE'd byte array into a byte array.
         /// </summary>
         ///
-        /// <seealso cref="DeflateStream.CompressBuffer(byte[])"/>
-        /// <seealso cref="DeflateStream.UncompressString(byte[])"/>
+        /// <seealso cref="CompressBuffer(byte[])"/>
+        /// <seealso cref="UncompressString(byte[])"/>
         ///
         /// <param name="compressed">
         ///   A buffer containing data that has been compressed with DEFLATE.  

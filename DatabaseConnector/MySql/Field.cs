@@ -15,10 +15,6 @@
 
 namespace PMDCP.DatabaseConnector.MySql
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
-
     public class Field : IDataField
     {
         #region Constructors

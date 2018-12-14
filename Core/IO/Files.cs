@@ -13,9 +13,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Mystery Dungeon eXtended.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace PMDCP.Core.IO
 {
@@ -28,11 +25,11 @@ namespace PMDCP.Core.IO
         public static string GetFileSize(decimal byteCount) {
             string size = null;
             if (byteCount >= 1073741824)
-                size = String.Format("{0:##.##}", byteCount / 1073741824) + " GB";
+                size = string.Format("{0:##.##}", byteCount / 1073741824) + " GB";
             else if (byteCount >= 1048576)
-                size = String.Format("{0:##.##}", byteCount / 1048576) + " MB";
+                size = string.Format("{0:##.##}", byteCount / 1048576) + " MB";
             else if (byteCount >= 1024)
-                size = String.Format("{0:##.##}", byteCount / 1024) + " KB";
+                size = string.Format("{0:##.##}", byteCount / 1024) + " KB";
             else if (byteCount > 0 && byteCount < 1024)
                 size = byteCount.ToString() + " Bytes";
             else

@@ -16,7 +16,6 @@
 // Original code from: http://www.codeproject.com/KB/IP/upnpnattraversal.aspx
 
 using System;
-using System.Collections.Generic;
 using System.Text;
 using System.Net.Sockets;
 using System.Net;
@@ -134,7 +133,7 @@ namespace PMDCP.Net
             soap +
             "</s:Body>" +
             "</s:Envelope>";
-            WebRequest r = HttpWebRequest.Create(url);
+            WebRequest r = WebRequest.Create(url);
             r.Method = "POST";
             byte[] b = Encoding.UTF8.GetBytes(req);
             r.Headers.Add("SOAPACTION", "\"urn:schemas-upnp-org:service:WANIPConnection:1#" + function + "\"");

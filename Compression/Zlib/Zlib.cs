@@ -195,7 +195,7 @@ namespace PMDCP.Compression.Zlib
     /// <summary>
     /// A general purpose exception class for exceptions in the Zlib library.
     /// </summary>
-    [Interop.GuidAttribute("ebc25cf6-9120-4283-b972-0e5520d0000E")]
+    [Interop.Guid("ebc25cf6-9120-4283-b972-0e5520d0000E")]
     public class ZlibException : System.Exception
     {
         /// <summary>
@@ -211,7 +211,7 @@ namespace PMDCP.Compression.Zlib
         /// This ctor collects a message attached to the exception.
         /// </summary>
         /// <param name="s"></param>
-        public ZlibException(System.String s)
+        public ZlibException(string s)
             : base(s)
         {
         }
@@ -259,7 +259,7 @@ namespace PMDCP.Compression.Zlib
         ///   count depending on the data available in the source TextReader. Returns -1
         ///   if the end of the stream is reached.
         /// </returns>
-        public static System.Int32 ReadInput(System.IO.TextReader sourceTextReader, byte[] target, int start, int count)
+        public static int ReadInput(System.IO.TextReader sourceTextReader, byte[] target, int start, int count)
         {
             // Returns 0 bytes if not enough space in target
             if (target.Length == 0) return 0;
@@ -277,15 +277,15 @@ namespace PMDCP.Compression.Zlib
         }
 
 
-        internal static byte[] ToByteArray(System.String sourceString)
+        internal static byte[] ToByteArray(string sourceString)
         {
-            return System.Text.UTF8Encoding.UTF8.GetBytes(sourceString);
+            return System.Text.Encoding.UTF8.GetBytes(sourceString);
         }
 
 
         internal static char[] ToCharArray(byte[] byteArray)
         {
-            return System.Text.UTF8Encoding.UTF8.GetChars(byteArray);
+            return System.Text.Encoding.UTF8.GetChars(byteArray);
         }
     }
 

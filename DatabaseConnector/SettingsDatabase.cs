@@ -13,9 +13,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Mystery Dungeon eXtended.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace PMDCP.DatabaseConnector
 {
@@ -24,7 +21,7 @@ namespace PMDCP.DatabaseConnector
         public IDatabase Database { get; }
 
         public SettingsDatabase(IDatabase database) {
-            this.Database = database;
+            Database = database;
         }
 
         public void SaveSetting(string table, string key, string value) {

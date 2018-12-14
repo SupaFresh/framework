@@ -111,12 +111,12 @@ namespace PMDCP.Compression.Zlib
         internal int end;                                 // one byte after sliding window
         internal int readAt;                              // window read pointer
         internal int writeAt;                             // window write pointer
-        internal System.Object checkfn;                   // check function
+        internal object checkfn;                   // check function
         internal uint check;                              // check on output
 
         internal InfTree inftree = new InfTree();
 
-        internal InflateBlocks(ZlibCodec codec, System.Object checkfn, int w)
+        internal InflateBlocks(ZlibCodec codec, object checkfn, int w)
         {
             _codec = codec;
             hufts = new int[MANY * 3];
@@ -159,7 +159,7 @@ namespace PMDCP.Compression.Zlib
             k = bitk;
 
             q = writeAt;
-            m = (int)(q < readAt ? readAt - q - 1 : end - q);
+            m = q < readAt ? readAt - q - 1 : end - q;
 
 
             // process input based on current state
@@ -189,7 +189,7 @@ namespace PMDCP.Compression.Zlib
                             b |= (_codec.InputBuffer[p++] & 0xff) << k;
                             k += 8;
                         }
-                        t = (int)(b & 7);
+                        t = b & 7;
                         last = t & 1;
 
                         switch ((uint)t >> 1)
@@ -287,16 +287,16 @@ namespace PMDCP.Compression.Zlib
                         {
                             if (q == end && readAt != 0)
                             {
-                                q = 0; m = (int)(q < readAt ? readAt - q - 1 : end - q);
+                                q = 0; m = q < readAt ? readAt - q - 1 : end - q;
                             }
                             if (m == 0)
                             {
                                 writeAt = q;
                                 r = Flush(r);
-                                q = writeAt; m = (int)(q < readAt ? readAt - q - 1 : end - q);
+                                q = writeAt; m = q < readAt ? readAt - q - 1 : end - q;
                                 if (q == end && readAt != 0)
                                 {
-                                    q = 0; m = (int)(q < readAt ? readAt - q - 1 : end - q);
+                                    q = 0; m = q < readAt ? readAt - q - 1 : end - q;
                                 }
                                 if (m == 0)
                                 {
@@ -592,7 +592,7 @@ namespace PMDCP.Compression.Zlib
                         b = bitb;
                         k = bitk;
                         q = writeAt;
-                        m = (int)(q < readAt ? readAt - q - 1 : end - q);
+                        m = q < readAt ? readAt - q - 1 : end - q;
 
                         if (last == 0)
                         {
@@ -605,7 +605,7 @@ namespace PMDCP.Compression.Zlib
                     case InflateBlockMode.DRY:
                         writeAt = q;
                         r = Flush(r);
-                        q = writeAt; m = (int)(q < readAt ? readAt - q - 1 : end - q);
+                        q = writeAt; m = q < readAt ? readAt - q - 1 : end - q;
                         if (readAt != writeAt)
                         {
                             bitb = b; bitk = k;
@@ -683,7 +683,7 @@ namespace PMDCP.Compression.Zlib
                 if (pass==0)
                 {
                     // compute number of bytes to copy as far as end of window
-                    nBytes = (int)((readAt <= writeAt ? writeAt : end) - readAt);
+                    nBytes = (readAt <= writeAt ? writeAt : end) - readAt;
                 }
                 else
                 {
@@ -1222,7 +1222,7 @@ namespace PMDCP.Compression.Zlib
                     if ((e & 16) != 0)
                     {
                         e &= 15;
-                        c = tp[tp_index_t_3 + 2] + ((int)b & InternalInflateConstants.InflateMask[e]);
+                        c = tp[tp_index_t_3 + 2] + (b & InternalInflateConstants.InflateMask[e]);
 
                         b >>= e; k -= e;
 
@@ -1439,15 +1439,7 @@ namespace PMDCP.Compression.Zlib
 
         // if BAD, inflateSync's marker bytes count
         internal int marker;
-
-        // mode independent information
-        //internal int nowrap; // flag for no wrapper
-        private bool _handleRfc1950HeaderBytes = true;
-        internal bool HandleRfc1950HeaderBytes
-        {
-            get { return _handleRfc1950HeaderBytes; }
-            set { _handleRfc1950HeaderBytes = value; }
-        }
+        internal bool HandleRfc1950HeaderBytes { get; set; } = true;
         internal int wbits; // log2(window size)  (8..15, defaults to 15)
 
         internal InflateBlocks blocks; // current inflate_blocks state
@@ -1456,7 +1448,7 @@ namespace PMDCP.Compression.Zlib
 
         public InflateManager(bool expectRfc1950HeaderBytes)
         {
-            _handleRfc1950HeaderBytes = expectRfc1950HeaderBytes;
+            HandleRfc1950HeaderBytes = expectRfc1950HeaderBytes;
         }
 
         internal int Reset()
@@ -1537,14 +1529,14 @@ namespace PMDCP.Compression.Zlib
                         if (((method = _codec.InputBuffer[_codec.NextIn++]) & 0xf) != Z_DEFLATED)
                         {
                             mode = InflateManagerMode.BAD;
-                            _codec.Message = String.Format("unknown compression method (0x{0:X2})", method);
+                            _codec.Message = string.Format("unknown compression method (0x{0:X2})", method);
                             marker = 5; // can't try inflateSync
                             break;
                         }
                         if ((method >> 4) + 8 > wbits)
                         {
                             mode = InflateManagerMode.BAD;
-                            _codec.Message = String.Format("invalid window size ({0})", (method >> 4) + 8);
+                            _codec.Message = string.Format("invalid window size ({0})", (method >> 4) + 8);
                             marker = 5; // can't try inflateSync
                             break;
                         }
@@ -1687,7 +1679,7 @@ namespace PMDCP.Compression.Zlib
                         return ZlibConstants.Z_STREAM_END;
 
                     case InflateManagerMode.BAD:
-                        throw new ZlibException(String.Format("Bad state ({0})", _codec.Message));
+                        throw new ZlibException(string.Format("Bad state ({0})", _codec.Message));
 
                     default:
                         throw new ZlibException("Stream error.");

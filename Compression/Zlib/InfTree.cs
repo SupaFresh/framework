@@ -274,7 +274,7 @@ namespace PMDCP.Compression.Zlib
                                                         r[0] = (sbyte) j; // bits in this table
                                                         r[1] = (sbyte) l; // bits to dump before this table
                                                         j = SharedUtils.URShift(i, (w - l));
-                                                        r[2] = (int) (q - u[h - 1] - j); // offset to this table
+                                                        r[2] = q - u[h - 1] - j; // offset to this table
                                                         Array.Copy(r, 0, hp, (u[h - 1] + j) * 3, 3); // connect to last table
                                                 }
                                                 else

@@ -18,8 +18,6 @@ namespace PMDCP.DatabaseConnector.SQLite
     using System;
     using System.Collections.Generic;
     using System.Data.SQLite;
-    using System.Diagnostics;
-    using System.Text;
 
     public class SQLite : IDatabase
     {
