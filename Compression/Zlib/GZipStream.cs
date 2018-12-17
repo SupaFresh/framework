@@ -711,9 +711,9 @@ namespace PMDCP.Compression.Zlib
         {
             get
             {
-                if (_baseStream._streamMode == PMDCP.Compression.Zlib.ZlibBaseStream.StreamMode.Writer)
+                if (_baseStream._streamMode == ZlibBaseStream.StreamMode.Writer)
                     return _baseStream._z.TotalBytesOut + _headerByteCount;
-                if (_baseStream._streamMode == PMDCP.Compression.Zlib.ZlibBaseStream.StreamMode.Reader)
+                if (_baseStream._streamMode == ZlibBaseStream.StreamMode.Reader)
                     return _baseStream._z.TotalBytesIn + _baseStream._gzipHeaderByteCount;
                 return 0;
             }
@@ -816,7 +816,7 @@ namespace PMDCP.Compression.Zlib
         public override void Write(byte[] buffer, int offset, int count)
         {
             if (_disposed) throw new ObjectDisposedException("GZipStream");
-            if (_baseStream._streamMode == PMDCP.Compression.Zlib.ZlibBaseStream.StreamMode.Undefined)
+            if (_baseStream._streamMode == ZlibBaseStream.StreamMode.Undefined)
             {
                 //Console.WriteLine("GZipStream: First write");
                 if (_baseStream._wantCompress)
@@ -835,7 +835,7 @@ namespace PMDCP.Compression.Zlib
         #endregion
 
 
-        internal static readonly System.DateTime _unixEpoch = new System.DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        internal static readonly DateTime _unixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         internal static readonly System.Text.Encoding iso8859dash1 = System.Text.Encoding.GetEncoding("iso-8859-1");
 
 
@@ -867,7 +867,7 @@ namespace PMDCP.Compression.Zlib
 
             // mtime
             if (!LastModified.HasValue) LastModified = DateTime.Now;
-            System.TimeSpan delta = LastModified.Value - _unixEpoch;
+            TimeSpan delta = LastModified.Value - _unixEpoch;
             int timet = (int)delta.TotalSeconds;
             Array.Copy(BitConverter.GetBytes(timet), 0, header, i, 4);
             i += 4;
@@ -909,11 +909,11 @@ namespace PMDCP.Compression.Zlib
         /// </summary>
         ///
         /// <remarks>
-        ///   Uncompress it with <see cref="GZipStream.UncompressString(byte[])"/>.
+        ///   Uncompress it with <see cref="UncompressString(byte[])"/>.
         /// </remarks>
         ///
-        /// <seealso cref="GZipStream.UncompressString(byte[])"/>
-        /// <seealso cref="GZipStream.CompressBuffer(byte[])"/>
+        /// <seealso cref="UncompressString(byte[])"/>
+        /// <seealso cref="CompressBuffer(byte[])"/>
         ///
         /// <param name="s">
         ///   A string to compress. The string will first be encoded
@@ -938,11 +938,11 @@ namespace PMDCP.Compression.Zlib
         /// </summary>
         ///
         /// <remarks>
-        ///   Uncompress it with <see cref="GZipStream.UncompressBuffer(byte[])"/>.
+        ///   Uncompress it with <see cref="UncompressBuffer(byte[])"/>.
         /// </remarks>
         ///
-        /// <seealso cref="GZipStream.CompressString(string)"/>
-        /// <seealso cref="GZipStream.UncompressBuffer(byte[])"/>
+        /// <seealso cref="CompressString(string)"/>
+        /// <seealso cref="UncompressBuffer(byte[])"/>
         ///
         /// <param name="b">
         ///   A buffer to compress.
@@ -966,8 +966,8 @@ namespace PMDCP.Compression.Zlib
         ///   Uncompress a GZip'ed byte array into a single string.
         /// </summary>
         ///
-        /// <seealso cref="GZipStream.CompressString(string)"/>
-        /// <seealso cref="GZipStream.UncompressBuffer(byte[])"/>
+        /// <seealso cref="CompressString(string)"/>
+        /// <seealso cref="UncompressBuffer(byte[])"/>
         ///
         /// <param name="compressed">
         ///   A buffer containing GZIP-compressed data.
@@ -988,8 +988,8 @@ namespace PMDCP.Compression.Zlib
         ///   Uncompress a GZip'ed byte array into a byte array.
         /// </summary>
         ///
-        /// <seealso cref="GZipStream.CompressBuffer(byte[])"/>
-        /// <seealso cref="GZipStream.UncompressString(byte[])"/>
+        /// <seealso cref="CompressBuffer(byte[])"/>
+        /// <seealso cref="UncompressString(byte[])"/>
         ///
         /// <param name="compressed">
         ///   A buffer containing data that has been compressed with GZip.

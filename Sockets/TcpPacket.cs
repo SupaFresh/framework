@@ -48,7 +48,7 @@ namespace PMDCP.Sockets
         #region Properties
 
         public ConnectionType ConnectionType {
-            get { return Sockets.ConnectionType.Tcp; }
+            get { return ConnectionType.Tcp; }
         }
 
         public string Header { get; private set; }

@@ -21,12 +21,12 @@ namespace SevenZip
         // these are the default properties, keeping it simple for now:
         static object[] properties = 
                 {
-                    (int)(dictionary),
-                    (int)(2),
-                    (int)(3),
-                    (int)(0),
-                    (int)(2),
-                    (int)(128),
+                    dictionary,
+                    2,
+                    3,
+                    0,
+                    2,
+                    128,
                     "bt4",
                     eos
                 };
@@ -65,7 +65,7 @@ namespace SevenZip
         }
 
         public static void Decompress(Stream inputStream, Stream outputStream) {
-            SevenZip.Compression.LZMA.Decoder decoder = new SevenZip.Compression.LZMA.Decoder();
+            Compression.LZMA.Decoder decoder = new Compression.LZMA.Decoder();
 
             byte[] properties2 = new byte[5];
             if (inputStream.Read(properties2, 0, 5) != 5)

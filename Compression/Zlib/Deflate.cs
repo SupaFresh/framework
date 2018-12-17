@@ -159,11 +159,11 @@ namespace PMDCP.Compression.Zlib
 
             private Config(int goodLength, int maxLazy, int niceLength, int maxChainLength, DeflateFlavor flavor)
             {
-                this.GoodLength = goodLength;
-                this.MaxLazy = maxLazy;
-                this.NiceLength = niceLength;
-                this.MaxChainLength = maxChainLength;
-                this.Flavor = flavor;
+                GoodLength = goodLength;
+                MaxLazy = maxLazy;
+                NiceLength = niceLength;
+                MaxChainLength = maxChainLength;
+                Flavor = flavor;
             }
 
             public static Config Lookup(CompressionLevel level)
@@ -195,7 +195,7 @@ namespace PMDCP.Compression.Zlib
 
         private CompressFunc DeflateFunction;
 
-        private static readonly System.String[] _ErrorMessage = new System.String[]
+        private static readonly string[] _ErrorMessage = new string[]
         {
             "need dictionary",
             "stream end",
@@ -1551,12 +1551,7 @@ namespace PMDCP.Compression.Zlib
 
 
         private bool Rfc1950BytesEmitted = false;
-        private bool _WantRfc1950HeaderBytes = true;
-        internal bool WantRfc1950HeaderBytes
-        {
-            get { return _WantRfc1950HeaderBytes; }
-            set { _WantRfc1950HeaderBytes = value; }
-        }
+        internal bool WantRfc1950HeaderBytes { get; set; } = true;
 
 
         internal int Initialize(ZlibCodec codec, CompressionLevel level)
@@ -1584,7 +1579,7 @@ namespace PMDCP.Compression.Zlib
                 throw new ZlibException("windowBits must be in the range 9..15.");
 
             if (memLevel < 1 || memLevel > MEM_LEVEL_MAX)
-                throw new ZlibException(String.Format("memLevel must be in the range 1.. {0}", MEM_LEVEL_MAX));
+                throw new ZlibException(string.Format("memLevel must be in the range 1.. {0}", MEM_LEVEL_MAX));
 
             _codec.dstate = this;
 
@@ -1617,8 +1612,8 @@ namespace PMDCP.Compression.Zlib
             // The middle slice, of 32k, is used for distance codes. 
             // The final 16k are length codes.
 
-            this.compressionLevel = level;
-            this.compressionStrategy = strategy;
+            compressionLevel = level;
+            compressionStrategy = strategy;
 
             Reset();
             return ZlibConstants.Z_OK;
@@ -1755,7 +1750,7 @@ namespace PMDCP.Compression.Zlib
                 (status == FINISH_STATE && flush != FlushType.Finish))
             {
                 _codec.Message = _ErrorMessage[ZlibConstants.Z_NEED_DICT - (ZlibConstants.Z_STREAM_ERROR)];
-                throw new ZlibException(String.Format("Something is fishy. [{0}]", _codec.Message));
+                throw new ZlibException(string.Format("Something is fishy. [{0}]", _codec.Message));
                 //return ZlibConstants.Z_STREAM_ERROR;
             }
             if (_codec.AvailableBytesOut == 0)

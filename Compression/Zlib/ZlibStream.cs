@@ -479,9 +479,9 @@ namespace PMDCP.Compression.Zlib
         {
             get
             {
-                if (_baseStream._streamMode == PMDCP.Compression.Zlib.ZlibBaseStream.StreamMode.Writer)
+                if (_baseStream._streamMode == ZlibBaseStream.StreamMode.Writer)
                     return _baseStream._z.TotalBytesOut;
-                if (_baseStream._streamMode == PMDCP.Compression.Zlib.ZlibBaseStream.StreamMode.Reader)
+                if (_baseStream._streamMode == ZlibBaseStream.StreamMode.Reader)
                     return _baseStream._z.TotalBytesIn;
                 return 0;
             }

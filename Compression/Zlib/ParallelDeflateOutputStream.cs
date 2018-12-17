@@ -35,7 +35,7 @@ namespace PMDCP.Compression.Zlib
             public int compressedBytesAvailable;
             public ZlibCodec compressor;
 
-            public WorkItem(int size, PMDCP.Compression.Zlib.CompressionLevel compressLevel, CompressionStrategy strategy)
+            public WorkItem(int size, CompressionLevel compressLevel, CompressionStrategy strategy)
             {
                 buffer= new byte[size];
                 // alloc 5 bytes overhead for every block (margin of safety= 2)
@@ -67,7 +67,7 @@ namespace PMDCP.Compression.Zlib
     /// </para>
     ///
     /// <para>
-    ///   This class is similar to <see cref="PMDCP.Compression.Zlib.DeflateStream"/>, except
+    ///   This class is similar to <see cref="DeflateStream"/>, except
     ///   that this implementation uses an approach that employs multiple worker
     ///   threads to perform the DEFLATE.  On a multi-cpu or multi-core computer,
     ///   the performance of this class can be significantly higher than the
@@ -88,7 +88,7 @@ namespace PMDCP.Compression.Zlib
     /// </para>
     ///
     /// </remarks>
-    /// <seealso cref="PMDCP.Compression.Zlib.DeflateStream" />
+    /// <seealso cref="DeflateStream" />
     public class ParallelDeflateOutputStream : System.IO.Stream
     {
 
@@ -107,7 +107,7 @@ namespace PMDCP.Compression.Zlib
         private bool                        _isDisposed;
         private bool                        _firstWriteDone;
         private int                         _pc;
-        private PMDCP.Compression.Zlib.CompressionLevel _compressLevel;
+        private CompressionLevel _compressLevel;
         private volatile Exception          _pendingException;
         private object                      _eLock = new object();  // protects _pendingException
 
@@ -137,7 +137,7 @@ namespace PMDCP.Compression.Zlib
         /// </para>
         ///
         /// <para>
-        ///   This class is similar to <see cref="PMDCP.Compression.Zlib.DeflateStream"/>,
+        ///   This class is similar to <see cref="DeflateStream"/>,
         ///   except that this implementation uses an approach that employs
         ///   multiple worker threads to perform the DEFLATE.  On a multi-cpu or
         ///   multi-core computer, the performance of this class can be
@@ -270,7 +270,7 @@ namespace PMDCP.Compression.Zlib
                                            bool leaveOpen)
         {
             TraceOutput(TraceBits.Lifecycle | TraceBits.Session, "-------------------------------------------------------");
-            TraceOutput(TraceBits.Lifecycle | TraceBits.Session, "Create {0:X8}", this.GetHashCode());
+            TraceOutput(TraceBits.Lifecycle | TraceBits.Session, "Create {0:X8}", GetHashCode());
             _compressLevel= level;
             _leaveOpen = leaveOpen;
             Strategy = strategy;
@@ -353,7 +353,7 @@ namespace PMDCP.Compression.Zlib
         ///   memory but result in less effective compression.  For example, using
         ///   the default buffer size of 128k, the compression delivered is within
         ///   1% of the compression delivered by the single-threaded <see
-        ///   cref="PMDCP.Compression.Zlib.DeflateStream"/>.  On the other hand, using a
+        ///   cref="DeflateStream"/>.  On the other hand, using a
         ///   BufferSize of 8k can result in a compressed data stream that is 5%
         ///   larger than that delivered by the single-threaded
         ///   <c>DeflateStream</c>.  Excessively small buffer sizes can also cause
@@ -442,7 +442,7 @@ namespace PMDCP.Compression.Zlib
         /// </para>
         ///
         /// <para>
-        ///   To decompress data, use the <see cref="PMDCP.Compression.Zlib.DeflateStream"/> class.
+        ///   To decompress data, use the <see cref="DeflateStream"/> class.
         /// </para>
         ///
         /// </remarks>
@@ -943,7 +943,7 @@ namespace PMDCP.Compression.Zlib
                 }
                 while (true);
             }
-            catch (System.Exception exc1)
+            catch (Exception exc1)
             {
                 lock(_eLock)
                 {

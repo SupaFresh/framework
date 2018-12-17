@@ -196,7 +196,7 @@ namespace PMDCP.Compression.Zlib
     /// A general purpose exception class for exceptions in the Zlib library.
     /// </summary>
     [Interop.Guid("ebc25cf6-9120-4283-b972-0e5520d0000E")]
-    public class ZlibException : System.Exception
+    public class ZlibException : Exception
     {
         /// <summary>
         /// The ZlibException class captures exception information generated

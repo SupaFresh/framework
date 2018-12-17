@@ -81,7 +81,8 @@ namespace PMDCP.Net
                     try {
                         theRequest = (HttpWebRequest)WebRequest.Create(downloadPath);
                         theResponse = (HttpWebResponse)theRequest.GetResponse();
-                    } catch (Exception ex) {
+                    }
+                    catch (Exception ex) {
                         HasDownloadFailed = true;
                         downloadBWorker.ReportProgress(0, new object[] { "error", ex });
                         return;
@@ -116,7 +117,8 @@ namespace PMDCP.Net
                     if (DownloadComplete != null) {
                         downloadBWorker.ReportProgress(100, new object[] { "done", new FileDownloadingEventArgs(length, "", 100, length) });
                     }
-                } catch (Exception ex) {
+                }
+                catch (Exception ex) {
                     downloadBWorker.ReportProgress(0, new object[] { "error", ex });
                 }
             }
@@ -129,7 +131,8 @@ namespace PMDCP.Net
             try {
                 theRequest = (HttpWebRequest)WebRequest.Create(downloadUri);
                 theResponse = (HttpWebResponse)theRequest.GetResponse();
-            } catch (Exception) {
+            }
+            catch (Exception) {
                 HasDownloadFailed = true;
                 return;
             }

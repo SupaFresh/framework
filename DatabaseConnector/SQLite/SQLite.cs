@@ -45,7 +45,8 @@ namespace PMDCP.DatabaseConnector.SQLite
             get {
                 if (connection != null) {
                     return connection.State;
-                } else {
+                }
+                else {
                     return System.Data.ConnectionState.Closed;
                 }
             }
@@ -83,7 +84,8 @@ namespace PMDCP.DatabaseConnector.SQLite
                     using (SQLiteCommand comm = new SQLiteCommand(command, connection)) {
                         comm.ExecuteScalar();
                     }
-                } finally {
+                }
+                finally {
                     if (localConnection) {
                         CloseConnection();
                     }
@@ -117,7 +119,8 @@ namespace PMDCP.DatabaseConnector.SQLite
                     using (SQLiteCommand comm = new SQLiteCommand(command, connection)) {
                         comm.ExecuteNonQuery();
                     }
-                } finally {
+                }
+                finally {
                     if (localConnection) {
                         CloseConnection();
                     }
@@ -139,7 +142,8 @@ namespace PMDCP.DatabaseConnector.SQLite
                 using (SQLiteCommand comm = new SQLiteCommand(command, connection)) {
                     comm.ExecuteNonQuery();
                 }
-            } finally {
+            }
+            finally {
                 if (localConnection) {
                     CloseConnection();
                 }
@@ -157,7 +161,8 @@ namespace PMDCP.DatabaseConnector.SQLite
                 using (SQLiteCommand comm = new SQLiteCommand(command, connection)) {
                     comm.ExecuteNonQuery();
                 }
-            } finally {
+            }
+            finally {
                 if (localConnection) {
                     CloseConnection();
                 }
@@ -174,7 +179,8 @@ namespace PMDCP.DatabaseConnector.SQLite
                 using (SQLiteCommand comm = new SQLiteCommand(command, connection)) {
                     return comm.ExecuteScalar();
                 }
-            } finally {
+            }
+            finally {
                 if (localConnection) {
                     CloseConnection();
                 }
@@ -210,7 +216,8 @@ namespace PMDCP.DatabaseConnector.SQLite
                         }
                     }
                 }
-            } finally {
+            }
+            finally {
                 if (localConnection) {
                     CloseConnection();
                 }
@@ -240,7 +247,8 @@ namespace PMDCP.DatabaseConnector.SQLite
                         }
                     }
                 }
-            } finally {
+            }
+            finally {
                 if (localConnection) {
                     CloseConnection();
                 }
@@ -264,7 +272,8 @@ namespace PMDCP.DatabaseConnector.SQLite
                             return false;
                     }
                 }
-            } finally {
+            }
+            finally {
                 if (localConnection) {
                     CloseConnection();
                 }
@@ -290,7 +299,8 @@ namespace PMDCP.DatabaseConnector.SQLite
                 using (SQLiteCommand cmd = new SQLiteCommand(command, connection)) {
                     cmd.ExecuteNonQuery();
                 }
-            } finally {
+            }
+            finally {
                 if (localConnection) {
                     CloseConnection();
                 }
@@ -316,7 +326,8 @@ namespace PMDCP.DatabaseConnector.SQLite
                 } else {
                     AddRow(tableName, columns);
                 }
-            } finally {
+            }
+            finally {
                 if (localConnection) {
                     CloseConnection();
                 }

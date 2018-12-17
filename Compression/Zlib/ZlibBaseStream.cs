@@ -50,7 +50,7 @@ namespace PMDCP.Compression.Zlib
         protected internal CompressionStrategy Strategy = CompressionStrategy.Default;
 
         // workitem 7159
-        PMDCP.Compression.Zlib.CRC32 crc;
+        CRC32 crc;
         protected internal string _GzipFileName;
         protected internal string _GzipComment;
         protected internal DateTime _GzipMtime;

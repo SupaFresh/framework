@@ -51,7 +51,8 @@ namespace PMDCP.DatabaseConnector.SQLite
             get {
                 if (Value != null) {
                     return Value.ToString();
-                } else {
+                }
+                else {
                     return null;
                 }
             }

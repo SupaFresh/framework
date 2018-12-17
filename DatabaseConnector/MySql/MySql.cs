@@ -56,8 +56,9 @@ namespace PMDCP.DatabaseConnector.MySql
             this.database = database;
 
             try {
-                connection = new MySqlConnection(this.ConnectionString);
-            } catch (Exception excp) {
+                connection = new MySqlConnection(ConnectionString);
+            }
+            catch (Exception excp) {
                 Exception myExcp = new Exception("Error connecting you to " +
                     "the my sql server. Internal error message: " + excp.Message, excp);
                 throw myExcp;
@@ -77,7 +78,8 @@ namespace PMDCP.DatabaseConnector.MySql
 
             try {
                 connection = new MySqlConnection(ConnectionString);
-            } catch (Exception excp) {
+            }
+            catch (Exception excp) {
                 Exception myExcp = new Exception("Error connecting you to " +
                     "the my sql server. Error: " + excp.Message, excp);
 

@@ -47,7 +47,7 @@ namespace PMDCP.Compression.Zlib
     /// files.
     /// </summary>
 
-    [Interop.GuidAttribute("ebc25cf6-9120-4283-b972-0e5520d0000C")]
+    [Interop.Guid("ebc25cf6-9120-4283-b972-0e5520d0000C")]
     [Interop.ComVisible(true)]
 #if !NETCF
     [Interop.ClassInterface(Interop.ClassInterfaceType.AutoDispatch)]
@@ -58,17 +58,17 @@ namespace PMDCP.Compression.Zlib
         /// indicates the total number of bytes read on the CRC stream.
         /// This is used when writing the ZipDirEntry when compressing files.
         /// </summary>
-        public Int64 TotalBytesRead { get; private set; }
+        public long TotalBytesRead { get; private set; }
 
         /// <summary>
         /// Indicates the current CRC for all blocks slurped in.
         /// </summary>
-        public Int32 Crc32Result
+        public int Crc32Result
         {
             get
             {
                 // return one's complement of the running result
-                return unchecked((Int32)(~_RunningCrc32Result));
+                return unchecked((int)(~_RunningCrc32Result));
             }
         }
 
@@ -77,7 +77,7 @@ namespace PMDCP.Compression.Zlib
         /// </summary>
         /// <param name="input">The stream over which to calculate the CRC32</param>
         /// <returns>the CRC32 calculation</returns>
-        public Int32 GetCrc32(System.IO.Stream input)
+        public int GetCrc32(System.IO.Stream input)
         {
             return GetCrc32AndCopy(input, null);
         }
@@ -89,7 +89,7 @@ namespace PMDCP.Compression.Zlib
         /// <param name="input">The stream over which to calculate the CRC32</param>
         /// <param name="output">The stream into which to deflate the input</param>
         /// <returns>the CRC32 calculation</returns>
-        public Int32 GetCrc32AndCopy(System.IO.Stream input, System.IO.Stream output)
+        public int GetCrc32AndCopy(System.IO.Stream input, System.IO.Stream output)
         {
             if (input == null)
                 throw new ZlibException("The input stream must not be null.");
@@ -113,7 +113,7 @@ namespace PMDCP.Compression.Zlib
                     TotalBytesRead += count;
                 }
 
-                return (Int32)(~_RunningCrc32Result);
+                return (int)(~_RunningCrc32Result);
             }
         }
 
@@ -125,14 +125,14 @@ namespace PMDCP.Compression.Zlib
         /// <param name="W">The word to start with.</param>
         /// <param name="B">The byte to combine it with.</param>
         /// <returns>The CRC-ized result.</returns>
-        public Int32 ComputeCrc32(Int32 W, byte B)
+        public int ComputeCrc32(int W, byte B)
         {
-            return _InternalComputeCrc32((UInt32)W, B);
+            return _InternalComputeCrc32((uint)W, B);
         }
 
-        internal Int32 _InternalComputeCrc32(UInt32 W, byte B)
+        internal int _InternalComputeCrc32(uint W, byte B)
         {
-            return (Int32)(crc32Table[(W ^ B) & 0xFF] ^ (W >> 8));
+            return (int)(crc32Table[(W ^ B) & 0xFF] ^ (W >> 8));
         }
 
         /// <summary>
@@ -166,12 +166,12 @@ namespace PMDCP.Compression.Zlib
                 // bzip2, gzip, and others.
                 // Often the polynomial is shown reversed as 0x04C11DB7.
                 // For more details, see http://en.wikipedia.org/wiki/Cyclic_redundancy_check
-                UInt32 dwPolynomial = 0xEDB88320;
-                UInt32 i, j;
+                uint dwPolynomial = 0xEDB88320;
+                uint i, j;
 
-                crc32Table = new UInt32[256];
+                crc32Table = new uint[256];
 
-                UInt32 dwCrc;
+                uint dwCrc;
                 for (i = 0; i < 256; i++)
                 {
                     dwCrc = i;
@@ -284,9 +284,9 @@ namespace PMDCP.Compression.Zlib
             return;
         }
 
-        private static readonly UInt32[] crc32Table;
+        private static readonly uint[] crc32Table;
         private const int BUFFER_SIZE = 8192;
-        private UInt32 _RunningCrc32Result = 0xFFFFFFFF;
+        private uint _RunningCrc32Result = 0xFFFFFFFF;
 
     }
 
@@ -312,13 +312,13 @@ namespace PMDCP.Compression.Zlib
     /// DotNetZip library.
     /// </para>
     /// </remarks>
-    public class CrcCalculatorStream : System.IO.Stream, System.IDisposable
+    public class CrcCalculatorStream : System.IO.Stream, IDisposable
     {
-        private static readonly Int64 UnsetLengthLimit = -99;
+        private static readonly long UnsetLengthLimit = -99;
 
         internal System.IO.Stream _innerStream;
         private CRC32 _Crc32;
-        private Int64 _lengthLimit = -99;
+        private long _lengthLimit = -99;
 
         /// <summary>
         /// Gets the total number of bytes run through the CRC32 calculator.
@@ -328,7 +328,7 @@ namespace PMDCP.Compression.Zlib
         /// This is either the total number of bytes read, or the total number of bytes
         /// written, depending on the direction of this stream.
         /// </remarks>
-        public Int64 TotalBytesSlurped
+        public long TotalBytesSlurped
         {
             get { return _Crc32.TotalBytesRead; }
         }
@@ -343,7 +343,7 @@ namespace PMDCP.Compression.Zlib
         /// </remarks>
         /// <param name="stream">The underlying stream</param>
         public CrcCalculatorStream(System.IO.Stream stream)
-            : this(true, CrcCalculatorStream.UnsetLengthLimit, stream)
+            : this(true, UnsetLengthLimit, stream)
         {
         }
 
@@ -356,7 +356,7 @@ namespace PMDCP.Compression.Zlib
         /// <param name="leaveOpen">true to leave the underlying stream
         /// open upon close of the CrcCalculatorStream.; false otherwise.</param>
         public CrcCalculatorStream(System.IO.Stream stream, bool leaveOpen)
-            : this(leaveOpen, CrcCalculatorStream.UnsetLengthLimit, stream)
+            : this(leaveOpen, UnsetLengthLimit, stream)
         {
         }
 
@@ -370,7 +370,7 @@ namespace PMDCP.Compression.Zlib
         /// </remarks>
         /// <param name="stream">The underlying stream</param>
         /// <param name="length">The length of the stream to slurp</param>
-        public CrcCalculatorStream(System.IO.Stream stream, Int64 length)
+        public CrcCalculatorStream(System.IO.Stream stream, long length)
             : this(true, length, stream)
         {
             if (length < 0)
@@ -385,7 +385,7 @@ namespace PMDCP.Compression.Zlib
         /// <param name="length">The length of the stream to slurp</param>
         /// <param name="leaveOpen">true to leave the underlying stream
         /// open upon close of the CrcCalculatorStream.; false otherwise.</param>
-        public CrcCalculatorStream(System.IO.Stream stream, Int64 length, bool leaveOpen)
+        public CrcCalculatorStream(System.IO.Stream stream, long length, bool leaveOpen)
             : this(leaveOpen, length, stream)
         {
             if (length < 0)
@@ -398,7 +398,7 @@ namespace PMDCP.Compression.Zlib
         // is no length set.  So we validate the length limit in those ctors that use an
         // explicit param, otherwise we don't validate, because it could be our special
         // value.
-        private CrcCalculatorStream(bool leaveOpen, Int64 length, System.IO.Stream stream)
+        private CrcCalculatorStream(bool leaveOpen, long length, System.IO.Stream stream)
             : base()
         {
             _innerStream = stream;
@@ -410,7 +410,7 @@ namespace PMDCP.Compression.Zlib
         /// <summary>
         /// Provides the current CRC for all blocks slurped in.
         /// </summary>
-        public Int32 Crc
+        public int Crc
         {
             get { return _Crc32.Crc32Result; }
         }
@@ -440,10 +440,10 @@ namespace PMDCP.Compression.Zlib
             // calling ReadToEnd() on it, We can "over-read" the zip data and get a
             // corrupt string.  The length limits that, prevents that problem.
 
-            if (_lengthLimit != CrcCalculatorStream.UnsetLengthLimit)
+            if (_lengthLimit != UnsetLengthLimit)
             {
                 if (_Crc32.TotalBytesRead >= _lengthLimit) return 0; // EOF
-                Int64 bytesRemaining = _lengthLimit - _Crc32.TotalBytesRead;
+                long bytesRemaining = _lengthLimit - _Crc32.TotalBytesRead;
                 if (bytesRemaining < count) bytesToRead = (int)bytesRemaining;
             }
             int n = _innerStream.Read(buffer, offset, bytesToRead);
@@ -502,7 +502,7 @@ namespace PMDCP.Compression.Zlib
         {
             get
             {
-                if (_lengthLimit == CrcCalculatorStream.UnsetLengthLimit)
+                if (_lengthLimit == UnsetLengthLimit)
                     return _innerStream.Length;
                 else return _lengthLimit;
             }

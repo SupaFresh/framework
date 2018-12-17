@@ -203,14 +203,23 @@ namespace PMDCP.Compression.Zlib
             if (mode == CompressionMode.Compress)
             {
                 int rc = InitializeDeflate();
-                if (rc != ZlibConstants.Z_OK) throw new ZlibException("Cannot initialize for deflate.");
+                if (rc != ZlibConstants.Z_OK)
+                {
+                    throw new ZlibException("Cannot initialize for deflate.");
+                }
             }
             else if (mode == CompressionMode.Decompress)
             {
                 int rc = InitializeInflate();
-                if (rc != ZlibConstants.Z_OK) throw new ZlibException("Cannot initialize for inflate.");
+                if (rc != ZlibConstants.Z_OK)
+                {
+                    throw new ZlibException("Cannot initialize for inflate.");
+                }
             }
-            else throw new ZlibException("Invalid ZlibStreamFlavor.");
+            else
+            {
+                throw new ZlibException("Invalid ZlibStreamFlavor.");
+            }
         }
 
         /// <summary>
