@@ -14,47 +14,60 @@
 // along with Mystery Dungeon eXtended.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System.Text;
 using System.IO;
 using System.Security.Cryptography;
+using System.Text;
 
 namespace PMDCP.Core
 {
     public class Hash
     {
-        public static string GetFileHash(string filePath, HashType type) {
+        public static string GetFileHash(string filePath, HashType type)
+        {
             if (!File.Exists(filePath))
+            {
                 return string.Empty;
+            }
 
-            System.Security.Cryptography.HashAlgorithm hasher;
-            switch (type) {
+            HashAlgorithm hasher;
+            switch (type)
+            {
                 case HashType.SHA1:
                 default:
                     hasher = new SHA1CryptoServiceProvider();
                     break;
+
                 case HashType.SHA256:
                     hasher = new SHA256Managed();
                     break;
+
                 case HashType.SHA384:
                     hasher = new SHA384Managed();
                     break;
+
                 case HashType.SHA512:
                     hasher = new SHA512Managed();
                     break;
+
                 case HashType.MD5:
                     hasher = new MD5CryptoServiceProvider();
                     break;
             }
             StringBuilder buff = new StringBuilder();
-            try {
-                using (FileStream f = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read, 8192)) {
+            try
+            {
+                using (FileStream f = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read, 8192))
+                {
                     hasher.ComputeHash(f);
-                    foreach (byte hashByte in hasher.Hash) {
+                    foreach (byte hashByte in hasher.Hash)
+                    {
                         buff.Append(string.Format("{0:x2}", hashByte));
                     }
                 }
-            } catch {
-                return "Error reading file." + new System.Random(DateTime.Now.Second * DateTime.Now.Millisecond).Next().ToString();
+            }
+            catch
+            {
+                return "Error reading file." + new Random(DateTime.Now.Second * DateTime.Now.Millisecond).Next().ToString();
             }
             hasher.Dispose();
             return buff.ToString();
@@ -65,24 +78,30 @@ namespace PMDCP.Core
         /// </summary>
         /// <param name="SourceText">The text to hash.</param>
         /// <returns>The hashed text as a Base64 string.</returns>
-        public static string GenerateHash(string sourceText, string salt, HashType hashType) {
+        public static string GenerateHash(string sourceText, string salt, HashType hashType)
+        {
             sourceText = sourceText + salt;
 
-            System.Security.Cryptography.HashAlgorithm hasher;
-            switch (hashType) {
+            HashAlgorithm hasher;
+            switch (hashType)
+            {
                 case HashType.SHA1:
                 default:
                     hasher = new SHA1CryptoServiceProvider();
                     break;
+
                 case HashType.SHA256:
                     hasher = new SHA256Managed();
                     break;
+
                 case HashType.SHA384:
                     hasher = new SHA384Managed();
                     break;
+
                 case HashType.SHA512:
                     hasher = new SHA512Managed();
                     break;
+
                 case HashType.MD5:
                     hasher = new MD5CryptoServiceProvider();
                     break;
@@ -93,7 +112,8 @@ namespace PMDCP.Core
             //Retrieve a byte array based on the source text
             byte[] byteSourceText = unicodeEncoding.GetBytes(sourceText);
             hasher.ComputeHash(byteSourceText);
-            foreach (byte hashByte in hasher.Hash) {
+            foreach (byte hashByte in hasher.Hash)
+            {
                 buffer.Append(string.Format("{0:x2}", hashByte));
             }
             hasher.Dispose();

@@ -19,7 +19,8 @@ namespace PMDCP.Sockets.Gnp
 {
     public class ConnectionReceivedEventArgs : EventArgs
     {
-        public ConnectionReceivedEventArgs(object id, GnpClient gnpClient) {
+        public ConnectionReceivedEventArgs(object id, GnpClient gnpClient)
+        {
             GnpClient = gnpClient;
             ID = id;
         }

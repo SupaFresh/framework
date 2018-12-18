@@ -26,7 +26,6 @@
 //
 // ------------------------------------------------------------------
 
-
 using System;
 using System.IO;
 
@@ -81,7 +80,7 @@ namespace PMDCP.Compression.Zlib
     ///
     /// <seealso cref="DeflateStream" />
     /// <seealso cref="ZlibStream" />
-    public class GZipStream : System.IO.Stream
+    public class GZipStream : Stream
     {
         // GZip format
         // source: http://tools.ietf.org/html/rfc1952
@@ -119,8 +118,6 @@ namespace PMDCP.Compression.Zlib
         // all optional fields get 0, except for the OS, which gets 255.
         //
 
-
-
         /// <summary>
         ///   The comment on the GZIP stream.
         /// </summary>
@@ -143,13 +140,14 @@ namespace PMDCP.Compression.Zlib
         /// </remarks>
         public string Comment
         {
-            get
-            {
-                return _Comment;
-            }
+            get => _Comment;
             set
             {
-                if (_disposed) throw new ObjectDisposedException("GZipStream");
+                if (_disposed)
+                {
+                    throw new ObjectDisposedException("GZipStream");
+                }
+
                 _Comment = value;
             }
         }
@@ -179,18 +177,29 @@ namespace PMDCP.Compression.Zlib
         /// </remarks>
         public string FileName
         {
-            get { return _FileName; }
+            get => _FileName;
             set
             {
-                if (_disposed) throw new ObjectDisposedException("GZipStream");
+                if (_disposed)
+                {
+                    throw new ObjectDisposedException("GZipStream");
+                }
+
                 _FileName = value;
-                if (_FileName == null) return;
+                if (_FileName == null)
+                {
+                    return;
+                }
+
                 if (_FileName.IndexOf("/") != -1)
                 {
                     _FileName = _FileName.Replace("/", "\\");
                 }
                 if (_FileName.EndsWith("\\"))
+                {
                     throw new Exception("Illegal filename");
+                }
+
                 if (_FileName.IndexOf("\\") != -1)
                 {
                     // trim any leading path
@@ -221,11 +230,10 @@ namespace PMDCP.Compression.Zlib
 
         private int _headerByteCount;
         internal ZlibBaseStream _baseStream;
-        bool _disposed;
-        bool _firstReadDone;
-        string _FileName;
-        string _Comment;
-
+        private bool _disposed;
+        private bool _firstReadDone;
+        private string _FileName;
+        private string _Comment;
 
         /// <summary>
         ///   Create a <c>GZipStream</c> using the specified <c>CompressionMode</c>.
@@ -543,11 +551,16 @@ namespace PMDCP.Compression.Zlib
         /// <summary>
         /// This property sets the flush behavior on the stream.
         /// </summary>
-        virtual public FlushType FlushMode
+        public virtual FlushType FlushMode
         {
-            get { return (_baseStream._flushMode); }
-            set {
-                if (_disposed) throw new ObjectDisposedException("GZipStream");
+            get => (_baseStream._flushMode);
+            set
+            {
+                if (_disposed)
+                {
+                    throw new ObjectDisposedException("GZipStream");
+                }
+
                 _baseStream._flushMode = value;
             }
         }
@@ -571,41 +584,35 @@ namespace PMDCP.Compression.Zlib
         /// </remarks>
         public int BufferSize
         {
-            get
-            {
-                return _baseStream._bufferSize;
-            }
+            get => _baseStream._bufferSize;
             set
             {
-                if (_disposed) throw new ObjectDisposedException("GZipStream");
+                if (_disposed)
+                {
+                    throw new ObjectDisposedException("GZipStream");
+                }
+
                 if (_baseStream._workingBuffer != null)
+                {
                     throw new ZlibException("The working buffer is already set.");
+                }
+
                 if (value < ZlibConstants.WorkingBufferSizeMin)
+                {
                     throw new ZlibException(string.Format("Don't be silly. {0} bytes?? Use a bigger buffer, at least {1}.", value, ZlibConstants.WorkingBufferSizeMin));
+                }
+
                 _baseStream._bufferSize = value;
             }
         }
 
-
         /// <summary> Returns the total number of bytes input so far.</summary>
-        virtual public long TotalIn
-        {
-            get
-            {
-                return _baseStream._z.TotalBytesIn;
-            }
-        }
+        public virtual long TotalIn => _baseStream._z.TotalBytesIn;
 
         /// <summary> Returns the total number of bytes output so far.</summary>
-        virtual public long TotalOut
-        {
-            get
-            {
-                return _baseStream._z.TotalBytesOut;
-            }
-        }
+        public virtual long TotalOut => _baseStream._z.TotalBytesOut;
 
-        #endregion
+        #endregion Zlib properties
 
         #region Stream methods
 
@@ -636,7 +643,6 @@ namespace PMDCP.Compression.Zlib
             }
         }
 
-
         /// <summary>
         /// Indicates whether the stream can be read.
         /// </summary>
@@ -647,7 +653,11 @@ namespace PMDCP.Compression.Zlib
         {
             get
             {
-                if (_disposed) throw new ObjectDisposedException("GZipStream");
+                if (_disposed)
+                {
+                    throw new ObjectDisposedException("GZipStream");
+                }
+
                 return _baseStream._stream.CanRead;
             }
         }
@@ -658,11 +668,7 @@ namespace PMDCP.Compression.Zlib
         /// <remarks>
         /// Always returns false.
         /// </remarks>
-        public override bool CanSeek
-        {
-            get { return false; }
-        }
-
+        public override bool CanSeek => false;
 
         /// <summary>
         /// Indicates whether the stream can be written.
@@ -674,7 +680,11 @@ namespace PMDCP.Compression.Zlib
         {
             get
             {
-                if (_disposed) throw new ObjectDisposedException("GZipStream");
+                if (_disposed)
+                {
+                    throw new ObjectDisposedException("GZipStream");
+                }
+
                 return _baseStream._stream.CanWrite;
             }
         }
@@ -684,17 +694,18 @@ namespace PMDCP.Compression.Zlib
         /// </summary>
         public override void Flush()
         {
-            if (_disposed) throw new ObjectDisposedException("GZipStream");
+            if (_disposed)
+            {
+                throw new ObjectDisposedException("GZipStream");
+            }
+
             _baseStream.Flush();
         }
 
         /// <summary>
         /// Reading this property always throws a <see cref="NotImplementedException"/>.
         /// </summary>
-        public override long Length
-        {
-            get { throw new NotImplementedException(); }
-        }
+        public override long Length => throw new NotImplementedException();
 
         /// <summary>
         ///   The position of the stream pointer.
@@ -712,13 +723,19 @@ namespace PMDCP.Compression.Zlib
             get
             {
                 if (_baseStream._streamMode == ZlibBaseStream.StreamMode.Writer)
+                {
                     return _baseStream._z.TotalBytesOut + _headerByteCount;
+                }
+
                 if (_baseStream._streamMode == ZlibBaseStream.StreamMode.Reader)
+                {
                     return _baseStream._z.TotalBytesIn + _baseStream._gzipHeaderByteCount;
+                }
+
                 return 0;
             }
 
-            set { throw new NotImplementedException(); }
+            set => throw new NotImplementedException();
         }
 
         /// <summary>
@@ -754,7 +771,11 @@ namespace PMDCP.Compression.Zlib
         /// <returns>the number of bytes actually read</returns>
         public override int Read(byte[] buffer, int offset, int count)
         {
-            if (_disposed) throw new ObjectDisposedException("GZipStream");
+            if (_disposed)
+            {
+                throw new ObjectDisposedException("GZipStream");
+            }
+
             int n = _baseStream.Read(buffer, offset, count);
 
             // Console.WriteLine("GZipStream::Read(buffer, off({0}), c({1}) = {2}", offset, count, n);
@@ -768,8 +789,6 @@ namespace PMDCP.Compression.Zlib
             }
             return n;
         }
-
-
 
         /// <summary>
         ///   Calling this method always throws a <see cref="NotImplementedException"/>.
@@ -815,7 +834,11 @@ namespace PMDCP.Compression.Zlib
         /// <param name="count">the number of bytes to write.</param>
         public override void Write(byte[] buffer, int offset, int count)
         {
-            if (_disposed) throw new ObjectDisposedException("GZipStream");
+            if (_disposed)
+            {
+                throw new ObjectDisposedException("GZipStream");
+            }
+
             if (_baseStream._streamMode == ZlibBaseStream.StreamMode.Undefined)
             {
                 //Console.WriteLine("GZipStream: First write");
@@ -832,12 +855,11 @@ namespace PMDCP.Compression.Zlib
 
             _baseStream.Write(buffer, offset, count);
         }
-        #endregion
 
+        #endregion Stream methods
 
         internal static readonly DateTime _unixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         internal static readonly System.Text.Encoding iso8859dash1 = System.Text.Encoding.GetEncoding("iso-8859-1");
-
 
         private int EmitHeader()
         {
@@ -858,15 +880,24 @@ namespace PMDCP.Compression.Zlib
             header[i++] = 8;
             byte flag = 0;
             if (Comment != null)
+            {
                 flag ^= 0x10;
+            }
+
             if (FileName != null)
+            {
                 flag ^= 0x8;
+            }
 
             // flag
             header[i++] = flag;
 
             // mtime
-            if (!LastModified.HasValue) LastModified = DateTime.Now;
+            if (!LastModified.HasValue)
+            {
+                LastModified = DateTime.Now;
+            }
+
             TimeSpan delta = LastModified.Value - _unixEpoch;
             int timet = (int)delta.TotalSeconds;
             Array.Copy(BitConverter.GetBytes(timet), 0, header, i, 4);
@@ -902,8 +933,6 @@ namespace PMDCP.Compression.Zlib
             return header.Length; // bytes written
         }
 
-
-
         /// <summary>
         ///   Compress a string into a byte array using GZip.
         /// </summary>
@@ -923,15 +952,14 @@ namespace PMDCP.Compression.Zlib
         /// <returns>The string in compressed form</returns>
         public static byte[] CompressString(string s)
         {
-            using (var ms = new MemoryStream())
+            using (MemoryStream ms = new MemoryStream())
             {
-                System.IO.Stream compressor =
+                Stream compressor =
                     new GZipStream(ms, CompressionMode.Compress, CompressionLevel.BestCompression);
                 ZlibBaseStream.CompressString(s, compressor);
                 return ms.ToArray();
             }
         }
-
 
         /// <summary>
         ///   Compress a byte array into a new byte array using GZip.
@@ -951,16 +979,15 @@ namespace PMDCP.Compression.Zlib
         /// <returns>The data in compressed form</returns>
         public static byte[] CompressBuffer(byte[] b)
         {
-            using (var ms = new MemoryStream())
+            using (MemoryStream ms = new MemoryStream())
             {
-                System.IO.Stream compressor =
-                    new GZipStream( ms, CompressionMode.Compress, CompressionLevel.BestCompression );
+                Stream compressor =
+                    new GZipStream(ms, CompressionMode.Compress, CompressionLevel.BestCompression);
 
                 ZlibBaseStream.CompressBuffer(b, compressor);
                 return ms.ToArray();
             }
         }
-
 
         /// <summary>
         ///   Uncompress a GZip'ed byte array into a single string.
@@ -976,13 +1003,12 @@ namespace PMDCP.Compression.Zlib
         /// <returns>The uncompressed string</returns>
         public static string UncompressString(byte[] compressed)
         {
-            using (var input = new MemoryStream(compressed))
+            using (MemoryStream input = new MemoryStream(compressed))
             {
                 Stream decompressor = new GZipStream(input, CompressionMode.Decompress);
                 return ZlibBaseStream.UncompressString(compressed, decompressor);
             }
         }
-
 
         /// <summary>
         ///   Uncompress a GZip'ed byte array into a byte array.
@@ -998,15 +1024,13 @@ namespace PMDCP.Compression.Zlib
         /// <returns>The data in uncompressed form</returns>
         public static byte[] UncompressBuffer(byte[] compressed)
         {
-            using (var input = new System.IO.MemoryStream(compressed))
+            using (MemoryStream input = new MemoryStream(compressed))
             {
-                System.IO.Stream decompressor =
-                    new GZipStream( input, CompressionMode.Decompress );
+                Stream decompressor =
+                    new GZipStream(input, CompressionMode.Decompress);
 
                 return ZlibBaseStream.UncompressBuffer(compressed, decompressor);
             }
         }
-
-
     }
 }

@@ -19,7 +19,8 @@ namespace PMDCP.Net
 {
     public class FileDownloadingEventArgs : EventArgs
     {
-        public FileDownloadingEventArgs(long fileSize, string filePath, int percent, long position) {
+        public FileDownloadingEventArgs(long fileSize, string filePath, int percent, long position)
+        {
             FileSize = fileSize;
             FilePath = filePath;
             FileName = System.IO.Path.GetFileName(filePath).Replace(".tmp", "");
@@ -36,6 +37,5 @@ namespace PMDCP.Net
         public int Percent { get; }
 
         public long Position { get; }
-
     }
 }

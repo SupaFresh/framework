@@ -22,8 +22,7 @@ namespace PMDCP.Sockets.Gnp
         public int sequenceNumber;
         public long sentTicks;
         public int retryCount;
-
-        byte[] customHeader;
-        ByteArray packet;
+        private readonly byte[] customHeader;
+        private readonly ByteArray packet;
     }
 }

@@ -13,25 +13,26 @@
 // You should have received a copy of the GNU General Public License
 // along with Mystery Dungeon eXtended.  If not, see <http://www.gnu.org/licenses/>.
 
+using Dapper;
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Text;
-using Dapper;
-using MySql.Data.MySqlClient;
 
 namespace PMDCP.DatabaseConnector.MySql
 {
     public class MySql : IDatabase
     {
         public MySqlConnection connection;
+        private MySqlTransaction activeTransaction;
+        private readonly string database;
 
-        MySqlTransaction activeTransaction;
-        string database;
-
-        public static bool TestConnection(string server, int port, string database, string user, string pass) {
+        public static bool TestConnection(string server, int port, string database, string user, string pass)
+        {
             string connectionString = "Server=" + server + ";Port=" + port + ";Database=" + database + ";Uid=" + user + ";Pwd=" + pass + ";SslMode=none;";
-            try {
+            try
+            {
                 MySqlConnection connection = new MySqlConnection(connectionString);
                 connection.Open();
                 connection.Close();
@@ -51,14 +52,17 @@ namespace PMDCP.DatabaseConnector.MySql
         /// <param name="db">The database catalog to use</param>
         /// <param name="user">The user name</param>
         /// <param name="pass">The user password</param>
-        public MySql(string server, int port, string database, string user, string pass) {
+        public MySql(string server, int port, string database, string user, string pass)
+        {
             ConnectionString = "Server=" + server + ";Port=" + port + ";Database=" + database + ";Uid=" + user + ";Pwd=" + pass + ";SslMode=none;";
             this.database = database;
 
-            try {
+            try
+            {
                 connection = new MySqlConnection(ConnectionString);
             }
-            catch (Exception excp) {
+            catch (Exception excp)
+            {
                 Exception myExcp = new Exception("Error connecting you to " +
                     "the my sql server. Internal error message: " + excp.Message, excp);
                 throw myExcp;
@@ -73,13 +77,16 @@ namespace PMDCP.DatabaseConnector.MySql
         /// </summary>
         /// <param name="connStr">A connection string to provide to connect
         /// to the database</param>
-        public MySql(string connStr) {
+        public MySql(string connStr)
+        {
             ConnectionString = connStr;
 
-            try {
+            try
+            {
                 connection = new MySqlConnection(ConnectionString);
             }
-            catch (Exception excp) {
+            catch (Exception excp)
+            {
                 Exception myExcp = new Exception("Error connecting you to " +
                     "the my sql server. Error: " + excp.Message, excp);
 
@@ -92,13 +99,18 @@ namespace PMDCP.DatabaseConnector.MySql
         /// <summary>
         /// Opens the connection to the SQL database.
         /// </summary>
-        public void OpenConnection() {
+        public void OpenConnection()
+        {
             bool success = true;
 
-            if (IsConnected == false) {
-                try {
+            if (IsConnected == false)
+            {
+                try
+                {
                     connection.Open();
-                } catch (Exception excp) {
+                }
+                catch (Exception excp)
+                {
                     IsConnected = false;
                     success = false;
                     Exception myException = new Exception("Error opening connection" +
@@ -107,7 +119,8 @@ namespace PMDCP.DatabaseConnector.MySql
                     throw myException;
                 }
 
-                if (success) {
+                if (success)
+                {
                     IsConnected = true;
                 }
             }
@@ -116,8 +129,10 @@ namespace PMDCP.DatabaseConnector.MySql
         /// <summary>
         /// Closes the connection to the sql connection.
         /// </summary>
-        public void CloseConnection() {
-            if (IsConnected) {
+        public void CloseConnection()
+        {
+            if (IsConnected)
+            {
                 connection.Close();
             }
         }
@@ -128,8 +143,10 @@ namespace PMDCP.DatabaseConnector.MySql
         /// </summary>
         public bool IsConnected { get; private set; }
 
-        public string VerifyValueString(string value) {
-            if (value == null) {
+        public string VerifyValueString(string value)
+        {
+            if (value == null)
+            {
                 return "";
             }
 
@@ -145,16 +162,20 @@ namespace PMDCP.DatabaseConnector.MySql
         /// </summary>
         /// <param name="username">The user login</param>
         /// <param name="password">The user password</param>
-        public void AddUser(string username, string password) {
+        public void AddUser(string username, string password)
+        {
             string Query = "INSERT INTO users(usr_name, usr_pass) values" +
                 "('" + username + "','" + password + "')";
 
             MySqlCommand addUser = new MySqlCommand(Query, connection);
             AddCommandToTransaction(addUser);
-            try {
+            try
+            {
                 addUser.CommandTimeout = 0;
                 addUser.ExecuteNonQuery();
-            } catch (Exception excp) {
+            }
+            catch (Exception excp)
+            {
                 Exception myExcp = new Exception("Could not add user. Error: " +
                     excp.Message, excp);
                 throw (myExcp);
@@ -171,7 +192,8 @@ namespace PMDCP.DatabaseConnector.MySql
         /// <returns>A boolean value. True if the user exists
         /// in the database, false if the user does not exist
         /// in the database.</returns>
-        public bool VerifyUser(string username, string password) {
+        public bool VerifyUser(string username, string password)
+        {
             int returnValue = 0;
 
             string Query = "SELECT COUNT(*) FROM users where (usr_Name=" +
@@ -179,26 +201,33 @@ namespace PMDCP.DatabaseConnector.MySql
 
             MySqlCommand verifyUser = new MySqlCommand(Query, connection);
 
-            try {
+            try
+            {
                 verifyUser.CommandTimeout = 0;
                 verifyUser.ExecuteNonQuery();
 
                 MySqlDataReader myReader = verifyUser.ExecuteReader();
 
-                while (myReader.Read() != false) {
+                while (myReader.Read() != false)
+                {
                     returnValue = myReader.GetInt32(0);
                 }
 
                 myReader.Close();
-            } catch (Exception excp) {
+            }
+            catch (Exception excp)
+            {
                 Exception myExcp = new Exception("Could not verify user. Error: " +
                     excp.Message, excp);
                 throw (myExcp);
             }
 
-            if (returnValue == 0) {
+            if (returnValue == 0)
+            {
                 return false;
-            } else {
+            }
+            else
+            {
                 return true;
             }
         }
@@ -209,7 +238,8 @@ namespace PMDCP.DatabaseConnector.MySql
         /// <param name="username">The user name</param>
         /// <returns>True if the username is already in the table,
         /// false if the username is not in the table</returns>
-        public bool UserExists(string username) {
+        public bool UserExists(string username)
+        {
             int returnValue = 0;
 
             string Query = "SELECT COUNT(*) FROM users where (usr_Name=" +
@@ -217,77 +247,104 @@ namespace PMDCP.DatabaseConnector.MySql
 
             MySqlCommand verifyUser = new MySqlCommand(Query, connection);
 
-            try {
+            try
+            {
                 verifyUser.CommandTimeout = 0;
                 verifyUser.ExecuteNonQuery();
 
                 MySqlDataReader myReader = verifyUser.ExecuteReader();
 
-                while (myReader.Read() != false) {
+                while (myReader.Read() != false)
+                {
                     returnValue = myReader.GetInt32(0);
                 }
 
                 myReader.Close();
-            } catch (Exception excp) {
+            }
+            catch (Exception excp)
+            {
                 Exception myExcp = new Exception("Could not verify user. Error: " +
                     excp.Message, excp);
                 throw (myExcp);
             }
 
-            if (returnValue == 0) {
+            if (returnValue == 0)
+            {
                 return false;
-            } else {
+            }
+            else
+            {
                 return true;
             }
         }
 
-        public void CreateTable(string tableName, IDataField[] fields) {
-            if (fields.Length > 0) {
+        public void CreateTable(string tableName, IDataField[] fields)
+        {
+            if (fields.Length > 0)
+            {
                 bool localConnection = false;
-                if (ConnectionState == System.Data.ConnectionState.Closed) {
+                if (ConnectionState == ConnectionState.Closed)
+                {
                     localConnection = true;
                     OpenConnection();
                 }
-                try {
+                try
+                {
                     string command = "CREATE TABLE " + tableName + " (" + fields[0].Name + " " + fields[0].Type;
-                    for (int i = 1; i < fields.Length; i++) {
+                    for (int i = 1; i < fields.Length; i++)
+                    {
                         command += ", " + fields[i].Name + " " + fields[i].Type;
                     }
                     command += ")";
-                    using (MySqlCommand comm = new MySqlCommand(command, connection)) {
-                        if (!localConnection) {
+                    using (MySqlCommand comm = new MySqlCommand(command, connection))
+                    {
+                        if (!localConnection)
+                        {
                             AddCommandToTransaction(comm);
                         }
                         comm.CommandTimeout = 0;
                         comm.ExecuteNonQuery();
                     }
-                } finally {
-                    if (localConnection) {
+                }
+                finally
+                {
+                    if (localConnection)
+                    {
                         CloseConnection();
                     }
                 }
             }
         }
 
-        public void DeleteTable(string tableName) {
+        public void DeleteTable(string tableName)
+        {
             throw new NotImplementedException();
         }
 
-        public DataColumnCollection RetrieveRow(string query) {
-            if (!string.IsNullOrEmpty(query)) {
+        public DataColumnCollection RetrieveRow(string query)
+        {
+            if (!string.IsNullOrEmpty(query))
+            {
                 bool localConnection = false;
-                if (ConnectionState == System.Data.ConnectionState.Closed) {
+                if (ConnectionState == ConnectionState.Closed)
+                {
                     localConnection = true;
                     OpenConnection();
                 }
-                try {
-                    using (MySqlCommand comm = new MySqlCommand(query, connection)) {
+                try
+                {
+                    using (MySqlCommand comm = new MySqlCommand(query, connection))
+                    {
                         comm.CommandTimeout = 0;
-                        using (MySqlDataReader reader = comm.ExecuteReader()) {
-                            if (reader.HasRows) {
-                                if (reader.Read()) {
+                        using (MySqlDataReader reader = comm.ExecuteReader())
+                        {
+                            if (reader.HasRows)
+                            {
+                                if (reader.Read())
+                                {
                                     DataColumnCollection fields = new DataColumnCollection(reader.FieldCount);
-                                    for (int i = 0; i < reader.FieldCount; i++) {
+                                    for (int i = 0; i < reader.FieldCount; i++)
+                                    {
                                         fields.SetColumn(i, new DataColumn(i, false, reader.GetName(i), reader.GetValue(i)));
                                     }
                                     return fields;
@@ -295,8 +352,11 @@ namespace PMDCP.DatabaseConnector.MySql
                             }
                         }
                     }
-                } finally {
-                    if (localConnection) {
+                }
+                finally
+                {
+                    if (localConnection)
+                    {
                         CloseConnection();
                     }
                 }
@@ -304,31 +364,44 @@ namespace PMDCP.DatabaseConnector.MySql
             return null;
         }
 
-        public IDataColumn[] RetrieveRow(string tableName, string columns, string filterExpression) {
+        public IDataColumn[] RetrieveRow(string tableName, string columns, string filterExpression)
+        {
             DataColumnCollection data = RetrieveRow("SELECT " + columns + " FROM " + tableName + " WHERE " + filterExpression);
-            if (data != null) {
+            if (data != null)
+            {
                 return data.Columns;
-            } else {
+            }
+            else
+            {
                 return null;
             }
         }
 
-        public IEnumerable<DataColumnCollection> RetrieveRowsEnumerable(string query) {
-            if (!string.IsNullOrEmpty(query)) {
+        public IEnumerable<DataColumnCollection> RetrieveRowsEnumerable(string query)
+        {
+            if (!string.IsNullOrEmpty(query))
+            {
                 bool localConnection = false;
-                if (ConnectionState == System.Data.ConnectionState.Closed) {
+                if (ConnectionState == ConnectionState.Closed)
+                {
                     localConnection = true;
                     OpenConnection();
                 }
-                try {
-                    using (MySqlCommand comm = new MySqlCommand(query, connection)) {
+                try
+                {
+                    using (MySqlCommand comm = new MySqlCommand(query, connection))
+                    {
                         comm.CommandTimeout = 0;
-                        using (MySqlDataReader reader = comm.ExecuteReader()) {
-                            if (reader.HasRows) {
+                        using (MySqlDataReader reader = comm.ExecuteReader())
+                        {
+                            if (reader.HasRows)
+                            {
                                 List<DataColumnCollection> databaseRows = new List<DataColumnCollection>();
-                                while (reader.Read()) {
+                                while (reader.Read())
+                                {
                                     DataColumnCollection fields = new DataColumnCollection(reader.FieldCount);
-                                    for (int i = 0; i < reader.FieldCount; i++) {
+                                    for (int i = 0; i < reader.FieldCount; i++)
+                                    {
                                         fields.SetColumn(i, new DataColumn(i, false, reader.GetName(i), reader.GetValue(i)));
                                     }
                                     yield return fields;
@@ -336,28 +409,39 @@ namespace PMDCP.DatabaseConnector.MySql
                             }
                         }
                     }
-                } finally {
-                    if (localConnection) {
+                }
+                finally
+                {
+                    if (localConnection)
+                    {
                         CloseConnection();
                     }
                 }
             }
         }
 
-        public IEnumerable<object[]> RetrieveRowsEnumerableQuick(string query) {
-            if (!string.IsNullOrEmpty(query)) {
+        public IEnumerable<object[]> RetrieveRowsEnumerableQuick(string query)
+        {
+            if (!string.IsNullOrEmpty(query))
+            {
                 bool localConnection = false;
-                if (ConnectionState == System.Data.ConnectionState.Closed) {
+                if (ConnectionState == ConnectionState.Closed)
+                {
                     localConnection = true;
                     OpenConnection();
                 }
-                try {
-                    using (MySqlCommand comm = new MySqlCommand(query, connection)) {
+                try
+                {
+                    using (MySqlCommand comm = new MySqlCommand(query, connection))
+                    {
                         comm.CommandTimeout = 0;
-                        using (MySqlDataReader reader = comm.ExecuteReader()) {
-                            if (reader.HasRows) {
+                        using (MySqlDataReader reader = comm.ExecuteReader())
+                        {
+                            if (reader.HasRows)
+                            {
                                 List<DataColumnCollection> databaseRows = new List<DataColumnCollection>();
-                                while (reader.Read()) {
+                                while (reader.Read())
+                                {
                                     object[] values = new object[reader.FieldCount];
                                     reader.GetValues(values);
                                     yield return values;
@@ -365,30 +449,42 @@ namespace PMDCP.DatabaseConnector.MySql
                             }
                         }
                     }
-                } finally {
-                    if (localConnection) {
+                }
+                finally
+                {
+                    if (localConnection)
+                    {
                         CloseConnection();
                     }
                 }
             }
         }
 
-        public List<DataColumnCollection> RetrieveRows(string query) {
-            if (!string.IsNullOrEmpty(query)) {
+        public List<DataColumnCollection> RetrieveRows(string query)
+        {
+            if (!string.IsNullOrEmpty(query))
+            {
                 bool localConnection = false;
-                if (ConnectionState == System.Data.ConnectionState.Closed) {
+                if (ConnectionState == ConnectionState.Closed)
+                {
                     localConnection = true;
                     OpenConnection();
                 }
-                try {
-                    using (MySqlCommand comm = new MySqlCommand(query, connection)) {
+                try
+                {
+                    using (MySqlCommand comm = new MySqlCommand(query, connection))
+                    {
                         comm.CommandTimeout = 0;
-                        using (MySqlDataReader reader = comm.ExecuteReader()) {
-                            if (reader.HasRows) {
+                        using (MySqlDataReader reader = comm.ExecuteReader())
+                        {
+                            if (reader.HasRows)
+                            {
                                 List<DataColumnCollection> databaseRows = new List<DataColumnCollection>();
-                                while (reader.Read()) {
+                                while (reader.Read())
+                                {
                                     DataColumnCollection fields = new DataColumnCollection(reader.FieldCount);
-                                    for (int i = 0; i < reader.FieldCount; i++) {
+                                    for (int i = 0; i < reader.FieldCount; i++)
+                                    {
                                         fields.SetColumn(i, new DataColumn(i, false, reader.GetName(i), reader.GetValue(i)));
                                     }
                                     databaseRows.Add(fields);
@@ -397,8 +493,11 @@ namespace PMDCP.DatabaseConnector.MySql
                             }
                         }
                     }
-                } finally {
-                    if (localConnection) {
+                }
+                finally
+                {
+                    if (localConnection)
+                    {
                         CloseConnection();
                     }
                 }
@@ -406,31 +505,41 @@ namespace PMDCP.DatabaseConnector.MySql
             return null;
         }
 
-        public void AddRow(string tableName, IDataColumn[] columns) {
-            if (columns.Length > 0) {
+        public void AddRow(string tableName, IDataColumn[] columns)
+        {
+            if (columns.Length > 0)
+            {
                 bool localConnection = false;
-                if (ConnectionState == System.Data.ConnectionState.Closed) {
+                if (ConnectionState == ConnectionState.Closed)
+                {
                     localConnection = true;
                     OpenConnection();
                 }
-                try {
+                try
+                {
                     string command = "INSERT INTO " + tableName;
                     string columnsToAdd = columns[0].Name;
                     string valuesToAdd = "\'" + VerifyValueString(columns[0].Value.ToString()) + "\'";
-                    for (int i = 1; i < columns.Length; i++) {
+                    for (int i = 1; i < columns.Length; i++)
+                    {
                         columnsToAdd += ", " + columns[i].Name;
                         valuesToAdd += ", \'" + VerifyValueString(columns[i].Value.ToString()) + "\'";
                     }
                     command += " (" + columnsToAdd + ") VALUES (" + valuesToAdd + ")";
-                    using (MySqlCommand comm = new MySqlCommand(command, connection)) {
-                        if (!localConnection) {
+                    using (MySqlCommand comm = new MySqlCommand(command, connection))
+                    {
+                        if (!localConnection)
+                        {
                             AddCommandToTransaction(comm);
                         }
                         comm.CommandTimeout = 0;
                         comm.ExecuteScalar();
                     }
-                } finally {
-                    if (localConnection) {
+                }
+                finally
+                {
+                    if (localConnection)
+                    {
                         CloseConnection();
                     }
                 }
@@ -438,71 +547,96 @@ namespace PMDCP.DatabaseConnector.MySql
         }
 
         [Obsolete("Obsolete in favor of Dapper-based implementation.", true)]
-        public void DeleteRow(string tableName, string filterExpression) {
+        public void DeleteRow(string tableName, string filterExpression)
+        {
             bool localConnection = false;
-            if (ConnectionState == System.Data.ConnectionState.Closed) {
+            if (ConnectionState == ConnectionState.Closed)
+            {
                 localConnection = true;
                 OpenConnection();
             }
-            try {
+            try
+            {
                 string command = "DELETE FROM " + tableName;
-                if (!string.IsNullOrEmpty(filterExpression)) {
+                if (!string.IsNullOrEmpty(filterExpression))
+                {
                     command += " WHERE " + filterExpression;
                 }
-                using (MySqlCommand comm = new MySqlCommand(command, connection)) {
-                    if (!localConnection) {
+                using (MySqlCommand comm = new MySqlCommand(command, connection))
+                {
+                    if (!localConnection)
+                    {
                         AddCommandToTransaction(comm);
                     }
                     comm.CommandTimeout = 0;
                     comm.ExecuteNonQuery();
                 }
-            } finally {
-                if (localConnection) {
+            }
+            finally
+            {
+                if (localConnection)
+                {
                     CloseConnection();
                 }
             }
         }
 
-        public void DeleteRow(string tableName, string filterExpression, object data) {
+        public void DeleteRow(string tableName, string filterExpression, object data)
+        {
             bool localConnection = false;
-            if (ConnectionState == System.Data.ConnectionState.Closed) {
+            if (ConnectionState == ConnectionState.Closed)
+            {
                 localConnection = true;
                 OpenConnection();
             }
-            try {
-                var queryBuilder = new StringBuilder();
+            try
+            {
+                StringBuilder queryBuilder = new StringBuilder();
                 queryBuilder.Append("DELETE FROM ");
                 queryBuilder.Append(tableName);
-                if (!string.IsNullOrEmpty(filterExpression)) {
+                if (!string.IsNullOrEmpty(filterExpression))
+                {
                     queryBuilder.Append(" WHERE ");
                     queryBuilder.Append(filterExpression);
                 }
 
                 connection.Execute(queryBuilder.ToString(), data, SelectTransaction(localConnection));
-            } finally {
-                if (localConnection) {
+            }
+            finally
+            {
+                if (localConnection)
+                {
                     CloseConnection();
                 }
             }
         }
 
-        public object ExecuteQuery(string query) {
-            if (!string.IsNullOrEmpty(query)) {
+        public object ExecuteQuery(string query)
+        {
+            if (!string.IsNullOrEmpty(query))
+            {
                 bool localConnection = false;
-                if (ConnectionState == System.Data.ConnectionState.Closed) {
+                if (ConnectionState == ConnectionState.Closed)
+                {
                     localConnection = true;
                     OpenConnection();
                 }
-                try {
-                    using (MySqlCommand comm = new MySqlCommand(query, connection)) {
-                        if (!localConnection) {
+                try
+                {
+                    using (MySqlCommand comm = new MySqlCommand(query, connection))
+                    {
+                        if (!localConnection)
+                        {
                             AddCommandToTransaction(comm);
                         }
                         comm.CommandTimeout = 0;
                         return comm.ExecuteScalar();
                     }
-                } finally {
-                    if (localConnection) {
+                }
+                finally
+                {
+                    if (localConnection)
+                    {
                         CloseConnection();
                     }
                 }
@@ -510,123 +644,164 @@ namespace PMDCP.DatabaseConnector.MySql
             return null;
         }
 
-        public void ExecuteNonQuery(string query) {
-            if (!string.IsNullOrEmpty(query)) {
+        public void ExecuteNonQuery(string query)
+        {
+            if (!string.IsNullOrEmpty(query))
+            {
                 bool localConnection = false;
-                if (ConnectionState == System.Data.ConnectionState.Closed) {
+                if (ConnectionState == ConnectionState.Closed)
+                {
                     localConnection = true;
                     OpenConnection();
                 }
-                try {
-                    using (MySqlCommand comm = new MySqlCommand(query, connection)) {
-                        if (!localConnection) {
+                try
+                {
+                    using (MySqlCommand comm = new MySqlCommand(query, connection))
+                    {
+                        if (!localConnection)
+                        {
                             AddCommandToTransaction(comm);
                         }
                         comm.CommandTimeout = 0;
                         comm.ExecuteNonQuery();
-
                     }
-                } finally {
-                    if (localConnection) {
+                }
+                finally
+                {
+                    if (localConnection)
+                    {
                         CloseConnection();
                     }
                 }
             }
         }
 
-        public System.Data.ConnectionState ConnectionState {
-            get {
-                if (connection != null) {
+        public ConnectionState ConnectionState
+        {
+            get
+            {
+                if (connection != null)
+                {
                     return connection.State;
-                } else {
-                    return System.Data.ConnectionState.Closed;
+                }
+                else
+                {
+                    return ConnectionState.Closed;
                 }
             }
         }
 
-        public int CountRows(string tableName) {
+        public int CountRows(string tableName)
+        {
             throw new NotImplementedException();
         }
 
-        public bool TableExists(string tableName) {
+        public bool TableExists(string tableName)
+        {
             bool localConnection = false;
-            if (ConnectionState == System.Data.ConnectionState.Closed) {
+            if (ConnectionState == ConnectionState.Closed)
+            {
                 localConnection = true;
                 OpenConnection();
             }
-            try {
+            try
+            {
                 string command = "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = '" + database + "' AND table_name = '" + tableName + "' LIMIT 1";
-                using (MySqlCommand cmd = new MySqlCommand(command, connection)) {
+                using (MySqlCommand cmd = new MySqlCommand(command, connection))
+                {
                     cmd.CommandTimeout = 0;
                     //cmd.CommandText = "SELECT name FROM sqlite_master WHERE type='table' AND name='" + tableName + "'";
                     cmd.ExecuteNonQuery();
 
                     int returnValue = 0;
 
-                    using (MySqlDataReader rdr = cmd.ExecuteReader()) {
-                        while (rdr.Read() != false) {
+                    using (MySqlDataReader rdr = cmd.ExecuteReader())
+                    {
+                        while (rdr.Read() != false)
+                        {
                             returnValue = rdr.GetInt32(0);
                         }
                     }
 
-                    if (returnValue == 0) {
+                    if (returnValue == 0)
+                    {
                         return false;
-                    } else {
+                    }
+                    else
+                    {
                         return true;
                     }
                 }
-            } finally {
-                if (localConnection) {
+            }
+            finally
+            {
+                if (localConnection)
+                {
                     CloseConnection();
                 }
             }
         }
 
-        public void UpdateRow(string tableName, IDataColumn[] columns, string filterExpression) {
+        public void UpdateRow(string tableName, IDataColumn[] columns, string filterExpression)
+        {
             bool localConnection = false;
-            if (ConnectionState == System.Data.ConnectionState.Closed) {
+            if (ConnectionState == ConnectionState.Closed)
+            {
                 localConnection = true;
                 OpenConnection();
             }
-            try {
+            try
+            {
                 string command = "UPDATE " + tableName;
                 string setCommand = " SET " + columns[0].Name + " = \'" + VerifyValueString(columns[0].Value.ToString()) + "\'";
-                for (int i = 1; i < columns.Length; i++) {
+                for (int i = 1; i < columns.Length; i++)
+                {
                     setCommand += ", " + columns[i].Name + " = \'" + VerifyValueString(columns[i].Value.ToString()) + "\'";
                 }
                 command += setCommand;
-                if (!string.IsNullOrEmpty(filterExpression)) {
+                if (!string.IsNullOrEmpty(filterExpression))
+                {
                     command += " WHERE " + filterExpression;
                 }
-                using (MySqlCommand cmd = new MySqlCommand(command, connection)) {
-                    if (!localConnection) {
+                using (MySqlCommand cmd = new MySqlCommand(command, connection))
+                {
+                    if (!localConnection)
+                    {
                         AddCommandToTransaction(cmd);
                     }
                     cmd.CommandTimeout = 0;
                     cmd.ExecuteNonQuery();
                 }
-            } finally {
-                if (localConnection) {
+            }
+            finally
+            {
+                if (localConnection)
+                {
                     CloseConnection();
                 }
             }
         }
 
-        public void UpdateRow(string tableName, IDataColumn[] columns) {
+        public void UpdateRow(string tableName, IDataColumn[] columns)
+        {
             UpdateRow(tableName, columns, null);
         }
 
-        public void UpdateOrInsert(string tableName, IDataColumn[] columns, string filterExpression) {
+        public void UpdateOrInsert(string tableName, IDataColumn[] columns, string filterExpression)
+        {
             UpdateOrInsert(tableName, columns);
         }
 
-        public void UpdateOrInsert(string tableName, IDataColumn[] columns) {
+        public void UpdateOrInsert(string tableName, IDataColumn[] columns)
+        {
             bool localConnection = false;
-            if (ConnectionState == System.Data.ConnectionState.Closed) {
+            if (ConnectionState == ConnectionState.Closed)
+            {
                 localConnection = true;
                 OpenConnection();
             }
-            try {
+            try
+            {
                 StringBuilder commandBuilder = new StringBuilder();
                 commandBuilder.Append("INSERT INTO ");
                 commandBuilder.Append(tableName);
@@ -637,7 +812,8 @@ namespace PMDCP.DatabaseConnector.MySql
                 commandBuilder.Append(VerifyValueString(columns[0].Value.ToString()));
                 commandBuilder.Append("\'");
 
-                for (int i = 1; i < columns.Length; i++) {
+                for (int i = 1; i < columns.Length; i++)
+                {
                     commandBuilder.Append(", ");
                     commandBuilder.Append(columns[i].Name);
                     commandBuilder.Append(" = \'");
@@ -647,16 +823,20 @@ namespace PMDCP.DatabaseConnector.MySql
 
                 bool addComma = false;
                 commandBuilder.Append(" ON DUPLICATE KEY UPDATE ");
-                for (int i = 1; i < columns.Length; i++) {
-                    if (!columns[i].PrimaryKey) {
-                        if (addComma) {
+                for (int i = 1; i < columns.Length; i++)
+                {
+                    if (!columns[i].PrimaryKey)
+                    {
+                        if (addComma)
+                        {
                             commandBuilder.Append(", ");
                         }
                         commandBuilder.Append(columns[i].Name);
                         commandBuilder.Append(" = \'");
                         commandBuilder.Append(VerifyValueString(columns[i].Value.ToString()));
                         commandBuilder.Append("\'");
-                        if (!addComma) {
+                        if (!addComma)
+                        {
                             addComma = true;
                         }
                     }
@@ -667,8 +847,10 @@ namespace PMDCP.DatabaseConnector.MySql
                 //    setCommand += ", " + columns[i].Name + " = \'" + VerifyValueString(columns[i].Value.ToString()) + "\'";
                 //}
                 //command += setCommand;
-                using (MySqlCommand cmd = new MySqlCommand(commandBuilder.ToString(), connection)) {
-                    if (!localConnection) {
+                using (MySqlCommand cmd = new MySqlCommand(commandBuilder.ToString(), connection))
+                {
+                    if (!localConnection)
+                    {
                         AddCommandToTransaction(cmd);
                     }
                     cmd.CommandTimeout = 0;
@@ -679,19 +861,25 @@ namespace PMDCP.DatabaseConnector.MySql
                 //} else {
                 //    AddRow(tableName, columns);
                 //}
-            } finally {
-                if (localConnection) {
+            }
+            finally
+            {
+                if (localConnection)
+                {
                     CloseConnection();
                 }
             }
         }
 
-        public IDataField CreateField(string name, string type) {
+        public IDataField CreateField(string name, string type)
+        {
             throw new NotImplementedException();
         }
 
-        public IDataColumn CreateColumn(bool primaryKey, string name, string value) {
-            if (value == null) {
+        public IDataColumn CreateColumn(bool primaryKey, string name, string value)
+        {
+            if (value == null)
+            {
                 value = "";
             }
             return new DataColumn(primaryKey, name, value);
@@ -699,49 +887,63 @@ namespace PMDCP.DatabaseConnector.MySql
 
         public string ConnectionString { get; set; }
 
-
-        public void BeginTransaction() {
-            if (connection.State == System.Data.ConnectionState.Open) {
-                if (activeTransaction == null) {
+        public void BeginTransaction()
+        {
+            if (connection.State == ConnectionState.Open)
+            {
+                if (activeTransaction == null)
+                {
                     activeTransaction = connection.BeginTransaction();
-                } else {
+                }
+                else
+                {
                     throw new Exception("Another transaction is currently active!");
                 }
             }
         }
 
-        public void EndTransaction() {
-            if (activeTransaction != null) {
+        public void EndTransaction()
+        {
+            if (activeTransaction != null)
+            {
                 activeTransaction.Commit();
 
                 activeTransaction.Dispose();
                 activeTransaction = null;
-            } else {
+            }
+            else
+            {
                 throw new Exception("There are no active transactions!");
             }
         }
 
-        private void AddCommandToTransaction(MySqlCommand command) {
-            if (activeTransaction != null) {
+        private void AddCommandToTransaction(MySqlCommand command)
+        {
+            if (activeTransaction != null)
+            {
                 command.Transaction = activeTransaction;
             }
         }
 
-        public void UpdateRow(string tableName, IEnumerable<IGenericDataColumn> columns, string filterExpression, object data) {
+        public void UpdateRow(string tableName, IEnumerable<IGenericDataColumn> columns, string filterExpression, object data)
+        {
             bool localConnection = false;
-            if (ConnectionState == System.Data.ConnectionState.Closed) {
+            if (ConnectionState == ConnectionState.Closed)
+            {
                 localConnection = true;
                 OpenConnection();
             }
-            try {
-                var queryBuilder = new StringBuilder();
+            try
+            {
+                StringBuilder queryBuilder = new StringBuilder();
                 queryBuilder.Append("UPDATE ");
                 queryBuilder.Append(tableName);
                 queryBuilder.Append(" SET ");
 
-                var enumerator = columns.GetEnumerator();
+                IEnumerator<IGenericDataColumn> enumerator = columns.GetEnumerator();
                 // If the enumerable is empty, exit right away - no columns to update
-                if (!enumerator.MoveNext()) {
+                if (!enumerator.MoveNext())
+                {
                     return;
                 }
 
@@ -749,42 +951,51 @@ namespace PMDCP.DatabaseConnector.MySql
                 queryBuilder.Append(" = @");
                 queryBuilder.Append(enumerator.Current.Name);
 
-                while (enumerator.MoveNext()) {
+                while (enumerator.MoveNext())
+                {
                     queryBuilder.Append(", ");
                     queryBuilder.Append(enumerator.Current.Name);
                     queryBuilder.Append(" = @");
                     queryBuilder.Append(enumerator.Current.Name);
                 }
 
-                if (!string.IsNullOrEmpty(filterExpression)) {
+                if (!string.IsNullOrEmpty(filterExpression))
+                {
                     queryBuilder.Append(" WHERE ");
                     queryBuilder.Append(filterExpression);
                 }
 
                 connection.Execute(queryBuilder.ToString(), data, SelectTransaction(localConnection));
-            } finally {
-                if (localConnection) {
+            }
+            finally
+            {
+                if (localConnection)
+                {
                     CloseConnection();
                 }
             }
         }
 
-        public void UpdateRow(string tableName, IEnumerable<IGenericDataColumn> columns, object data) {
+        public void UpdateRow(string tableName, IEnumerable<IGenericDataColumn> columns, object data)
+        {
             UpdateRow(tableName, columns, null, data);
         }
 
-        public IGenericDataColumn CreateColumn(bool primaryKey, string name) {
+        public IGenericDataColumn CreateColumn(bool primaryKey, string name)
+        {
             return new GenericDataColumn(name, primaryKey);
         }
 
-        public bool IsTransactionActive {
-            get { return activeTransaction != null; }
-        }
+        public bool IsTransactionActive => activeTransaction != null;
 
-        private IDbTransaction SelectTransaction(bool isLocalConnection) {
-            if (!isLocalConnection && activeTransaction != null) {
+        private IDbTransaction SelectTransaction(bool isLocalConnection)
+        {
+            if (!isLocalConnection && activeTransaction != null)
+            {
                 return activeTransaction;
-            } else {
+            }
+            else
+            {
                 return null;
             }
         }

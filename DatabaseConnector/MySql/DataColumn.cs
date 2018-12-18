@@ -19,19 +19,21 @@ namespace PMDCP.DatabaseConnector.MySql
 
     public class DataColumn : IDataColumn
     {
-
         #region Fields
-        object value;
+
+        private object value;
 
         #endregion Fields
 
         #region Constructors
 
-        public DataColumn(int index, bool primaryKey, string name, object value) {
+        public DataColumn(int index, bool primaryKey, string name, object value)
+        {
             Index = index;
             Name = name;
 
-            if (value is DBNull) {
+            if (value is DBNull)
+            {
                 value = null;
             }
             this.value = value;
@@ -39,11 +41,13 @@ namespace PMDCP.DatabaseConnector.MySql
             PrimaryKey = primaryKey;
         }
 
-        public DataColumn(bool primaryKey, string name, object value) {
+        public DataColumn(bool primaryKey, string name, object value)
+        {
             Index = -1;
             Name = name;
 
-            if (value is DBNull) {
+            if (value is DBNull)
+            {
                 value = null;
             }
             this.value = value;
@@ -59,22 +63,28 @@ namespace PMDCP.DatabaseConnector.MySql
 
         public string Name { get; set; }
 
-        public string ValueString {
-            get {
-                if (value != null) {
+        public string ValueString
+        {
+            get
+            {
+                if (value != null)
+                {
                     return value.ToString();
-                } else {
+                }
+                else
+                {
                     return null;
                 }
             }
         }
 
-        public object Value {
-            get {
-                return value;
-            }
-            set {
-                if (value is DBNull) {
+        public object Value
+        {
+            get => value;
+            set
+            {
+                if (value is DBNull)
+                {
                     value = null;
                 }
                 this.value = value;

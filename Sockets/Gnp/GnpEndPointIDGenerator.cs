@@ -19,11 +19,13 @@ namespace PMDCP.Sockets.Gnp
 {
     public class GnpEndPointIDGenerator : IGnpIDGenerator<EndPoint>
     {
-        public EndPoint GenerateID(GnpClient gnpClient) {
+        public EndPoint GenerateID(GnpClient gnpClient)
+        {
             return gnpClient.Socket.RemoteEndPoint;
         }
 
-        public EndPoint GenerateID(DataReceivedEventArgs e) {
+        public EndPoint GenerateID(DataReceivedEventArgs e)
+        {
             return e.DataSource;
         }
     }

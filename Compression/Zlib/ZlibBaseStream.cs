@@ -1,20 +1,20 @@
 // ZlibBaseStream.cs
 // ------------------------------------------------------------------
 //
-// Copyright (c) 2009 Dino Chiesa and Microsoft Corporation.  
+// Copyright (c) 2009 Dino Chiesa and Microsoft Corporation.
 // All rights reserved.
 //
 // This code module is part of DotNetZip, a zipfile class library.
 //
 // ------------------------------------------------------------------
 //
-// This code is licensed under the Microsoft Public License. 
+// This code is licensed under the Microsoft Public License.
 // See the file License.txt for the license details.
 // More info on: http://dotnetzip.codeplex.com
 //
 // ------------------------------------------------------------------
 //
-// last saved (in emacs): 
+// last saved (in emacs):
 // Time-stamp: <2009-October-28 15:45:15>
 //
 // ------------------------------------------------------------------
@@ -29,10 +29,9 @@ using System.IO;
 
 namespace PMDCP.Compression.Zlib
 {
-
     internal enum ZlibStreamFlavor { ZLIB = 1950, DEFLATE = 1951, GZIP = 1952 }
 
-    internal class ZlibBaseStream : System.IO.Stream
+    internal class ZlibBaseStream : Stream
     {
         protected internal ZlibCodec _z = null; // deferred init... new ZlibCodec();
 
@@ -46,19 +45,20 @@ namespace PMDCP.Compression.Zlib
         protected internal int _bufferSize = ZlibConstants.WorkingBufferSizeDefault;
         protected internal byte[] _buf1 = new byte[1];
 
-        protected internal System.IO.Stream _stream;
+        protected internal Stream _stream;
         protected internal CompressionStrategy Strategy = CompressionStrategy.Default;
 
         // workitem 7159
-        CRC32 crc;
+        private CRC32 crc;
+
         protected internal string _GzipFileName;
         protected internal string _GzipComment;
         protected internal DateTime _GzipMtime;
         protected internal int _gzipHeaderByteCount;
 
-        internal int Crc32 { get { if (crc == null) return 0; return crc.Crc32Result; } }
+        internal int Crc32 { get { if (crc == null) { return 0; } return crc.Crc32Result; } }
 
-        public ZlibBaseStream(System.IO.Stream stream,
+        public ZlibBaseStream(Stream stream,
                               CompressionMode compressionMode,
                               CompressionLevel level,
                               ZlibStreamFlavor flavor,
@@ -79,14 +79,7 @@ namespace PMDCP.Compression.Zlib
             }
         }
 
-
-        protected internal bool _wantCompress
-        {
-            get
-            {
-                return (_compressionMode == CompressionMode.Compress);
-            }
-        }
+        protected internal bool _wantCompress => (_compressionMode == CompressionMode.Compress);
 
         private ZlibCodec z
         {
@@ -110,34 +103,41 @@ namespace PMDCP.Compression.Zlib
             }
         }
 
-
-
         private byte[] workingBuffer
         {
             get
             {
                 if (_workingBuffer == null)
+                {
                     _workingBuffer = new byte[_bufferSize];
+                }
+
                 return _workingBuffer;
             }
         }
-
-
 
         public override void Write(byte[] buffer, int offset, int count)
         {
             // workitem 7159
             // calculate the CRC on the unccompressed data  (before writing)
             if (crc != null)
+            {
                 crc.SlurpBlock(buffer, offset, count);
+            }
 
             if (_streamMode == StreamMode.Undefined)
+            {
                 _streamMode = StreamMode.Writer;
+            }
             else if (_streamMode != StreamMode.Writer)
+            {
                 throw new ZlibException("Cannot Write after Reading.");
+            }
 
             if (count == 0)
+            {
                 return;
+            }
 
             // first reference of z property will initialize the private var _z
             z.InputBuffer = buffer;
@@ -153,7 +153,9 @@ namespace PMDCP.Compression.Zlib
                     ? _z.Deflate(_flushMode)
                     : _z.Inflate(_flushMode);
                 if (rc != ZlibConstants.Z_OK && rc != ZlibConstants.Z_STREAM_END)
+                {
                     throw new ZlibException((_wantCompress ? "de" : "in") + "flating: " + _z.Message);
+                }
 
                 //if (_workingBuffer.Length - _z.AvailableBytesOut > 0)
                 _stream.Write(_workingBuffer, 0, _workingBuffer.Length - _z.AvailableBytesOut);
@@ -162,17 +164,19 @@ namespace PMDCP.Compression.Zlib
 
                 // If GZIP and de-compress, we're done when 8 bytes remain.
                 if (_flavor == ZlibStreamFlavor.GZIP && !_wantCompress)
+                {
                     done = (_z.AvailableBytesIn == 8 && _z.AvailableBytesOut != 0);
-
+                }
             }
             while (!done);
         }
 
-
-
         private void finish()
         {
-            if (_z == null) return;
+            if (_z == null)
+            {
+                return;
+            }
 
             if (_streamMode == StreamMode.Writer)
             {
@@ -190,9 +194,13 @@ namespace PMDCP.Compression.Zlib
                     {
                         string verb = (_wantCompress ? "de" : "in") + "flating";
                         if (_z.Message == null)
+                        {
                             throw new ZlibException(string.Format("{0}: (rc = {1})", verb, rc));
+                        }
                         else
+                        {
                             throw new ZlibException(verb + ": " + _z.Message);
+                        }
                     }
 
                     if (_workingBuffer.Length - _z.AvailableBytesOut > 0)
@@ -203,8 +211,9 @@ namespace PMDCP.Compression.Zlib
                     done = _z.AvailableBytesIn == 0 && _z.AvailableBytesOut != 0;
                     // If GZIP and de-compress, we're done when 8 bytes remain.
                     if (_flavor == ZlibStreamFlavor.GZIP && !_wantCompress)
+                    {
                         done = (_z.AvailableBytesIn == 8 && _z.AvailableBytesOut != 0);
-
+                    }
                 }
                 while (!done);
 
@@ -236,7 +245,9 @@ namespace PMDCP.Compression.Zlib
                     {
                         // workitem 8501: handle edge case (decompress empty stream)
                         if (_z.TotalBytesOut == 0L)
+                        {
                             return;
+                        }
 
                         // Read and potentially verify the GZIP trailer: CRC32 and  size mod 2^32
                         byte[] trailer = new byte[8];
@@ -261,18 +272,20 @@ namespace PMDCP.Compression.Zlib
                             Array.Copy(_z.InputBuffer, _z.NextIn, trailer, 0, trailer.Length);
                         }
 
-
                         int crc32_expected = BitConverter.ToInt32(trailer, 0);
                         int crc32_actual = crc.Crc32Result;
                         int isize_expected = BitConverter.ToInt32(trailer, 4);
                         int isize_actual = (int)(_z.TotalBytesOut & 0x00000000FFFFFFFF);
 
                         if (crc32_actual != crc32_expected)
+                        {
                             throw new ZlibException(string.Format("Bad CRC32 in GZIP stream. (actual({0:X8})!=expected({1:X8}))", crc32_actual, crc32_expected));
+                        }
 
                         if (isize_actual != isize_expected)
+                        {
                             throw new ZlibException(string.Format("Bad size in GZIP stream. (actual({0})!=expected({1}))", isize_actual, isize_expected));
-
+                        }
                     }
                     else
                     {
@@ -282,11 +295,13 @@ namespace PMDCP.Compression.Zlib
             }
         }
 
-
         private void end()
         {
             if (z == null)
+            {
                 return;
+            }
+
             if (_wantCompress)
             {
                 _z.EndDeflate();
@@ -298,10 +313,13 @@ namespace PMDCP.Compression.Zlib
             _z = null;
         }
 
-
         public override void Close()
         {
-            if (_stream == null) return;
+            if (_stream == null)
+            {
+                return;
+            }
+
             try
             {
                 finish();
@@ -309,7 +327,11 @@ namespace PMDCP.Compression.Zlib
             finally
             {
                 end();
-                if (!_leaveOpen) _stream.Close();
+                if (!_leaveOpen)
+                {
+                    _stream.Close();
+                }
+
                 _stream = null;
             }
         }
@@ -319,16 +341,16 @@ namespace PMDCP.Compression.Zlib
             _stream.Flush();
         }
 
-        public override long Seek(long offset, System.IO.SeekOrigin origin)
+        public override long Seek(long offset, SeekOrigin origin)
         {
             throw new NotImplementedException();
             //_outStream.Seek(offset, origin);
         }
+
         public override void SetLength(long value)
         {
             _stream.SetLength(value);
         }
-
 
 #if NOT
         public int Read()
@@ -344,30 +366,33 @@ namespace PMDCP.Compression.Zlib
 
         private bool nomoreinput = false;
 
-
-
         private string ReadZeroTerminatedString()
         {
-            var list = new System.Collections.Generic.List<byte>();
+            System.Collections.Generic.List<byte> list = new System.Collections.Generic.List<byte>();
             bool done = false;
             do
             {
                 // workitem 7740
                 int n = _stream.Read(_buf1, 0, 1);
                 if (n != 1)
+                {
                     throw new ZlibException("Unexpected EOF reading GZIP header.");
+                }
                 else
                 {
                     if (_buf1[0] == 0)
+                    {
                         done = true;
+                    }
                     else
+                    {
                         list.Add(_buf1[0]);
+                    }
                 }
             } while (!done);
             byte[] a = list.ToArray();
             return GZipStream.iso8859dash1.GetString(a, 0, a.Length);
         }
-
 
         private int _ReadAndValidateGzipHeader()
         {
@@ -378,13 +403,19 @@ namespace PMDCP.Compression.Zlib
 
             // workitem 8501: handle edge case (decompress empty stream)
             if (n == 0)
+            {
                 return 0;
+            }
 
             if (n != 10)
+            {
                 throw new ZlibException("Not a valid GZIP stream.");
+            }
 
             if (header[0] != 0x1F || header[1] != 0x8B || header[2] != 8)
+            {
                 throw new ZlibException("Bad GZIP header.");
+            }
 
             int timet = BitConverter.ToInt32(header, 4);
             _GzipMtime = GZipStream._unixEpoch.AddSeconds(timet);
@@ -399,20 +430,29 @@ namespace PMDCP.Compression.Zlib
                 byte[] extra = new byte[extraLength];
                 n = _stream.Read(extra, 0, extra.Length);
                 if (n != extraLength)
+                {
                     throw new ZlibException("Unexpected end-of-file reading GZIP header.");
+                }
+
                 totalBytesRead += n;
             }
             if ((header[3] & 0x08) == 0x08)
+            {
                 _GzipFileName = ReadZeroTerminatedString();
+            }
+
             if ((header[3] & 0x10) == 0x010)
+            {
                 _GzipComment = ReadZeroTerminatedString();
+            }
+
             if ((header[3] & 0x02) == 0x02)
+            {
                 Read(_buf1, 0, 1); // CRC16, ignore
+            }
 
             return totalBytesRead;
         }
-
-
 
         public override int Read(byte[] buffer, int offset, int count)
         {
@@ -424,7 +464,10 @@ namespace PMDCP.Compression.Zlib
 
             if (_streamMode == StreamMode.Undefined)
             {
-                if (!_stream.CanRead) throw new ZlibException("The stream is not readable.");
+                if (!_stream.CanRead)
+                {
+                    throw new ZlibException("The stream is not readable.");
+                }
                 // for the first read, set up some controls.
                 _streamMode = StreamMode.Reader;
                 // (The first reference to _z goes through the private accessor which
@@ -435,19 +478,46 @@ namespace PMDCP.Compression.Zlib
                     _gzipHeaderByteCount = _ReadAndValidateGzipHeader();
                     // workitem 8501: handle edge case (decompress empty stream)
                     if (_gzipHeaderByteCount == 0)
+                    {
                         return 0;
+                    }
                 }
             }
 
             if (_streamMode != StreamMode.Reader)
+            {
                 throw new ZlibException("Cannot Read after Writing.");
+            }
 
-            if (count == 0) return 0;
-            if (nomoreinput && _wantCompress) return 0;  // workitem 8557
-            if (buffer == null) throw new ArgumentNullException("buffer");
-            if (count < 0) throw new ArgumentOutOfRangeException("count");
-            if (offset < buffer.GetLowerBound(0)) throw new ArgumentOutOfRangeException("offset");
-            if ((offset + count) > buffer.GetLength(0)) throw new ArgumentOutOfRangeException("count");
+            if (count == 0)
+            {
+                return 0;
+            }
+
+            if (nomoreinput && _wantCompress)
+            {
+                return 0;  // workitem 8557
+            }
+
+            if (buffer == null)
+            {
+                throw new ArgumentNullException("buffer");
+            }
+
+            if (count < 0)
+            {
+                throw new ArgumentOutOfRangeException("count");
+            }
+
+            if (offset < buffer.GetLowerBound(0))
+            {
+                throw new ArgumentOutOfRangeException("offset");
+            }
+
+            if ((offset + count) > buffer.GetLength(0))
+            {
+                throw new ArgumentOutOfRangeException("count");
+            }
 
             int rc = 0;
 
@@ -470,8 +540,9 @@ namespace PMDCP.Compression.Zlib
                     _z.NextIn = 0;
                     _z.AvailableBytesIn = _stream.Read(_workingBuffer, 0, _workingBuffer.Length);
                     if (_z.AvailableBytesIn == 0)
+                    {
                         nomoreinput = true;
-
+                    }
                 }
                 // we have data in InputBuffer; now compress or decompress as appropriate
                 rc = (_wantCompress)
@@ -479,20 +550,25 @@ namespace PMDCP.Compression.Zlib
                     : _z.Inflate(_flushMode);
 
                 if (nomoreinput && (rc == ZlibConstants.Z_BUF_ERROR))
+                {
                     return 0;
+                }
 
                 if (rc != ZlibConstants.Z_OK && rc != ZlibConstants.Z_STREAM_END)
+                {
                     throw new ZlibException(string.Format("{0}flating:  rc={1}  msg={2}", (_wantCompress ? "de" : "in"), rc, _z.Message));
+                }
 
                 if ((nomoreinput || rc == ZlibConstants.Z_STREAM_END) && (_z.AvailableBytesOut == count))
+                {
                     break; // nothing more to read
+                }
             }
             //while (_z.AvailableBytesOut == count && rc == ZlibConstants.Z_OK);
             while (_z.AvailableBytesOut > 0 && !nomoreinput && rc == ZlibConstants.Z_OK);
 
-
             // workitem 8557
-            // is there more room in output? 
+            // is there more room in output?
             if (_z.AvailableBytesOut > 0)
             {
                 if (rc == ZlibConstants.Z_OK && _z.AvailableBytesIn == 0)
@@ -511,47 +587,36 @@ namespace PMDCP.Compression.Zlib
                         rc = _z.Deflate(FlushType.Finish);
 
                         if (rc != ZlibConstants.Z_OK && rc != ZlibConstants.Z_STREAM_END)
+                        {
                             throw new ZlibException(string.Format("Deflating:  rc={0}  msg={1}", rc, _z.Message));
+                        }
                     }
                 }
             }
-
 
             rc = (count - _z.AvailableBytesOut);
 
             // calculate CRC after reading
             if (crc != null)
+            {
                 crc.SlurpBlock(buffer, offset, rc);
+            }
 
             return rc;
         }
 
+        public override bool CanRead => _stream.CanRead;
 
+        public override bool CanSeek => _stream.CanSeek;
 
-        public override bool CanRead
-        {
-            get { return _stream.CanRead; }
-        }
+        public override bool CanWrite => _stream.CanWrite;
 
-        public override bool CanSeek
-        {
-            get { return _stream.CanSeek; }
-        }
-
-        public override bool CanWrite
-        {
-            get { return _stream.CanWrite; }
-        }
-
-        public override long Length
-        {
-            get { return _stream.Length; }
-        }
+        public override long Length => _stream.Length;
 
         public override long Position
         {
-            get { throw new NotImplementedException(); }
-            set { throw new NotImplementedException(); }
+            get => throw new NotImplementedException();
+            set => throw new NotImplementedException();
         }
 
         internal enum StreamMode
@@ -561,7 +626,6 @@ namespace PMDCP.Compression.Zlib
             Undefined,
         }
 
-
         public static void CompressString(string s, Stream compressor)
         {
             byte[] uncompressed = System.Text.Encoding.UTF8.GetBytes(s);
@@ -569,7 +633,7 @@ namespace PMDCP.Compression.Zlib
             {
                 compressor.Write(uncompressed, 0, uncompressed.Length);
             }
-        }        
+        }
 
         public static void CompressBuffer(byte[] b, Stream compressor)
         {
@@ -584,8 +648,8 @@ namespace PMDCP.Compression.Zlib
         {
             // workitem 8460
             byte[] working = new byte[1024];
-            var encoding = System.Text.Encoding.UTF8;
-            using (var output = new MemoryStream())
+            System.Text.Encoding encoding = System.Text.Encoding.UTF8;
+            using (MemoryStream output = new MemoryStream())
             {
                 using (decompressor)
                 {
@@ -598,7 +662,7 @@ namespace PMDCP.Compression.Zlib
 
                 // reset to allow read from start
                 output.Seek(0, SeekOrigin.Begin);
-                var sr = new StreamReader(output, encoding);
+                StreamReader sr = new StreamReader(output, encoding);
                 return sr.ReadToEnd();
             }
         }
@@ -607,7 +671,7 @@ namespace PMDCP.Compression.Zlib
         {
             // workitem 8460
             byte[] working = new byte[1024];
-            using (var output = new MemoryStream())
+            using (MemoryStream output = new MemoryStream())
             {
                 using (decompressor)
                 {
@@ -619,9 +683,6 @@ namespace PMDCP.Compression.Zlib
                 }
                 return output.ToArray();
             }
-        }        
-
+        }
     }
-
-
 }

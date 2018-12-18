@@ -18,7 +18,7 @@ namespace PMDCP.Net
     using System;
 
     /// <summary>
-    /// Provides data for the <see cref="PMDCP.Net.FileDownloader.DownloadFailed" /> event
+    /// Provides data for the <see cref="FileDownloader.DownloadFailed" /> event
     /// </summary>
     public class FileDownloadErrorEventArgs : EventArgs
     {

@@ -61,11 +61,11 @@
 //
 // -----------------------------------------------------------------------
 
-
 using System;
+
 namespace PMDCP.Compression.Zlib
 {
-    sealed class InflateBlocks
+    internal sealed class InflateBlocks
     {
         private const int MANY = 1440;
 
@@ -75,16 +75,16 @@ namespace PMDCP.Compression.Zlib
 
         private enum InflateBlockMode
         {
-            TYPE   = 0,                     // get type bits (3, including end bit)
-            LENS   = 1,                     // get lengths for stored
+            TYPE = 0,                     // get type bits (3, including end bit)
+            LENS = 1,                     // get lengths for stored
             STORED = 2,                     // processing stored block
-            TABLE  = 3,                     // get table lengths
-            BTREE  = 4,                     // get bit lengths tree for a dynamic block
-            DTREE  = 5,                     // get length, distance trees for a dynamic block
-            CODES  = 6,                     // processing fixed or dynamic block
-            DRY    = 7,                     // output remaining window bytes
-            DONE   = 8,                     // finished last block, done
-            BAD    = 9,                     // ot a data error--stuck here
+            TABLE = 3,                     // get table lengths
+            BTREE = 4,                     // get bit lengths tree for a dynamic block
+            DTREE = 5,                     // get length, distance trees for a dynamic block
+            CODES = 6,                     // processing fixed or dynamic block
+            DRY = 7,                     // output remaining window bytes
+            DONE = 8,                     // finished last block, done
+            BAD = 9,                     // ot a data error--stuck here
         }
 
         private InflateBlockMode mode;                    // current inflate_block mode
@@ -103,8 +103,9 @@ namespace PMDCP.Compression.Zlib
 
         internal ZlibCodec _codec;                        // pointer back to this zlib stream
 
-                                                          // mode independent information
+        // mode independent information
         internal int bitk;                                // bits in bit buffer
+
         internal int bitb;                                // bit buffer
         internal int[] hufts;                             // single malloc for tree space
         internal byte[] window;                           // sliding window
@@ -136,10 +137,12 @@ namespace PMDCP.Compression.Zlib
             readAt = writeAt = 0;
 
             if (checkfn != null)
+            {
                 _codec._Adler32 = check = Adler.Adler32(0, null, 0, 0);
+            }
+
             return oldCheck;
         }
-
 
         internal int Process(int r)
         {
@@ -160,7 +163,6 @@ namespace PMDCP.Compression.Zlib
 
             q = writeAt;
             m = q < readAt ? readAt - q - 1 : end - q;
-
 
             // process input based on current state
             while (true)
@@ -254,7 +256,7 @@ namespace PMDCP.Compression.Zlib
                             k += 8;
                         }
 
-                        if ( ( ((~b)>>16) & 0xffff) != (b & 0xffff))
+                        if ((((~b) >> 16) & 0xffff) != (b & 0xffff))
                         {
                             mode = InflateBlockMode.BAD;
                             _codec.Message = "invalid stored block lengths";
@@ -313,14 +315,23 @@ namespace PMDCP.Compression.Zlib
 
                         t = left;
                         if (t > n)
+                        {
                             t = n;
+                        }
+
                         if (t > m)
+                        {
                             t = m;
+                        }
+
                         Array.Copy(_codec.InputBuffer, p, window, q, t);
                         p += t; n -= t;
                         q += t; m -= t;
                         if ((left -= t) != 0)
+                        {
                             break;
+                        }
+
                         mode = last != 0 ? InflateBlockMode.DRY : InflateBlockMode.TYPE;
                         break;
 
@@ -377,7 +388,6 @@ namespace PMDCP.Compression.Zlib
 
                         b >>= 14;
                         k -= 14;
-
 
                         index = 0;
                         mode = InflateBlockMode.BTREE;
@@ -532,7 +542,7 @@ namespace PMDCP.Compression.Zlib
                                     return Flush(r);
                                 }
 
-                                c = (c == 16) ? blens[i-1] : 0;
+                                c = (c == 16) ? blens[i - 1] : 0;
                                 do
                                 {
                                     blens[i++] = c;
@@ -638,7 +648,6 @@ namespace PMDCP.Compression.Zlib
                         writeAt = q;
                         return Flush(r);
 
-
                     default:
                         r = ZlibConstants.Z_STREAM_ERROR;
 
@@ -651,7 +660,6 @@ namespace PMDCP.Compression.Zlib
                 }
             }
         }
-
 
         internal void Free()
         {
@@ -678,9 +686,9 @@ namespace PMDCP.Compression.Zlib
         {
             int nBytes;
 
-            for (int pass=0; pass < 2; pass++)
+            for (int pass = 0; pass < 2; pass++)
             {
-                if (pass==0)
+                if (pass == 0)
                 {
                     // compute number of bytes to copy as far as end of window
                     nBytes = (readAt <= writeAt ? writeAt : end) - readAt;
@@ -695,15 +703,22 @@ namespace PMDCP.Compression.Zlib
                 if (nBytes == 0)
                 {
                     if (r == ZlibConstants.Z_BUF_ERROR)
+                    {
                         r = ZlibConstants.Z_OK;
+                    }
+
                     return r;
                 }
 
                 if (nBytes > _codec.AvailableBytesOut)
+                {
                     nBytes = _codec.AvailableBytesOut;
+                }
 
                 if (nBytes != 0 && r == ZlibConstants.Z_BUF_ERROR)
+                {
                     r = ZlibConstants.Z_OK;
+                }
 
                 // update counters
                 _codec.AvailableBytesOut -= nBytes;
@@ -711,7 +726,9 @@ namespace PMDCP.Compression.Zlib
 
                 // update check information
                 if (checkfn != null)
+                {
                     _codec._Adler32 = check = Adler.Adler32(check, window, readAt, nBytes);
+                }
 
                 // copy as far as end of window
                 Array.Copy(window, readAt, _codec.OutputBuffer, _codec.NextOut, nBytes);
@@ -724,16 +741,20 @@ namespace PMDCP.Compression.Zlib
                     // wrap pointers
                     readAt = 0;
                     if (writeAt == end)
+                    {
                         writeAt = 0;
+                    }
                 }
-                else pass++;
+                else
+                {
+                    pass++;
+                }
             }
 
             // done
             return r;
         }
     }
-
 
     internal static class InternalInflateConstants
     {
@@ -745,21 +766,21 @@ namespace PMDCP.Compression.Zlib
             0x00000fff, 0x00001fff, 0x00003fff, 0x00007fff, 0x0000ffff };
     }
 
-
-    sealed class InflateCodes
+    internal sealed class InflateCodes
     {
         // waiting for "i:"=input,
         //             "o:"=output,
         //             "x:"=nothing
-        private const int START   = 0; // x: set up for LEN
-        private const int LEN     = 1; // i: get length/literal/eob next
-        private const int LENEXT  = 2; // i: getting length extra (have base)
-        private const int DIST    = 3; // i: get distance next
+        private const int START = 0; // x: set up for LEN
+
+        private const int LEN = 1; // i: get length/literal/eob next
+        private const int LENEXT = 2; // i: getting length extra (have base)
+        private const int DIST = 3; // i: get distance next
         private const int DISTEXT = 4; // i: getting distance extra
-        private const int COPY    = 5; // o: copying bytes in window, waiting for space
-        private const int LIT     = 6; // o: got literal, waiting for output space
-        private const int WASH    = 7; // o: got eob, possibly still output waiting
-        private const int END     = 8; // x: got eob and all data flushed
+        private const int COPY = 5; // o: copying bytes in window, waiting for space
+        private const int LIT = 6; // o: got literal, waiting for output space
+        private const int WASH = 7; // o: got eob, possibly still output waiting
+        private const int END = 8; // x: got eob and all data flushed
         private const int BADCODE = 9; // x: got error
 
         internal int mode;        // current inflate_codes mode
@@ -775,6 +796,7 @@ namespace PMDCP.Compression.Zlib
 
         // if EXT or COPY, where and how much
         internal int bitsToGet;   // bits to get for extra
+
         internal int dist;        // distance back to copy from
 
         internal byte lbits;      // ltree bits decoded per branch
@@ -863,7 +885,9 @@ namespace PMDCP.Compression.Zlib
                         while (k < j)
                         {
                             if (n != 0)
+                            {
                                 r = ZlibConstants.Z_OK;
+                            }
                             else
                             {
                                 blocks.bitb = b; blocks.bitk = k;
@@ -924,14 +948,15 @@ namespace PMDCP.Compression.Zlib
                         blocks.writeAt = q;
                         return blocks.Flush(r);
 
-
                     case LENEXT:  // i: getting length extra (have base)
                         j = bitsToGet;
 
                         while (k < j)
                         {
                             if (n != 0)
+                            {
                                 r = ZlibConstants.Z_OK;
+                            }
                             else
                             {
                                 blocks.bitb = b; blocks.bitk = k;
@@ -960,7 +985,9 @@ namespace PMDCP.Compression.Zlib
                         while (k < j)
                         {
                             if (n != 0)
+                            {
                                 r = ZlibConstants.Z_OK;
+                            }
                             else
                             {
                                 blocks.bitb = b; blocks.bitk = k;
@@ -1002,14 +1029,15 @@ namespace PMDCP.Compression.Zlib
                         blocks.writeAt = q;
                         return blocks.Flush(r);
 
-
                     case DISTEXT:  // i: getting distance extra
                         j = bitsToGet;
 
                         while (k < j)
                         {
                             if (n != 0)
+                            {
                                 r = ZlibConstants.Z_OK;
+                            }
                             else
                             {
                                 blocks.bitb = b; blocks.bitk = k;
@@ -1069,7 +1097,10 @@ namespace PMDCP.Compression.Zlib
                             blocks.window[q++] = blocks.window[f++]; m--;
 
                             if (f == blocks.end)
+                            {
                                 f = 0;
+                            }
+
                             len--;
                         }
                         mode = START;
@@ -1156,7 +1187,6 @@ namespace PMDCP.Compression.Zlib
             }
         }
 
-
         // Called with number of bytes left to write in window at least 258
         // (the maximum string length) and number of input bytes available
         // at least ten.  The ten bytes are six bytes for the longest length/
@@ -1216,7 +1246,6 @@ namespace PMDCP.Compression.Zlib
                 }
                 do
                 {
-
                     b >>= (tp[tp_index_t_3 + 1]); k -= (tp[tp_index_t_3 + 1]);
 
                     if ((e & 16) != 0)
@@ -1242,7 +1271,6 @@ namespace PMDCP.Compression.Zlib
 
                         do
                         {
-
                             b >>= (tp[tp_index_t_3 + 1]); k -= (tp[tp_index_t_3 + 1]);
 
                             if ((e & 16) != 0)
@@ -1401,7 +1429,6 @@ namespace PMDCP.Compression.Zlib
         }
     }
 
-
     internal sealed class InflateManager
     {
         // preset dictionary flag in zlib header
@@ -1412,19 +1439,19 @@ namespace PMDCP.Compression.Zlib
         private enum InflateManagerMode
         {
             METHOD = 0,  // waiting for method byte
-            FLAG   = 1,  // waiting for flag byte
-            DICT4  = 2,  // four dictionary check bytes to go
-            DICT3  = 3,  // three dictionary check bytes to go
-            DICT2  = 4,  // two dictionary check bytes to go
-            DICT1  = 5,  // one dictionary check byte to go
-            DICT0  = 6,  // waiting for inflateSetDictionary
+            FLAG = 1,  // waiting for flag byte
+            DICT4 = 2,  // four dictionary check bytes to go
+            DICT3 = 3,  // three dictionary check bytes to go
+            DICT2 = 4,  // two dictionary check bytes to go
+            DICT1 = 5,  // one dictionary check byte to go
+            DICT0 = 6,  // waiting for inflateSetDictionary
             BLOCKS = 7,  // decompressing blocks
             CHECK4 = 8,  // four check bytes to go
             CHECK3 = 9,  // three check bytes to go
             CHECK2 = 10, // two check bytes to go
             CHECK1 = 11, // one check byte to go
-            DONE   = 12, // finished check, done
-            BAD    = 13, // got an error--stay here
+            DONE = 12, // finished check, done
+            BAD = 13, // got an error--stay here
         }
 
         private InflateManagerMode mode; // current inflate mode
@@ -1435,16 +1462,20 @@ namespace PMDCP.Compression.Zlib
 
         // if CHECK, check values to compare
         internal uint computedCheck; // computed check value
+
         internal uint expectedCheck; // stream check value
 
         // if BAD, inflateSync's marker bytes count
         internal int marker;
+
         internal bool HandleRfc1950HeaderBytes { get; set; } = true;
         internal int wbits; // log2(window size)  (8..15, defaults to 15)
 
         internal InflateBlocks blocks; // current inflate_blocks state
 
-        public InflateManager() { }
+        public InflateManager()
+        {
+        }
 
         public InflateManager(bool expectRfc1950HeaderBytes)
         {
@@ -1463,7 +1494,10 @@ namespace PMDCP.Compression.Zlib
         internal int End()
         {
             if (blocks != null)
+            {
                 blocks.Free();
+            }
+
             blocks = null;
             return ZlibConstants.Z_OK;
         }
@@ -1501,17 +1535,18 @@ namespace PMDCP.Compression.Zlib
             return ZlibConstants.Z_OK;
         }
 
-
         internal int Inflate(FlushType flush)
         {
             int b;
 
             if (_codec.InputBuffer == null)
+            {
                 throw new ZlibException("InputBuffer is null. ");
+            }
 
-//             int f = (flush == FlushType.Finish)
-//                 ? ZlibConstants.Z_BUF_ERROR
-//                 : ZlibConstants.Z_OK;
+            //             int f = (flush == FlushType.Finish)
+            //                 ? ZlibConstants.Z_BUF_ERROR
+            //                 : ZlibConstants.Z_OK;
 
             // workitem 8870
             int f = ZlibConstants.Z_OK;
@@ -1522,7 +1557,11 @@ namespace PMDCP.Compression.Zlib
                 switch (mode)
                 {
                     case InflateManagerMode.METHOD:
-                        if (_codec.AvailableBytesIn == 0) return r;
+                        if (_codec.AvailableBytesIn == 0)
+                        {
+                            return r;
+                        }
+
                         r = f;
                         _codec.AvailableBytesIn--;
                         _codec.TotalBytesIn++;
@@ -1543,9 +1582,12 @@ namespace PMDCP.Compression.Zlib
                         mode = InflateManagerMode.FLAG;
                         break;
 
-
                     case InflateManagerMode.FLAG:
-                        if (_codec.AvailableBytesIn == 0) return r;
+                        if (_codec.AvailableBytesIn == 0)
+                        {
+                            return r;
+                        }
+
                         r = f;
                         _codec.AvailableBytesIn--;
                         _codec.TotalBytesIn++;
@@ -1565,7 +1607,11 @@ namespace PMDCP.Compression.Zlib
                         break;
 
                     case InflateManagerMode.DICT4:
-                        if (_codec.AvailableBytesIn == 0) return r;
+                        if (_codec.AvailableBytesIn == 0)
+                        {
+                            return r;
+                        }
+
                         r = f;
                         _codec.AvailableBytesIn--;
                         _codec.TotalBytesIn++;
@@ -1574,7 +1620,11 @@ namespace PMDCP.Compression.Zlib
                         break;
 
                     case InflateManagerMode.DICT3:
-                        if (_codec.AvailableBytesIn == 0) return r;
+                        if (_codec.AvailableBytesIn == 0)
+                        {
+                            return r;
+                        }
+
                         r = f;
                         _codec.AvailableBytesIn--;
                         _codec.TotalBytesIn++;
@@ -1584,7 +1634,11 @@ namespace PMDCP.Compression.Zlib
 
                     case InflateManagerMode.DICT2:
 
-                        if (_codec.AvailableBytesIn == 0) return r;
+                        if (_codec.AvailableBytesIn == 0)
+                        {
+                            return r;
+                        }
+
                         r = f;
                         _codec.AvailableBytesIn--;
                         _codec.TotalBytesIn++;
@@ -1592,9 +1646,12 @@ namespace PMDCP.Compression.Zlib
                         mode = InflateManagerMode.DICT1;
                         break;
 
-
                     case InflateManagerMode.DICT1:
-                        if (_codec.AvailableBytesIn == 0) return r;
+                        if (_codec.AvailableBytesIn == 0)
+                        {
+                            return r;
+                        }
+
                         r = f;
                         _codec.AvailableBytesIn--; _codec.TotalBytesIn++;
                         expectedCheck += (uint)(_codec.InputBuffer[_codec.NextIn++] & 0x000000ff);
@@ -1602,13 +1659,11 @@ namespace PMDCP.Compression.Zlib
                         mode = InflateManagerMode.DICT0;
                         return ZlibConstants.Z_NEED_DICT;
 
-
                     case InflateManagerMode.DICT0:
                         mode = InflateManagerMode.BAD;
                         _codec.Message = "need dictionary";
                         marker = 0; // can try inflateSync
                         return ZlibConstants.Z_STREAM_ERROR;
-
 
                     case InflateManagerMode.BLOCKS:
                         r = blocks.Process(r);
@@ -1619,10 +1674,15 @@ namespace PMDCP.Compression.Zlib
                             break;
                         }
 
-                        if (r == ZlibConstants.Z_OK) r = f;
+                        if (r == ZlibConstants.Z_OK)
+                        {
+                            r = f;
+                        }
 
                         if (r != ZlibConstants.Z_STREAM_END)
+                        {
                             return r;
+                        }
 
                         r = f;
                         computedCheck = blocks.Reset();
@@ -1635,7 +1695,11 @@ namespace PMDCP.Compression.Zlib
                         break;
 
                     case InflateManagerMode.CHECK4:
-                        if (_codec.AvailableBytesIn == 0) return r;
+                        if (_codec.AvailableBytesIn == 0)
+                        {
+                            return r;
+                        }
+
                         r = f;
                         _codec.AvailableBytesIn--;
                         _codec.TotalBytesIn++;
@@ -1644,7 +1708,11 @@ namespace PMDCP.Compression.Zlib
                         break;
 
                     case InflateManagerMode.CHECK3:
-                        if (_codec.AvailableBytesIn == 0) return r;
+                        if (_codec.AvailableBytesIn == 0)
+                        {
+                            return r;
+                        }
+
                         r = f;
                         _codec.AvailableBytesIn--; _codec.TotalBytesIn++;
                         expectedCheck += (uint)((_codec.InputBuffer[_codec.NextIn++] << 16) & 0x00ff0000);
@@ -1652,7 +1720,11 @@ namespace PMDCP.Compression.Zlib
                         break;
 
                     case InflateManagerMode.CHECK2:
-                        if (_codec.AvailableBytesIn == 0) return r;
+                        if (_codec.AvailableBytesIn == 0)
+                        {
+                            return r;
+                        }
+
                         r = f;
                         _codec.AvailableBytesIn--;
                         _codec.TotalBytesIn++;
@@ -1661,7 +1733,11 @@ namespace PMDCP.Compression.Zlib
                         break;
 
                     case InflateManagerMode.CHECK1:
-                        if (_codec.AvailableBytesIn == 0) return r;
+                        if (_codec.AvailableBytesIn == 0)
+                        {
+                            return r;
+                        }
+
                         r = f;
                         _codec.AvailableBytesIn--; _codec.TotalBytesIn++;
                         expectedCheck += (uint)(_codec.InputBuffer[_codec.NextIn++] & 0x000000ff);
@@ -1683,19 +1759,18 @@ namespace PMDCP.Compression.Zlib
 
                     default:
                         throw new ZlibException("Stream error.");
-
                 }
             }
         }
-
-
 
         internal int SetDictionary(byte[] dictionary)
         {
             int index = 0;
             int length = dictionary.Length;
             if (mode != InflateManagerMode.DICT0)
+            {
                 throw new ZlibException("Stream error.");
+            }
 
             if (Adler.Adler32(1, dictionary, 0, dictionary.Length) != _codec._Adler32)
             {
@@ -1714,7 +1789,6 @@ namespace PMDCP.Compression.Zlib
             return ZlibConstants.Z_OK;
         }
 
-
         private static readonly byte[] mark = new byte[] { 0, 0, 0xff, 0xff };
 
         internal int Sync()
@@ -1731,7 +1805,10 @@ namespace PMDCP.Compression.Zlib
                 marker = 0;
             }
             if ((n = _codec.AvailableBytesIn) == 0)
+            {
                 return ZlibConstants.Z_BUF_ERROR;
+            }
+
             p = _codec.NextIn;
             m = marker;
 
@@ -1772,7 +1849,6 @@ namespace PMDCP.Compression.Zlib
             mode = InflateManagerMode.BLOCKS;
             return ZlibConstants.Z_OK;
         }
-
 
         // Returns true if inflate is currently at the end of a block generated
         // by Z_SYNC_FLUSH or Z_FULL_FLUSH. This function is used by one PPP

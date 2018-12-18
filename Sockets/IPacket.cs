@@ -18,19 +18,32 @@ namespace PMDCP.Sockets
     public interface IPacket
     {
         void AppendClass(ISendable sendableClass);
+
         void AppendParameter(int parameter);
+
         void AppendParameter(string parameter);
+
         void AppendParameters(params int[] param);
+
         void AppendParameters(params string[] param);
+
         void AppendParameterSegment(string segment);
+
         ConnectionType ConnectionType { get; }
+
         void EndParameterSegment();
+
         void FinalizePacket();
+
         string Header { get; }
         string PacketString { get; }
+
         void PrependParameters(params string[] param);
+
         long Size { get; }
+
         void StartParameterSegment();
+
         char SeperatorChar { get; }
         byte[] CustomHeader { get; set; }
     }

@@ -20,26 +20,34 @@ namespace PMDCP.Sockets.Tcp
 {
     public class TcpClientCollection<TClientID>
     {
-        object lockObject = new object();
+        private readonly object lockObject = new object();
 
-        public TcpClientCollection() {
+        public TcpClientCollection()
+        {
             Clients = new Dictionary<TClientID, TcpClient>();
         }
 
-        public TcpClient GetTcpClient(TClientID clientID) {
-            lock (lockObject) {
-                TcpClient tcpClient = null;
-                if (Clients.TryGetValue(clientID, out tcpClient)) {
+        public TcpClient GetTcpClient(TClientID clientID)
+        {
+            lock (lockObject)
+            {
+                if (Clients.TryGetValue(clientID, out TcpClient tcpClient))
+                {
                     return tcpClient;
-                } else {
+                }
+                else
+                {
                     return null;
                 }
             }
         }
 
-        public IEnumerable<TcpClient> EnumerateAllClients() {
-            lock (lockObject) {
-                foreach (TcpClient client in Clients.Values) {
+        public IEnumerable<TcpClient> EnumerateAllClients()
+        {
+            lock (lockObject)
+            {
+                foreach (TcpClient client in Clients.Values)
+                {
                     yield return client;
                 }
             }
@@ -47,17 +55,16 @@ namespace PMDCP.Sockets.Tcp
 
         public Dictionary<TClientID, TcpClient> Clients { get; }
 
-        public int Count {
-            get { return Clients.Count; }
-        }
+        public int Count => Clients.Count;
 
-        public TcpClient this[TClientID clientID] {
-            get { return GetTcpClient(clientID); }
-        }
-        
-        public void AddTcpClient(TClientID clientID, TcpClient tcpClient) {
-            lock (lockObject) {
-                if (Clients.ContainsKey(clientID) == false) {
+        public TcpClient this[TClientID clientID] => GetTcpClient(clientID);
+
+        public void AddTcpClient(TClientID clientID, TcpClient tcpClient)
+        {
+            lock (lockObject)
+            {
+                if (Clients.ContainsKey(clientID) == false)
+                {
                     // If the collection does not contain a client with the same ID, add it
                     Clients.Add(clientID, tcpClient);
                     tcpClient.ConnectionBroken += new EventHandler(tcpClient_ConnectionBroken);
@@ -65,10 +72,13 @@ namespace PMDCP.Sockets.Tcp
             }
         }
 
-        void tcpClient_ConnectionBroken(object sender, EventArgs e) {
-            lock (lockObject) {
+        private void tcpClient_ConnectionBroken(object sender, EventArgs e)
+        {
+            lock (lockObject)
+            {
                 TClientID clientID = (TClientID)((TcpClient)sender).ID;
-                if (clientID != null && Clients.ContainsKey(clientID)) {
+                if (clientID != null && Clients.ContainsKey(clientID))
+                {
                     Clients.Remove(clientID);
                 }
             }

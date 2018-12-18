@@ -19,7 +19,7 @@ namespace PMDCP.Sockets.Tcp
 {
     public class PacketData
     {
-        byte[] customHeader;
-        ByteArray packet;
+        private readonly byte[] customHeader;
+        private readonly ByteArray packet;
     }
 }

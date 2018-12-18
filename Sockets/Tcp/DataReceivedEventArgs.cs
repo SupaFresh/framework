@@ -21,7 +21,8 @@ namespace PMDCP.Sockets.Tcp
     {
         #region Constructors
 
-        public DataReceivedEventArgs(byte[] byteData, byte[] customHeader, string data) {
+        public DataReceivedEventArgs(byte[] byteData, byte[] customHeader, string data)
+        {
             Data = data;
             ByteData = byteData;
             CustomHeader = customHeader;

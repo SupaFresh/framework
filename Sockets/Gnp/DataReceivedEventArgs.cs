@@ -20,10 +20,10 @@ namespace PMDCP.Sockets.Gnp
 {
     public class DataReceivedEventArgs : EventArgs
     {
-
         #region Constructors
 
-        public DataReceivedEventArgs(byte[] byteData, byte[] customHeader, string data, EndPoint dataSource) {
+        public DataReceivedEventArgs(byte[] byteData, byte[] customHeader, string data, EndPoint dataSource)
+        {
             Data = data;
             ByteData = byteData;
             CustomHeader = customHeader;

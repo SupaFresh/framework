@@ -21,29 +21,51 @@ namespace PMDCP.DatabaseConnector
     public interface IDatabase
     {
         void CreateTable(string tableName, IDataField[] fields);
+
         void DeleteTable(string tableName);
+
         IDataColumn[] RetrieveRow(string tableName, string columns, string filterExpression);
+
         //List<IDataColumn[]> RetrieveRows(string tableName, string columns, string filterExpression);
         void AddRow(string tableName, IDataColumn[] columns);
+
         [Obsolete("Obsolete in favor of Dapper-based implementation.", true)]
         void DeleteRow(string tableName, string filterExpression);
+
         void DeleteRow(string tableName, string filterExpression, object data);
+
         void OpenConnection();
+
         void CloseConnection();
+
         object ExecuteQuery(string command);
+
         System.Data.ConnectionState ConnectionState { get; }
+
         int CountRows(string tableName);
+
         bool TableExists(string tableName);
+
         void UpdateRow(string tableName, IDataColumn[] columns, string filterExpression);
+
         void UpdateRow(string tableName, IDataColumn[] columns);
+
         void UpdateRow(string tableName, IEnumerable<IGenericDataColumn> columns, string filterExpression, object data);
+
         void UpdateRow(string tableName, IEnumerable<IGenericDataColumn> columns, object data);
+
         void UpdateOrInsert(string tableName, IDataColumn[] columns, string filterExpression);
+
         void UpdateOrInsert(string tableName, IDataColumn[] columns);
+
         IDataField CreateField(string name, string type);
+
         IDataColumn CreateColumn(bool primaryKey, string name, string value);
+
         IGenericDataColumn CreateColumn(bool primaryKey, string name);
+
         void BeginTransaction();
+
         void EndTransaction();
 
         string ConnectionString { get; set; }

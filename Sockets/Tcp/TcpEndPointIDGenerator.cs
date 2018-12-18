@@ -19,7 +19,8 @@ namespace PMDCP.Sockets.Tcp
 {
     public class TcpEndPointIDGenerator : ITcpIDGenerator<EndPoint>
     {
-        public EndPoint GenerateID(TcpClient tcpClient) {
+        public EndPoint GenerateID(TcpClient tcpClient)
+        {
             return tcpClient.Socket.RemoteEndPoint;
         }
     }

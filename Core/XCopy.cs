@@ -22,7 +22,8 @@ namespace PMDCP.Core
     {
         #region Constructors
 
-        public XCopy(string xcopyPath) {
+        public XCopy(string xcopyPath)
+        {
             XCopyPath = xcopyPath;
         }
 
@@ -42,25 +43,30 @@ namespace PMDCP.Core
 
         #region Methods
 
-        public void Copy() {
+        public void Copy()
+        {
             ProcessStartInfo processStartInfo = new ProcessStartInfo(XCopyPath)
             {
                 CreateNoWindow = true,
                 WindowStyle = ProcessWindowStyle.Hidden
             };
             StringBuilder arguments = new StringBuilder();
-            if (!string.IsNullOrEmpty(DestinationFile)) {
+            if (!string.IsNullOrEmpty(DestinationFile))
+            {
                 arguments.Append(" /dstfile \"" + DestinationFile + "\"");
             }
-            if (!string.IsNullOrEmpty(SourceFile)) {
+            if (!string.IsNullOrEmpty(SourceFile))
+            {
                 arguments.Append(" /srcfile \"" + SourceFile + "\"");
             }
             arguments.Append(" /pdbsearch " + PdbSearch);
             processStartInfo.Arguments = arguments.ToString();
-            try {
+            try
+            {
                 Process xcopyProcess = Process.Start(processStartInfo);
                 xcopyProcess.WaitForExit();
-            } catch { }
+            }
+            catch { }
         }
 
         #endregion Methods

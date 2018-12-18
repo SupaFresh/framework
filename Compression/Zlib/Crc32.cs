@@ -32,11 +32,8 @@
 //
 // ------------------------------------------------------------------
 
-
-
 using System;
-using Interop=System.Runtime.InteropServices;
-
+using Interop = System.Runtime.InteropServices;
 
 namespace PMDCP.Compression.Zlib
 {
@@ -63,14 +60,9 @@ namespace PMDCP.Compression.Zlib
         /// <summary>
         /// Indicates the current CRC for all blocks slurped in.
         /// </summary>
-        public int Crc32Result
-        {
-            get
-            {
+        public int Crc32Result =>
                 // return one's complement of the running result
-                return unchecked((int)(~_RunningCrc32Result));
-            }
-        }
+                unchecked((int)(~_RunningCrc32Result));
 
         /// <summary>
         /// Returns the CRC32 for the specified stream.
@@ -92,7 +84,9 @@ namespace PMDCP.Compression.Zlib
         public int GetCrc32AndCopy(System.IO.Stream input, System.IO.Stream output)
         {
             if (input == null)
+            {
                 throw new ZlibException("The input stream must not be null.");
+            }
 
             unchecked
             {
@@ -103,20 +97,27 @@ namespace PMDCP.Compression.Zlib
 
                 TotalBytesRead = 0;
                 int count = input.Read(buffer, 0, readSize);
-                if (output != null) output.Write(buffer, 0, count);
+                if (output != null)
+                {
+                    output.Write(buffer, 0, count);
+                }
+
                 TotalBytesRead += count;
                 while (count > 0)
                 {
                     SlurpBlock(buffer, 0, count);
                     count = input.Read(buffer, 0, readSize);
-                    if (output != null) output.Write(buffer, 0, count);
+                    if (output != null)
+                    {
+                        output.Write(buffer, 0, count);
+                    }
+
                     TotalBytesRead += count;
                 }
 
                 return (int)(~_RunningCrc32Result);
             }
         }
-
 
         /// <summary>
         /// Get the CRC32 for the given (word,byte) combo.  This is a computation
@@ -145,7 +146,9 @@ namespace PMDCP.Compression.Zlib
         public void SlurpBlock(byte[] block, int offset, int count)
         {
             if (block == null)
+            {
                 throw new ZlibException("The data buffer must not be null.");
+            }
 
             for (int i = 0; i < count; i++)
             {
@@ -154,7 +157,6 @@ namespace PMDCP.Compression.Zlib
             }
             TotalBytesRead += count;
         }
-
 
         // pre-initialize the crc table for speed of lookup.
         static CRC32()
@@ -191,17 +193,17 @@ namespace PMDCP.Compression.Zlib
             }
         }
 
-
-
-
         private uint gf2_matrix_times(uint[] matrix, uint vec)
         {
             uint sum = 0;
-            int i=0;
+            int i = 0;
             while (vec != 0)
             {
-                if ((vec & 0x01)== 0x01)
+                if ((vec & 0x01) == 0x01)
+                {
                     sum ^= matrix[i];
+                }
+
                 vec >>= 1;
                 i++;
             }
@@ -211,10 +213,10 @@ namespace PMDCP.Compression.Zlib
         private void gf2_matrix_square(uint[] square, uint[] mat)
         {
             for (int i = 0; i < 32; i++)
+            {
                 square[i] = gf2_matrix_times(mat, mat[i]);
+            }
         }
-
-
 
         /// <summary>
         /// Combines the given CRC32 value with the current running total.
@@ -232,10 +234,12 @@ namespace PMDCP.Compression.Zlib
             uint[] odd = new uint[32];      // odd-power-of-two zeros operator
 
             if (length == 0)
+            {
                 return;
+            }
 
-            uint crc1= ~_RunningCrc32Result;
-            uint crc2= (uint) crc;
+            uint crc1 = ~_RunningCrc32Result;
+            uint crc2 = (uint)crc;
 
             // put operator for one zero bit in odd
             odd[0] = 0xEDB88320;  // the CRC-32 polynomial
@@ -252,33 +256,40 @@ namespace PMDCP.Compression.Zlib
             // put operator for four zero bits in odd
             gf2_matrix_square(odd, even);
 
-            uint len2 = (uint) length;
+            uint len2 = (uint)length;
 
             // apply len2 zeros to crc1 (first square will put the operator for one
             // zero byte, eight zero bits, in even)
-            do {
+            do
+            {
                 // apply zeros operator for this bit of len2
                 gf2_matrix_square(even, odd);
 
-                if ((len2 & 1)== 1)
+                if ((len2 & 1) == 1)
+                {
                     crc1 = gf2_matrix_times(even, crc1);
+                }
+
                 len2 >>= 1;
 
                 if (len2 == 0)
+                {
                     break;
+                }
 
                 // another iteration of the loop with odd and even swapped
                 gf2_matrix_square(odd, even);
-                if ((len2 & 1)==1)
+                if ((len2 & 1) == 1)
+                {
                     crc1 = gf2_matrix_times(odd, crc1);
+                }
+
                 len2 >>= 1;
-
-
             } while (len2 != 0);
 
             crc1 ^= crc2;
 
-            _RunningCrc32Result= ~crc1;
+            _RunningCrc32Result = ~crc1;
 
             //return (int) crc1;
             return;
@@ -287,11 +298,7 @@ namespace PMDCP.Compression.Zlib
         private static readonly uint[] crc32Table;
         private const int BUFFER_SIZE = 8192;
         private uint _RunningCrc32Result = 0xFFFFFFFF;
-
     }
-
-
-
 
     /// <summary>
     /// A Stream that calculates a CRC32 (a checksum) on all bytes read,
@@ -318,7 +325,7 @@ namespace PMDCP.Compression.Zlib
 
         internal System.IO.Stream _innerStream;
         private CRC32 _Crc32;
-        private long _lengthLimit = -99;
+        private readonly long _lengthLimit = -99;
 
         /// <summary>
         /// Gets the total number of bytes run through the CRC32 calculator.
@@ -328,11 +335,7 @@ namespace PMDCP.Compression.Zlib
         /// This is either the total number of bytes read, or the total number of bytes
         /// written, depending on the direction of this stream.
         /// </remarks>
-        public long TotalBytesSlurped
-        {
-            get { return _Crc32.TotalBytesRead; }
-        }
-
+        public long TotalBytesSlurped => _Crc32.TotalBytesRead;
 
         /// <summary>
         /// The default constructor.
@@ -347,7 +350,6 @@ namespace PMDCP.Compression.Zlib
         {
         }
 
-
         /// <summary>
         /// The constructor allows the caller to specify how to handle the underlying
         /// stream at close.
@@ -359,7 +361,6 @@ namespace PMDCP.Compression.Zlib
             : this(leaveOpen, UnsetLengthLimit, stream)
         {
         }
-
 
         /// <summary>
         /// A constructor allowing the specification of the length of the stream to read.
@@ -374,7 +375,9 @@ namespace PMDCP.Compression.Zlib
             : this(true, length, stream)
         {
             if (length < 0)
+            {
                 throw new ArgumentException("length");
+            }
         }
 
         /// <summary>
@@ -389,9 +392,10 @@ namespace PMDCP.Compression.Zlib
             : this(leaveOpen, length, stream)
         {
             if (length < 0)
+            {
                 throw new ArgumentException("length");
+            }
         }
-
 
         // This ctor is private - no validation is done here.  This is to allow the use
         // of a (specific) negative value for the _lengthLimit, to indicate that there
@@ -410,10 +414,7 @@ namespace PMDCP.Compression.Zlib
         /// <summary>
         /// Provides the current CRC for all blocks slurped in.
         /// </summary>
-        public int Crc
-        {
-            get { return _Crc32.Crc32Result; }
-        }
+        public int Crc => _Crc32.Crc32Result;
 
         /// <summary>
         /// Indicates whether the underlying stream will be left open when the
@@ -442,12 +443,23 @@ namespace PMDCP.Compression.Zlib
 
             if (_lengthLimit != UnsetLengthLimit)
             {
-                if (_Crc32.TotalBytesRead >= _lengthLimit) return 0; // EOF
+                if (_Crc32.TotalBytesRead >= _lengthLimit)
+                {
+                    return 0; // EOF
+                }
+
                 long bytesRemaining = _lengthLimit - _Crc32.TotalBytesRead;
-                if (bytesRemaining < count) bytesToRead = (int)bytesRemaining;
+                if (bytesRemaining < count)
+                {
+                    bytesToRead = (int)bytesRemaining;
+                }
             }
             int n = _innerStream.Read(buffer, offset, bytesToRead);
-            if (n > 0) _Crc32.SlurpBlock(buffer, offset, n);
+            if (n > 0)
+            {
+                _Crc32.SlurpBlock(buffer, offset, n);
+            }
+
             return n;
         }
 
@@ -459,33 +471,28 @@ namespace PMDCP.Compression.Zlib
         /// <param name="count">the number of bytes to write</param>
         public override void Write(byte[] buffer, int offset, int count)
         {
-            if (count > 0) _Crc32.SlurpBlock(buffer, offset, count);
+            if (count > 0)
+            {
+                _Crc32.SlurpBlock(buffer, offset, count);
+            }
+
             _innerStream.Write(buffer, offset, count);
         }
 
         /// <summary>
         /// Indicates whether the stream supports reading.
         /// </summary>
-        public override bool CanRead
-        {
-            get { return _innerStream.CanRead; }
-        }
+        public override bool CanRead => _innerStream.CanRead;
 
         /// <summary>
         /// Indicates whether the stream supports seeking.
         /// </summary>
-        public override bool CanSeek
-        {
-            get { return _innerStream.CanSeek; }
-        }
+        public override bool CanSeek => _innerStream.CanSeek;
 
         /// <summary>
         /// Indicates whether the stream supports writing.
         /// </summary>
-        public override bool CanWrite
-        {
-            get { return _innerStream.CanWrite; }
-        }
+        public override bool CanWrite => _innerStream.CanWrite;
 
         /// <summary>
         /// Flush the stream.
@@ -503,8 +510,13 @@ namespace PMDCP.Compression.Zlib
             get
             {
                 if (_lengthLimit == UnsetLengthLimit)
+                {
                     return _innerStream.Length;
-                else return _lengthLimit;
+                }
+                else
+                {
+                    return _lengthLimit;
+                }
             }
         }
 
@@ -513,8 +525,8 @@ namespace PMDCP.Compression.Zlib
         /// </summary>
         public override long Position
         {
-            get { return _Crc32.TotalBytesRead; }
-            set { throw new NotImplementedException(); }
+            get => _Crc32.TotalBytesRead;
+            set => throw new NotImplementedException();
         }
 
         /// <summary>
@@ -537,7 +549,6 @@ namespace PMDCP.Compression.Zlib
             throw new NotImplementedException();
         }
 
-
         void IDisposable.Dispose()
         {
             Close();
@@ -550,8 +561,9 @@ namespace PMDCP.Compression.Zlib
         {
             base.Close();
             if (!LeaveOpen)
+            {
                 _innerStream.Close();
+            }
         }
-
     }
 }

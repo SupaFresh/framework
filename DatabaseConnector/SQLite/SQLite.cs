@@ -23,17 +23,19 @@ namespace PMDCP.DatabaseConnector.SQLite
     {
         #region Fields
 
-        SQLiteConnection connection;
+        private SQLiteConnection connection;
 
         #endregion Fields
 
         #region Constructors
 
-        public SQLite(string connectionString) {
+        public SQLite(string connectionString)
+        {
             ConnectionString = connectionString;
         }
 
-        public SQLite(string filePath, bool readOnly) {
+        public SQLite(string filePath, bool readOnly)
+        {
             ConnectionString = "Data Source=" + filePath + ";Version=3;Read Only=" + readOnly + ";";
         }
 
@@ -41,12 +43,16 @@ namespace PMDCP.DatabaseConnector.SQLite
 
         #region Properties
 
-        public System.Data.ConnectionState ConnectionState {
-            get {
-                if (connection != null) {
+        public System.Data.ConnectionState ConnectionState
+        {
+            get
+            {
+                if (connection != null)
+                {
                     return connection.State;
                 }
-                else {
+                else
+                {
                     return System.Data.ConnectionState.Closed;
                 }
             }
@@ -58,157 +64,207 @@ namespace PMDCP.DatabaseConnector.SQLite
 
         #region Methods
 
-        private string VerifyValueString(string value) {
+        private string VerifyValueString(string value)
+        {
             string newVal;
             newVal = value.Replace("\'", "\'\'");
 
             return newVal;
         }
 
-        public void AddRow(string tableName, IDataColumn[] columns) {
-            if (columns.Length > 0) {
+        public void AddRow(string tableName, IDataColumn[] columns)
+        {
+            if (columns.Length > 0)
+            {
                 bool localConnection = false;
-                if (ConnectionState == System.Data.ConnectionState.Closed) {
+                if (ConnectionState == System.Data.ConnectionState.Closed)
+                {
                     localConnection = true;
                     OpenConnection();
                 }
-                try {
+                try
+                {
                     string command = "INSERT INTO " + tableName;
                     string columnsToAdd = columns[0].Name;
                     string valuesToAdd = "\'" + VerifyValueString(columns[0].Value.ToString()) + "\'";
-                    for (int i = 1; i < columns.Length; i++) {
+                    for (int i = 1; i < columns.Length; i++)
+                    {
                         columnsToAdd += ", " + columns[i].Name;
                         valuesToAdd += ", \'" + VerifyValueString(columns[i].Value.ToString()) + "\'";
                     }
                     command += " (" + columnsToAdd + ") VALUES (" + valuesToAdd + ")";
-                    using (SQLiteCommand comm = new SQLiteCommand(command, connection)) {
+                    using (SQLiteCommand comm = new SQLiteCommand(command, connection))
+                    {
                         comm.ExecuteScalar();
                     }
                 }
-                finally {
-                    if (localConnection) {
+                finally
+                {
+                    if (localConnection)
+                    {
                         CloseConnection();
                     }
                 }
             }
         }
 
-        public void CloseConnection() {
-            if (ConnectionState == System.Data.ConnectionState.Open) {
+        public void CloseConnection()
+        {
+            if (ConnectionState == System.Data.ConnectionState.Open)
+            {
                 connection.Dispose();
             }
         }
 
-        public int CountRows(string tableName) {
+        public int CountRows(string tableName)
+        {
             return Convert.ToInt32(ExecuteQuery("SELECT COUNT(*) FROM " + tableName));
         }
 
-        public void CreateTable(string tableName, IDataField[] fields) {
-            if (fields.Length > 0) {
+        public void CreateTable(string tableName, IDataField[] fields)
+        {
+            if (fields.Length > 0)
+            {
                 bool localConnection = false;
-                if (ConnectionState == System.Data.ConnectionState.Closed) {
+                if (ConnectionState == System.Data.ConnectionState.Closed)
+                {
                     localConnection = true;
                     OpenConnection();
                 }
-                try {
+                try
+                {
                     string command = "CREATE TABLE " + tableName + " (" + fields[0].Name + " " + fields[0].Type;
-                    for (int i = 1; i < fields.Length; i++) {
+                    for (int i = 1; i < fields.Length; i++)
+                    {
                         command += ", " + fields[i].Name + " " + fields[i].Type;
                     }
                     command += ")";
-                    using (SQLiteCommand comm = new SQLiteCommand(command, connection)) {
+                    using (SQLiteCommand comm = new SQLiteCommand(command, connection))
+                    {
                         comm.ExecuteNonQuery();
                     }
                 }
-                finally {
-                    if (localConnection) {
+                finally
+                {
+                    if (localConnection)
+                    {
                         CloseConnection();
                     }
                 }
             }
         }
 
-        public void DeleteRow(string tableName, string filterExpression) {
+        public void DeleteRow(string tableName, string filterExpression)
+        {
             bool localConnection = false;
-            if (ConnectionState == System.Data.ConnectionState.Closed) {
+            if (ConnectionState == System.Data.ConnectionState.Closed)
+            {
                 localConnection = true;
                 OpenConnection();
             }
-            try {
+            try
+            {
                 string command = "DELETE FROM " + tableName;
-                if (!string.IsNullOrEmpty(filterExpression)) {
+                if (!string.IsNullOrEmpty(filterExpression))
+                {
                     command += " WHERE " + filterExpression;
                 }
-                using (SQLiteCommand comm = new SQLiteCommand(command, connection)) {
+                using (SQLiteCommand comm = new SQLiteCommand(command, connection))
+                {
                     comm.ExecuteNonQuery();
                 }
             }
-            finally {
-                if (localConnection) {
+            finally
+            {
+                if (localConnection)
+                {
                     CloseConnection();
                 }
             }
         }
 
-        public void DeleteTable(string tableName) {
+        public void DeleteTable(string tableName)
+        {
             bool localConnection = false;
-            if (ConnectionState == System.Data.ConnectionState.Closed) {
+            if (ConnectionState == System.Data.ConnectionState.Closed)
+            {
                 localConnection = true;
                 OpenConnection();
             }
-            try {
+            try
+            {
                 string command = "DROP TABLE " + tableName;
-                using (SQLiteCommand comm = new SQLiteCommand(command, connection)) {
+                using (SQLiteCommand comm = new SQLiteCommand(command, connection))
+                {
                     comm.ExecuteNonQuery();
                 }
             }
-            finally {
-                if (localConnection) {
+            finally
+            {
+                if (localConnection)
+                {
                     CloseConnection();
                 }
             }
         }
 
-        public object ExecuteQuery(string command) {
+        public object ExecuteQuery(string command)
+        {
             bool localConnection = false;
-            if (ConnectionState == System.Data.ConnectionState.Closed) {
+            if (ConnectionState == System.Data.ConnectionState.Closed)
+            {
                 localConnection = true;
                 OpenConnection();
             }
-            try {
-                using (SQLiteCommand comm = new SQLiteCommand(command, connection)) {
+            try
+            {
+                using (SQLiteCommand comm = new SQLiteCommand(command, connection))
+                {
                     return comm.ExecuteScalar();
                 }
             }
-            finally {
-                if (localConnection) {
+            finally
+            {
+                if (localConnection)
+                {
                     CloseConnection();
                 }
             }
         }
 
-        public void OpenConnection() {
-            if (ConnectionState == System.Data.ConnectionState.Closed) {
+        public void OpenConnection()
+        {
+            if (ConnectionState == System.Data.ConnectionState.Closed)
+            {
                 connection = new SQLiteConnection(ConnectionString);
                 connection.Open();
-            } else {
-
+            }
+            else
+            {
             }
         }
 
-        public IDataColumn[] RetrieveRow(string tableName, string columns, string filterExpression) {
+        public IDataColumn[] RetrieveRow(string tableName, string columns, string filterExpression)
+        {
             bool localConnection = false;
-            if (ConnectionState == System.Data.ConnectionState.Closed) {
+            if (ConnectionState == System.Data.ConnectionState.Closed)
+            {
                 localConnection = true;
                 OpenConnection();
             }
-            try {
-                using (SQLiteCommand comm = new SQLiteCommand("SELECT " + columns + " FROM " + tableName + " WHERE " + filterExpression, connection)) {
-                    using (SQLiteDataReader reader = comm.ExecuteReader()) {
-                        if (reader.HasRows) {
-                            if (reader.Read()) {
+            try
+            {
+                using (SQLiteCommand comm = new SQLiteCommand("SELECT " + columns + " FROM " + tableName + " WHERE " + filterExpression, connection))
+                {
+                    using (SQLiteDataReader reader = comm.ExecuteReader())
+                    {
+                        if (reader.HasRows)
+                        {
+                            if (reader.Read())
+                            {
                                 DataColumn[] fields = new DataColumn[reader.FieldCount];
-                                for (int i = 0; i < reader.FieldCount; i++) {
+                                for (int i = 0; i < reader.FieldCount; i++)
+                                {
                                     fields[i] = new DataColumn(i, false, reader.GetName(i), reader.GetValue(i));
                                 }
                                 return fields;
@@ -217,28 +273,38 @@ namespace PMDCP.DatabaseConnector.SQLite
                     }
                 }
             }
-            finally {
-                if (localConnection) {
+            finally
+            {
+                if (localConnection)
+                {
                     CloseConnection();
                 }
             }
             return null;
         }
 
-        public List<IDataColumn[]> RetrieveRows(string tableName, string columns, string filterExpression) {
+        public List<IDataColumn[]> RetrieveRows(string tableName, string columns, string filterExpression)
+        {
             bool localConnection = false;
-            if (ConnectionState == System.Data.ConnectionState.Closed) {
+            if (ConnectionState == System.Data.ConnectionState.Closed)
+            {
                 localConnection = true;
                 OpenConnection();
             }
-            try {
-                using (SQLiteCommand comm = new SQLiteCommand("SELECT " + columns + " FROM " + tableName + " WHERE " + filterExpression, connection)) {
-                    using (SQLiteDataReader reader = comm.ExecuteReader()) {
-                        if (reader.HasRows) {
+            try
+            {
+                using (SQLiteCommand comm = new SQLiteCommand("SELECT " + columns + " FROM " + tableName + " WHERE " + filterExpression, connection))
+                {
+                    using (SQLiteDataReader reader = comm.ExecuteReader())
+                    {
+                        if (reader.HasRows)
+                        {
                             List<IDataColumn[]> dataRows = new List<IDataColumn[]>();
-                            while (reader.Read()) {
+                            while (reader.Read())
+                            {
                                 DataColumn[] fields = new DataColumn[reader.FieldCount];
-                                for (int i = 0; i < reader.FieldCount; i++) {
+                                for (int i = 0; i < reader.FieldCount; i++)
+                                {
                                     fields[i] = new DataColumn(i, false, reader.GetName(i), reader.GetValue(i));
                                 }
                                 dataRows.Add(fields);
@@ -248,133 +314,166 @@ namespace PMDCP.DatabaseConnector.SQLite
                     }
                 }
             }
-            finally {
-                if (localConnection) {
+            finally
+            {
+                if (localConnection)
+                {
                     CloseConnection();
                 }
             }
             return null;
         }
 
-        public bool TableExists(string tableName) {
+        public bool TableExists(string tableName)
+        {
             bool localConnection = false;
-            if (ConnectionState == System.Data.ConnectionState.Closed) {
+            if (ConnectionState == System.Data.ConnectionState.Closed)
+            {
                 localConnection = true;
                 OpenConnection();
             }
-            try {
-                using (SQLiteCommand cmd = new SQLiteCommand(connection)) {
+            try
+            {
+                using (SQLiteCommand cmd = new SQLiteCommand(connection))
+                {
                     cmd.CommandText = "SELECT name FROM sqlite_master WHERE type='table' AND name='" + tableName + "'";
-                    using (SQLiteDataReader rdr = cmd.ExecuteReader()) {
+                    using (SQLiteDataReader rdr = cmd.ExecuteReader())
+                    {
                         if (rdr.HasRows)
+                        {
                             return true;
+                        }
                         else
+                        {
                             return false;
+                        }
                     }
                 }
             }
-            finally {
-                if (localConnection) {
+            finally
+            {
+                if (localConnection)
+                {
                     CloseConnection();
                 }
             }
         }
 
-        public void UpdateRow(string tableName, IDataColumn[] columns, string filterExpression) {
+        public void UpdateRow(string tableName, IDataColumn[] columns, string filterExpression)
+        {
             bool localConnection = false;
-            if (ConnectionState == System.Data.ConnectionState.Closed) {
+            if (ConnectionState == System.Data.ConnectionState.Closed)
+            {
                 localConnection = true;
                 OpenConnection();
             }
-            try {
+            try
+            {
                 string command = "UPDATE " + tableName;
                 string setCommand = " SET " + columns[0].Name + " = \'" + VerifyValueString(columns[0].Value.ToString()) + "\'";
-                for (int i = 1; i < columns.Length; i++) {
+                for (int i = 1; i < columns.Length; i++)
+                {
                     setCommand += ", " + columns[i].Name + " = \'" + VerifyValueString(columns[i].Value.ToString()) + "\'";
                 }
                 command += setCommand;
-                if (!string.IsNullOrEmpty(filterExpression)) {
+                if (!string.IsNullOrEmpty(filterExpression))
+                {
                     command += " WHERE " + filterExpression;
                 }
-                using (SQLiteCommand cmd = new SQLiteCommand(command, connection)) {
+                using (SQLiteCommand cmd = new SQLiteCommand(command, connection))
+                {
                     cmd.ExecuteNonQuery();
                 }
             }
-            finally {
-                if (localConnection) {
+            finally
+            {
+                if (localConnection)
+                {
                     CloseConnection();
                 }
             }
         }
 
-        public void UpdateRow(string tableName, IDataColumn[] columns) {
+        public void UpdateRow(string tableName, IDataColumn[] columns)
+        {
             UpdateRow(tableName, columns, null);
         }
 
         #endregion Methods
 
-
-        public void UpdateOrInsert(string tableName, IDataColumn[] columns, string filterExpression) {
+        public void UpdateOrInsert(string tableName, IDataColumn[] columns, string filterExpression)
+        {
             bool localConnection = false;
-            if (ConnectionState == System.Data.ConnectionState.Closed) {
+            if (ConnectionState == System.Data.ConnectionState.Closed)
+            {
                 localConnection = true;
                 OpenConnection();
             }
-            try {
-                if (RetrieveRow(tableName, "*", filterExpression) != null) {
+            try
+            {
+                if (RetrieveRow(tableName, "*", filterExpression) != null)
+                {
                     UpdateRow(tableName, columns, filterExpression);
-                } else {
+                }
+                else
+                {
                     AddRow(tableName, columns);
                 }
             }
-            finally {
-                if (localConnection) {
+            finally
+            {
+                if (localConnection)
+                {
                     CloseConnection();
                 }
             }
         }
 
-
-        public IDataField CreateField(string name, string type) {
+        public IDataField CreateField(string name, string type)
+        {
             return new Field(name, type);
         }
 
-
-        public IDataColumn CreateColumn(bool primaryKey, string name, string value) {
+        public IDataColumn CreateColumn(bool primaryKey, string name, string value)
+        {
             return new DataColumn(primaryKey, name, value);
         }
 
-
-        public void BeginTransaction() {
+        public void BeginTransaction()
+        {
             throw new NotImplementedException();
         }
 
-        public void EndTransaction() {
+        public void EndTransaction()
+        {
             throw new NotImplementedException();
         }
 
-        public void UpdateRow(string tableName, IEnumerable<IGenericDataColumn> columns, string filterExpression, object data) {
+        public void UpdateRow(string tableName, IEnumerable<IGenericDataColumn> columns, string filterExpression, object data)
+        {
             throw new NotImplementedException();
         }
 
-        public void UpdateRow(string tableName, IEnumerable<IGenericDataColumn> columns, object data) {
+        public void UpdateRow(string tableName, IEnumerable<IGenericDataColumn> columns, object data)
+        {
             throw new NotImplementedException();
         }
 
-        public void UpdateOrInsert(string tableName, IDataColumn[] columns) {
+        public void UpdateOrInsert(string tableName, IDataColumn[] columns)
+        {
             throw new NotImplementedException();
         }
 
-        public IGenericDataColumn CreateColumn(bool primaryKey, string name) {
+        public IGenericDataColumn CreateColumn(bool primaryKey, string name)
+        {
             throw new NotImplementedException();
         }
 
-        public void DeleteRow(string tableName, string filterExpression, object data) {
+        public void DeleteRow(string tableName, string filterExpression, object data)
+        {
             throw new NotImplementedException();
         }
 
-        public bool IsTransactionActive {
-            get { throw new NotImplementedException(); }
-        }
+        public bool IsTransactionActive => throw new NotImplementedException();
     }
 }

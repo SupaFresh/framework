@@ -13,53 +13,70 @@
 // You should have received a copy of the GNU General Public License
 // along with Mystery Dungeon eXtended.  If not, see <http://www.gnu.org/licenses/>.
 
-
 namespace PMDCP.DatabaseConnector
 {
     public class SettingsDatabase
     {
         public IDatabase Database { get; }
 
-        public SettingsDatabase(IDatabase database) {
+        public SettingsDatabase(IDatabase database)
+        {
             Database = database;
         }
 
-        public void SaveSetting(string table, string key, string value) {
+        public void SaveSetting(string table, string key, string value)
+        {
             bool localConnection = false;
-            if (Database.ConnectionState == System.Data.ConnectionState.Closed) {
+            if (Database.ConnectionState == System.Data.ConnectionState.Closed)
+            {
                 localConnection = true;
                 Database.OpenConnection();
             }
-            try {
-                if (!Database.TableExists(table)) {
+            try
+            {
+                if (!Database.TableExists(table))
+                {
                     Database.CreateTable(table, new IDataField[] { Database.CreateField("Key", "TEXT"), Database.CreateField("Value", "TEXT") });
                 }
                 Database.UpdateOrInsert(table, new IDataColumn[] { Database.CreateColumn(true, "Key", key), Database.CreateColumn(false, "Value", value) }, "Key='" + key + "'");
-            } finally {
-                if (localConnection) {
+            }
+            finally
+            {
+                if (localConnection)
+                {
                     Database.CloseConnection();
                 }
             }
         }
 
-        public string RetrieveSetting(string table, string key) {
+        public string RetrieveSetting(string table, string key)
+        {
             bool localConnection = false;
-            if (Database.ConnectionState == System.Data.ConnectionState.Closed) {
+            if (Database.ConnectionState == System.Data.ConnectionState.Closed)
+            {
                 localConnection = true;
                 Database.OpenConnection();
             }
-            try {
-                if (!Database.TableExists(table)) {
+            try
+            {
+                if (!Database.TableExists(table))
+                {
                     return null;
                 }
                 IDataColumn[] retrievedRow = Database.RetrieveRow(table, "Value", "Key='" + key + "'");
-                if (retrievedRow != null) {
+                if (retrievedRow != null)
+                {
                     return (string)retrievedRow[0].Value;
-                } else {
+                }
+                else
+                {
                     return null;
                 }
-            } finally {
-                if (localConnection) {
+            }
+            finally
+            {
+                if (localConnection)
+                {
                     Database.CloseConnection();
                 }
             }

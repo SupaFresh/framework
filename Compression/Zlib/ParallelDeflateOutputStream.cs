@@ -17,38 +17,38 @@
 // ------------------------------------------------------------------
 
 using System;
-using System.Threading;
 using System.IO;
-
+using System.Threading;
 
 namespace PMDCP.Compression.Zlib
 {
-        internal class WorkItem
+    internal class WorkItem
+    {
+        internal enum Status { None = 0, Filling = 1, Filled = 2, Compressing = 3, Compressed = 4, Writing = 5, Done = 6 }
+
+        public byte[] buffer;
+        public byte[] compressed;
+        public int status;
+        public int crc;
+        public int index;
+        public int inputBytesAvailable;
+        public int compressedBytesAvailable;
+        public ZlibCodec compressor;
+
+        public WorkItem(int size, CompressionLevel compressLevel, CompressionStrategy strategy)
         {
-            internal enum Status { None=0, Filling=1, Filled=2, Compressing=3, Compressed=4, Writing=5, Done=6 }
-            public byte[] buffer;
-            public byte[] compressed;
-            public int status;
-            public int crc;
-            public int index;
-            public int inputBytesAvailable;
-            public int compressedBytesAvailable;
-            public ZlibCodec compressor;
+            buffer = new byte[size];
+            // alloc 5 bytes overhead for every block (margin of safety= 2)
+            int n = size + ((size / 32768) + 1) * 5 * 2;
+            compressed = new byte[n];
 
-            public WorkItem(int size, CompressionLevel compressLevel, CompressionStrategy strategy)
-            {
-                buffer= new byte[size];
-                // alloc 5 bytes overhead for every block (margin of safety= 2)
-                int n = size + ((size / 32768)+1) * 5 * 2;
-                compressed= new byte[n];
-
-                status = (int)Status.None;
-                compressor = new ZlibCodec();
-                compressor.InitializeDeflate(compressLevel, false);
-                compressor.OutputBuffer = compressed;
-                compressor.InputBuffer = buffer;
-            }
+            status = (int)Status.None;
+            compressor = new ZlibCodec();
+            compressor.InitializeDeflate(compressLevel, false);
+            compressor.OutputBuffer = compressed;
+            compressor.InputBuffer = buffer;
         }
+    }
 
     /// <summary>
     ///   A class for compressing and decompressing streams using the
@@ -89,27 +89,26 @@ namespace PMDCP.Compression.Zlib
     ///
     /// </remarks>
     /// <seealso cref="DeflateStream" />
-    public class ParallelDeflateOutputStream : System.IO.Stream
+    public class ParallelDeflateOutputStream : Stream
     {
-
         private static readonly int IO_BUFFER_SIZE_DEFAULT = 64 * 1024;  // 128k
 
         private System.Collections.Generic.List<WorkItem> _pool;
-        private bool                        _leaveOpen;
-        private System.IO.Stream            _outStream;
-        private int                         _nextToFill, _nextToWrite;
-        private int                         _bufferSize = IO_BUFFER_SIZE_DEFAULT;
-        private ManualResetEvent            _writingDone;
-        private ManualResetEvent            _sessionReset;
-        private bool                        _noMoreInputForThisSegment;
-        private object                      _outputLock = new object();
-        private bool                        _isClosed;
-        private bool                        _isDisposed;
-        private bool                        _firstWriteDone;
-        private int                         _pc;
-        private CompressionLevel _compressLevel;
-        private volatile Exception          _pendingException;
-        private object                      _eLock = new object();  // protects _pendingException
+        private readonly bool _leaveOpen;
+        private Stream _outStream;
+        private int _nextToFill, _nextToWrite;
+        private int _bufferSize = IO_BUFFER_SIZE_DEFAULT;
+        private ManualResetEvent _writingDone;
+        private ManualResetEvent _sessionReset;
+        private bool _noMoreInputForThisSegment;
+        private readonly object _outputLock = new object();
+        private bool _isClosed;
+        private bool _isDisposed;
+        private bool _firstWriteDone;
+        private int _pc;
+        private readonly CompressionLevel _compressLevel;
+        private volatile Exception _pendingException;
+        private readonly object _eLock = new object();  // protects _pendingException
 
         // This bitfield is used only when Trace is defined.
         //private TraceBits _DesiredTrace = TraceBits.Write | TraceBits.WriteBegin |
@@ -118,7 +117,7 @@ namespace PMDCP.Compression.Zlib
 
         //private TraceBits _DesiredTrace = TraceBits.WriteBegin | TraceBits.WriteDone | TraceBits.Synch | TraceBits.Lifecycle  | TraceBits.Session ;
 
-        private TraceBits _DesiredTrace = TraceBits.WriterThread | TraceBits.Synch | TraceBits.Lifecycle  | TraceBits.Session ;
+        private readonly TraceBits _DesiredTrace = TraceBits.WriterThread | TraceBits.Synch | TraceBits.Lifecycle | TraceBits.Session;
 
         /// <summary>
         /// Create a ParallelDeflateOutputStream.
@@ -191,7 +190,7 @@ namespace PMDCP.Compression.Zlib
         /// </code>
         /// </example>
         /// <param name="stream">The stream to which compressed data will be written.</param>
-        public ParallelDeflateOutputStream(System.IO.Stream stream)
+        public ParallelDeflateOutputStream(Stream stream)
             : this(stream, CompressionLevel.Default, CompressionStrategy.Default, false)
         {
         }
@@ -200,12 +199,12 @@ namespace PMDCP.Compression.Zlib
         ///   Create a ParallelDeflateOutputStream using the specified CompressionLevel.
         /// </summary>
         /// <remarks>
-        ///   See the <see cref="ParallelDeflateOutputStream(System.IO.Stream)"/>
+        ///   See the <see cref="ParallelDeflateOutputStream(Stream)"/>
         ///   constructor for example code.
         /// </remarks>
         /// <param name="stream">The stream to which compressed data will be written.</param>
         /// <param name="level">A tuning knob to trade speed for effectiveness.</param>
-        public ParallelDeflateOutputStream(System.IO.Stream stream, CompressionLevel level)
+        public ParallelDeflateOutputStream(Stream stream, CompressionLevel level)
             : this(stream, level, CompressionStrategy.Default, false)
         {
         }
@@ -215,14 +214,14 @@ namespace PMDCP.Compression.Zlib
         /// when the ParallelDeflateOutputStream is closed.
         /// </summary>
         /// <remarks>
-        ///   See the <see cref="ParallelDeflateOutputStream(System.IO.Stream)"/>
+        ///   See the <see cref="ParallelDeflateOutputStream(Stream)"/>
         ///   constructor for example code.
         /// </remarks>
         /// <param name="stream">The stream to which compressed data will be written.</param>
         /// <param name="leaveOpen">
         ///    true if the application would like the stream to remain open after inflation/deflation.
         /// </param>
-        public ParallelDeflateOutputStream(System.IO.Stream stream, bool leaveOpen)
+        public ParallelDeflateOutputStream(Stream stream, bool leaveOpen)
             : this(stream, CompressionLevel.Default, CompressionStrategy.Default, leaveOpen)
         {
         }
@@ -232,7 +231,7 @@ namespace PMDCP.Compression.Zlib
         /// when the ParallelDeflateOutputStream is closed.
         /// </summary>
         /// <remarks>
-        ///   See the <see cref="ParallelDeflateOutputStream(System.IO.Stream)"/>
+        ///   See the <see cref="ParallelDeflateOutputStream(Stream)"/>
         ///   constructor for example code.
         /// </remarks>
         /// <param name="stream">The stream to which compressed data will be written.</param>
@@ -240,7 +239,7 @@ namespace PMDCP.Compression.Zlib
         /// <param name="leaveOpen">
         ///    true if the application would like the stream to remain open after inflation/deflation.
         /// </param>
-        public ParallelDeflateOutputStream(System.IO.Stream stream, CompressionLevel level, bool leaveOpen)
+        public ParallelDeflateOutputStream(Stream stream, CompressionLevel level, bool leaveOpen)
             : this(stream, CompressionLevel.Default, CompressionStrategy.Default, leaveOpen)
         {
         }
@@ -252,7 +251,7 @@ namespace PMDCP.Compression.Zlib
         /// closed.
         /// </summary>
         /// <remarks>
-        ///   See the <see cref="ParallelDeflateOutputStream(System.IO.Stream)"/>
+        ///   See the <see cref="ParallelDeflateOutputStream(Stream)"/>
         ///   constructor for example code.
         /// </remarks>
         /// <param name="stream">The stream to which compressed data will be written.</param>
@@ -264,14 +263,14 @@ namespace PMDCP.Compression.Zlib
         /// <param name="leaveOpen">
         ///    true if the application would like the stream to remain open after inflation/deflation.
         /// </param>
-        public ParallelDeflateOutputStream(System.IO.Stream stream,
+        public ParallelDeflateOutputStream(Stream stream,
                                            CompressionLevel level,
                                            CompressionStrategy strategy,
                                            bool leaveOpen)
         {
             TraceOutput(TraceBits.Lifecycle | TraceBits.Session, "-------------------------------------------------------");
             TraceOutput(TraceBits.Lifecycle | TraceBits.Session, "Create {0:X8}", GetHashCode());
-            _compressLevel= level;
+            _compressLevel = level;
             _leaveOpen = leaveOpen;
             Strategy = strategy;
 
@@ -282,7 +281,6 @@ namespace PMDCP.Compression.Zlib
 
             _outStream = stream;
         }
-
 
         /// <summary>
         ///   The ZLIB strategy to be used during compression.
@@ -377,11 +375,14 @@ namespace PMDCP.Compression.Zlib
         /// </remarks>
         public int BufferSize
         {
-            get { return _bufferSize;}
+            get => _bufferSize;
             set
             {
                 if (value < 1024)
+                {
                     throw new ArgumentException();
+                }
+
                 _bufferSize = value;
             }
         }
@@ -394,7 +395,6 @@ namespace PMDCP.Compression.Zlib
         /// </remarks>
         public int Crc32 { get; private set; }
 
-
         /// <summary>
         /// The total number of uncompressed bytes processed by the ParallelDeflateOutputStream.
         /// </summary>
@@ -403,28 +403,32 @@ namespace PMDCP.Compression.Zlib
         /// </remarks>
         public long BytesProcessed { get; private set; }
 
-
         private void _InitializePoolOfWorkItems()
         {
             _pool = new System.Collections.Generic.List<WorkItem>();
-            for(int i=0; i < BuffersPerCore * Environment.ProcessorCount; i++)
+            for (int i = 0; i < BuffersPerCore * Environment.ProcessorCount; i++)
+            {
                 _pool.Add(new WorkItem(_bufferSize, _compressLevel, Strategy));
+            }
+
             _pc = _pool.Count;
 
-            for(int i=0; i < _pc; i++)
-                _pool[i].index= i;
+            for (int i = 0; i < _pc; i++)
+            {
+                _pool[i].index = i;
+            }
 
             // set the pointers
-            _nextToFill= _nextToWrite= 0;
+            _nextToFill = _nextToWrite = 0;
         }
-
 
         private void _KickoffWriter()
         {
             if (!ThreadPool.QueueUserWorkItem(new WaitCallback(_PerpetualWriterMethod)))
+            {
                 throw new Exception("Cannot enqueue writer thread.");
+            }
         }
-
 
         /// <summary>
         ///   Write data to the stream.
@@ -454,13 +458,20 @@ namespace PMDCP.Compression.Zlib
             // Fill a work buffer; when full, flip state to 'Filled'
 
             if (_isClosed)
+            {
                 throw new NotSupportedException();
+            }
 
             // dispense any exceptions that occurred on the BG threads
             if (_pendingException != null)
+            {
                 throw _pendingException;
+            }
 
-            if (count == 0) return;
+            if (count == 0)
+            {
+                return;
+            }
 
             if (!_firstWriteDone)
             {
@@ -479,12 +490,11 @@ namespace PMDCP.Compression.Zlib
                 _firstWriteDone = true;
             }
 
-
             do
             {
                 int ix = _nextToFill % _pc;
                 WorkItem workitem = _pool[ix];
-                lock(workitem)
+                lock (workitem)
                 {
                     TraceOutput(TraceBits.Fill,
                                    "Fill     lock     wi({0}) stat({1}) iba({2}) nf({3})",
@@ -511,7 +521,7 @@ namespace PMDCP.Compression.Zlib
                         count -= limit;
                         offset += limit;
                         workitem.inputBytesAvailable += limit;
-                        if (workitem.inputBytesAvailable==workitem.buffer.Length)
+                        if (workitem.inputBytesAvailable == workitem.buffer.Length)
                         {
                             workitem.status = (int)WorkItem.Status.Filled;
                             // No need for interlocked.increment: the Write() method
@@ -527,14 +537,15 @@ namespace PMDCP.Compression.Zlib
                                            _nextToFill
                                            );
 
-                            if (!ThreadPool.QueueUserWorkItem( _DeflateOne, workitem ))
+                            if (!ThreadPool.QueueUserWorkItem(_DeflateOne, workitem))
+                            {
                                 throw new Exception("Cannot enqueue workitem");
+                            }
                         }
-
                     }
                     else
                     {
-                        int wcycles= 0;
+                        int wcycles = 0;
 
                         while (workitem.status != (int)WorkItem.Status.None &&
                                workitem.status != (int)WorkItem.Status.Done &&
@@ -554,12 +565,14 @@ namespace PMDCP.Compression.Zlib
                             if (workitem.status == (int)WorkItem.Status.None ||
                                 workitem.status == (int)WorkItem.Status.Done ||
                                 workitem.status == (int)WorkItem.Status.Filling)
+                            {
                                 TraceOutput(TraceBits.Fill,
                                                "Fill     A-OK     wi({0}) stat({1}) iba({2}) cyc({3})",
                                                workitem.index,
                                                workitem.status,
                                                workitem.inputBytesAvailable,
                                                wcycles);
+                            }
                         }
                     }
                 }
@@ -569,8 +582,6 @@ namespace PMDCP.Compression.Zlib
             return;
         }
 
-
-
         /// <summary>
         /// Flush the stream.
         /// </summary>
@@ -579,17 +590,18 @@ namespace PMDCP.Compression.Zlib
             _Flush(false);
         }
 
-
         private void _Flush(bool lastInput)
         {
             if (_isClosed)
+            {
                 throw new NotSupportedException();
+            }
 
             // pass any partial buffer out to the compressor workers:
             WorkItem workitem = _pool[_nextToFill % _pc];
-            lock(workitem)
+            lock (workitem)
             {
-                if ( workitem.status == (int)WorkItem.Status.Filling)
+                if (workitem.status == (int)WorkItem.Status.Filling)
                 {
                     workitem.status = (int)WorkItem.Status.Filled;
                     _nextToFill++;
@@ -597,14 +609,18 @@ namespace PMDCP.Compression.Zlib
                     // When flush is called from Close(), we set _noMore.
                     // can't do it before updating nextToFill, though.
                     if (lastInput)
-                        _noMoreInputForThisSegment= true;
+                    {
+                        _noMoreInputForThisSegment = true;
+                    }
 
                     TraceOutput(TraceBits.Flush,
                                    "Flush    filled   wi({0})  iba({1}) nf({2}) nomore({3})",
                                    workitem.index, workitem.inputBytesAvailable, _nextToFill, _noMoreInputForThisSegment);
 
-                    if (!ThreadPool.QueueUserWorkItem( _DeflateOne, workitem ))
+                    if (!ThreadPool.QueueUserWorkItem(_DeflateOne, workitem))
+                    {
                         throw new Exception("Cannot enqueue workitem");
+                    }
 
                     //Monitor.Pulse(workitem);
                 }
@@ -613,7 +629,9 @@ namespace PMDCP.Compression.Zlib
                     // When flush is called from Close(), we set _noMore.
                     // Gotta do this whether or not there is another packet to send along.
                     if (lastInput)
-                        _noMoreInputForThisSegment= true;
+                    {
+                        _noMoreInputForThisSegment = true;
+                    }
 
                     TraceOutput(TraceBits.Flush,
                                    "Flush    noaction wi({0}) stat({1}) nf({2})  nomore({3})",
@@ -621,7 +639,6 @@ namespace PMDCP.Compression.Zlib
                 }
             }
         }
-
 
         /// <summary>
         /// Close the stream.
@@ -634,7 +651,10 @@ namespace PMDCP.Compression.Zlib
         {
             TraceOutput(TraceBits.Session, "Close {0:X8}", GetHashCode());
 
-            if (_isClosed) return;
+            if (_isClosed)
+            {
+                return;
+            }
 
             _Flush(true);
 
@@ -643,7 +663,7 @@ namespace PMDCP.Compression.Zlib
 
             // need to get Writer off the workitem, in case he's waiting forever
             WorkItem workitem = _pool[_nextToFill % _pc];
-            lock(workitem)
+            lock (workitem)
             {
                 Monitor.PulseAll(workitem);
             }
@@ -655,24 +675,22 @@ namespace PMDCP.Compression.Zlib
 
             TraceOutput(TraceBits.Session, "-------------------------------------------------------");
             if (!_leaveOpen)
+            {
                 _outStream.Close();
+            }
 
-            _isClosed= true;
+            _isClosed = true;
         }
 
-
-
-//        /// <summary>The destructor</summary>
-//         ~ParallelDeflateOutputStream()
-//         {
-//             TraceOutput(TraceBits.Lifecycle, "Destructor  {0:X8}", this.GetHashCode());
-//             // call Dispose with false.  Since we're in the
-//             // destructor call, the managed resources will be
-//             // disposed of anyways.
-//             Dispose(false);
-//         }
-
-
+        //        /// <summary>The destructor</summary>
+        //         ~ParallelDeflateOutputStream()
+        //         {
+        //             TraceOutput(TraceBits.Lifecycle, "Destructor  {0:X8}", this.GetHashCode());
+        //             // call Dispose with false.  Since we're in the
+        //             // destructor call, the managed resources will be
+        //             // disposed of anyways.
+        //             Dispose(false);
+        //         }
 
         // workitem 10030 - implement a new Dispose method
 
@@ -687,17 +705,15 @@ namespace PMDCP.Compression.Zlib
         ///     a <c>using</c> scope in C# (<c>Using</c> in VB).
         ///   </para>
         /// </remarks>
-        new public void  Dispose()
+        public new void Dispose()
         {
             TraceOutput(TraceBits.Lifecycle, "Dispose  {0:X8}", GetHashCode());
-            _isDisposed= true;
+            _isDisposed = true;
             _pool = null;
             TraceOutput(TraceBits.Synch, "Synch    _sessionReset.Set()  Dispose");
             _sessionReset.Set();  // tell writer to die
             Dispose(true);
         }
-
-
 
         /// <summary>The Dispose method</summary>
         protected override void Dispose(bool disposeManagedResources)
@@ -709,7 +725,6 @@ namespace PMDCP.Compression.Zlib
                 _sessionReset.Close();
             }
         }
-
 
         /// <summary>
         ///   Resets the stream for use with another stream.
@@ -752,7 +767,10 @@ namespace PMDCP.Compression.Zlib
             TraceOutput(TraceBits.Session, "-------------------------------------------------------");
             TraceOutput(TraceBits.Session, "Reset {0:X8} firstDone({1})", GetHashCode(), _firstWriteDone);
 
-            if (!_firstWriteDone) return;
+            if (!_firstWriteDone)
+            {
+                return;
+            }
 
             if (_noMoreInputForThisSegment)
             {
@@ -762,14 +780,16 @@ namespace PMDCP.Compression.Zlib
                 TraceOutput(TraceBits.Synch, "Synch    _writingDone.WaitOne(done)   Reset");
 
                 // reset all status
-                foreach (var workitem in _pool)
-                    workitem.status = (int) WorkItem.Status.None;
+                foreach (WorkItem workitem in _pool)
+                {
+                    workitem.status = (int)WorkItem.Status.None;
+                }
 
-                _noMoreInputForThisSegment= false;
-                _nextToFill= _nextToWrite= 0;
+                _noMoreInputForThisSegment = false;
+                _nextToFill = _nextToWrite = 0;
                 BytesProcessed = 0L;
-                Crc32= 0;
-                _isClosed= false;
+                Crc32 = 0;
+                _isClosed = false;
 
                 TraceOutput(TraceBits.Synch, "Synch    _writingDone.Reset()         Reset");
                 _writingDone.Reset();
@@ -786,8 +806,6 @@ namespace PMDCP.Compression.Zlib
             _sessionReset.Set();
         }
 
-
-
         private void _PerpetualWriterMethod(object state)
         {
             TraceOutput(TraceBits.WriterThread, "_PerpetualWriterMethod START");
@@ -801,7 +819,10 @@ namespace PMDCP.Compression.Zlib
                     _sessionReset.WaitOne();
                     TraceOutput(TraceBits.Synch | TraceBits.WriterThread, "Synch    _sessionReset.WaitOne(done)  PWM");
 
-                    if (_isDisposed) break;
+                    if (_isDisposed)
+                    {
+                        break;
+                    }
 
                     TraceOutput(TraceBits.Synch | TraceBits.WriterThread, "Synch    _sessionReset.Reset()        PWM");
                     _sessionReset.Reset();
@@ -812,15 +833,17 @@ namespace PMDCP.Compression.Zlib
                     do
                     {
                         workitem = _pool[_nextToWrite % _pc];
-                        lock(workitem)
+                        lock (workitem)
                         {
                             if (_noMoreInputForThisSegment)
+                            {
                                 TraceOutput(TraceBits.Write,
                                                "Write    drain    wi({0}) stat({1}) canuse({2})  cba({3})",
                                                workitem.index,
                                                workitem.status,
                                                (workitem.status == (int)WorkItem.Status.Compressed),
                                                workitem.compressedBytesAvailable);
+                            }
 
                             do
                             {
@@ -837,7 +860,7 @@ namespace PMDCP.Compression.Zlib
                                     c.Combine(workitem.crc, workitem.inputBytesAvailable);
                                     BytesProcessed += workitem.inputBytesAvailable;
                                     _nextToWrite++;
-                                    workitem.inputBytesAvailable= 0;
+                                    workitem.inputBytesAvailable = 0;
                                     workitem.status = (int)WorkItem.Status.Done;
 
                                     TraceOutput(TraceBits.WriteDone,
@@ -845,7 +868,6 @@ namespace PMDCP.Compression.Zlib
                                                    workitem.index,
                                                    workitem.status,
                                                    workitem.compressedBytesAvailable);
-
 
                                     Monitor.Pulse(workitem);
                                     break;
@@ -862,10 +884,12 @@ namespace PMDCP.Compression.Zlib
                                                        workitem.index,
                                                        workitem.status,
                                                        _nextToWrite, _nextToFill,
-                                                       _noMoreInputForThisSegment );
+                                                       _noMoreInputForThisSegment);
 
                                         if (_noMoreInputForThisSegment && _nextToWrite == _nextToFill)
+                                        {
                                             break;
+                                        }
 
                                         wcycles++;
 
@@ -875,6 +899,7 @@ namespace PMDCP.Compression.Zlib
                                         Monitor.Wait(workitem);
 
                                         if (workitem.status == (int)WorkItem.Status.Compressed)
+                                        {
                                             TraceOutput(TraceBits.WriteWait,
                                                            "Write    A-OK     wi({0}) stat({1}) iba({2}) cba({3}) cyc({4})",
                                                            workitem.index,
@@ -882,26 +907,30 @@ namespace PMDCP.Compression.Zlib
                                                            workitem.inputBytesAvailable,
                                                            workitem.compressedBytesAvailable,
                                                            wcycles);
+                                        }
                                     }
 
                                     if (_noMoreInputForThisSegment && _nextToWrite == _nextToFill)
+                                    {
                                         break;
-
+                                    }
                                 }
                             }
                             while (true);
                         }
 
                         if (_noMoreInputForThisSegment)
+                        {
                             TraceOutput(TraceBits.Write,
                                            "Write    nomore  nw({0}) nf({1}) break({2})",
                                            _nextToWrite, _nextToFill, (_nextToWrite == _nextToFill));
+                        }
 
                         if (_noMoreInputForThisSegment && _nextToWrite == _nextToFill)
+                        {
                             break;
-
+                        }
                     } while (true);
-
 
                     // Finish:
                     // After writing a series of buffers, closing each one with
@@ -919,7 +948,9 @@ namespace PMDCP.Compression.Zlib
                     rc = compressor.Deflate(FlushType.Finish);
 
                     if (rc != ZlibConstants.Z_STREAM_END && rc != ZlibConstants.Z_OK)
+                    {
                         throw new Exception("deflating: " + compressor.Message);
+                    }
 
                     if (buffer.Length - compressor.AvailableBytesOut > 0)
                     {
@@ -945,32 +976,33 @@ namespace PMDCP.Compression.Zlib
             }
             catch (Exception exc1)
             {
-                lock(_eLock)
+                lock (_eLock)
                 {
                     // expose the exception to the main thread
-                    if (_pendingException!=null)
+                    if (_pendingException != null)
+                    {
                         _pendingException = exc1;
+                    }
                 }
             }
 
             TraceOutput(TraceBits.WriterThread, "_PerpetualWriterMethod FINIS");
         }
 
-
-
-
         private void _DeflateOne(object wi)
         {
-            WorkItem workitem = (WorkItem) wi;
+            WorkItem workitem = (WorkItem)wi;
             try
             {
                 // compress one buffer
                 int myItem = workitem.index;
 
-                lock(workitem)
+                lock (workitem)
                 {
                     if (workitem.status != (int)WorkItem.Status.Filled)
+                    {
                         throw new InvalidOperationException();
+                    }
 
                     CRC32 crc = new CRC32();
 
@@ -998,22 +1030,21 @@ namespace PMDCP.Compression.Zlib
             }
             catch (Exception exc1)
             {
-                lock(_eLock)
+                lock (_eLock)
                 {
                     // expose the exception to the main thread
-                    if (_pendingException!=null)
+                    if (_pendingException != null)
+                    {
                         _pendingException = exc1;
+                    }
                 }
             }
         }
 
-
-
-
         private bool DeflateOneSegment(WorkItem workitem)
         {
             ZlibCodec compressor = workitem.compressor;
-            int rc= 0;
+            int rc = 0;
             compressor.ResetDeflate();
             compressor.NextIn = 0;
 
@@ -1021,7 +1052,7 @@ namespace PMDCP.Compression.Zlib
 
             // step 1: deflate the buffer
             compressor.NextOut = 0;
-            compressor.AvailableBytesOut =  workitem.compressed.Length;
+            compressor.AvailableBytesOut = workitem.compressed.Length;
             do
             {
                 compressor.Deflate(FlushType.None);
@@ -1031,20 +1062,19 @@ namespace PMDCP.Compression.Zlib
             // step 2: flush (sync)
             rc = compressor.Deflate(FlushType.Sync);
 
-            workitem.compressedBytesAvailable= (int) compressor.TotalBytesOut;
+            workitem.compressedBytesAvailable = (int)compressor.TotalBytesOut;
             return true;
         }
-
 
         [System.Diagnostics.Conditional("Trace")]
         private void TraceOutput(TraceBits bits, string format, params object[] varParams)
         {
             if ((bits & _DesiredTrace) != 0)
             {
-                lock(_outputLock)
+                lock (_outputLock)
                 {
                     int tid = Thread.CurrentThread.GetHashCode();
-                    Console.ForegroundColor = (ConsoleColor) (tid % 8 + 8);
+                    Console.ForegroundColor = (ConsoleColor)(tid % 8 + 8);
                     Console.Write("{0:000} PDOS ", tid);
                     Console.WriteLine(format, varParams);
                     Console.ResetColor();
@@ -1052,26 +1082,23 @@ namespace PMDCP.Compression.Zlib
             }
         }
 
-
         // used only when Trace is defined
         [Flags]
-        enum TraceBits
+        private enum TraceBits
         {
-            None         = 0,
-            Write        = 1,    // write out
-            WriteBegin   = 2,    // begin to write out
-            WriteDone    = 4,    // done writing out
-            WriteWait    = 8,    // write thread waiting for buffer
-            Flush        = 16,
-            Compress     = 32,   // async compress
-            Fill         = 64,   // filling buffers, when caller invokes Write()
-            Lifecycle    = 128,  // constructor/disposer
-            Session      = 256,  // Close/Reset
-            Synch        = 512,  // thread synchronization
+            None = 0,
+            Write = 1,    // write out
+            WriteBegin = 2,    // begin to write out
+            WriteDone = 4,    // done writing out
+            WriteWait = 8,    // write thread waiting for buffer
+            Flush = 16,
+            Compress = 32,   // async compress
+            Fill = 64,   // filling buffers, when caller invokes Write()
+            Lifecycle = 128,  // constructor/disposer
+            Session = 256,  // Close/Reset
+            Synch = 512,  // thread synchronization
             WriterThread = 1024, // writer thread
         }
-
-
 
         /// <summary>
         /// Indicates whether the stream supports Seek operations.
@@ -1079,11 +1106,7 @@ namespace PMDCP.Compression.Zlib
         /// <remarks>
         /// Always returns false.
         /// </remarks>
-        public override bool CanSeek
-        {
-            get { return false; }
-        }
-
+        public override bool CanSeek => false;
 
         /// <summary>
         /// Indicates whether the stream supports Read operations.
@@ -1091,10 +1114,7 @@ namespace PMDCP.Compression.Zlib
         /// <remarks>
         /// Always returns false.
         /// </remarks>
-        public override bool CanRead
-        {
-            get {return false;}
-        }
+        public override bool CanRead => false;
 
         /// <summary>
         /// Indicates whether the stream supports Write operations.
@@ -1102,26 +1122,20 @@ namespace PMDCP.Compression.Zlib
         /// <remarks>
         /// Returns true if the provided stream is writable.
         /// </remarks>
-        public override bool CanWrite
-        {
-            get { return _outStream.CanWrite; }
-        }
+        public override bool CanWrite => _outStream.CanWrite;
 
         /// <summary>
         /// Reading this property always throws a NotImplementedException.
         /// </summary>
-        public override long Length
-        {
-            get { throw new NotImplementedException(); }
-        }
+        public override long Length => throw new NotImplementedException();
 
         /// <summary>
         /// Reading or Writing this property always throws a NotImplementedException.
         /// </summary>
         public override long Position
         {
-            get { throw new NotImplementedException(); }
-            set { throw new NotImplementedException(); }
+            get => throw new NotImplementedException();
+            set => throw new NotImplementedException();
         }
 
         /// <summary>
@@ -1135,7 +1149,7 @@ namespace PMDCP.Compression.Zlib
         /// <summary>
         /// This method always throws a NotImplementedException.
         /// </summary>
-        public override long Seek(long offset, System.IO.SeekOrigin origin)
+        public override long Seek(long offset, SeekOrigin origin)
         {
             throw new NotImplementedException();
         }
@@ -1147,9 +1161,5 @@ namespace PMDCP.Compression.Zlib
         {
             throw new NotImplementedException();
         }
-
     }
-
 }
-
-

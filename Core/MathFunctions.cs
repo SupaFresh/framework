@@ -21,35 +21,43 @@ namespace PMDCP.Core
     {
         #region Fields
 
-        static readonly Random random = new Random(System.Environment.TickCount);
+        private static readonly Random random = new Random(System.Environment.TickCount);
 
         #endregion Fields
 
         #region Methods
 
-        public static int CalculatePercent(int currentValue, int maxValue) {
+        public static int CalculatePercent(int currentValue, int maxValue)
+        {
             return currentValue * 100 / maxValue;
         }
 
-        public static long CalculatePercent(long currentValue, long maxValue) {
-            if (maxValue != 0) {
+        public static long CalculatePercent(long currentValue, long maxValue)
+        {
+            if (maxValue != 0)
+            {
                 return currentValue * 100 / maxValue;
-            } else {
+            }
+            else
+            {
                 return 0;
             }
         }
 
-        public static ulong CalculatePercent(ulong currentValue, ulong maxValue) {
+        public static ulong CalculatePercent(ulong currentValue, ulong maxValue)
+        {
             return currentValue * 100 / maxValue;
         }
 
-        public static int Rand(int low, int high) {
+        public static int Rand(int low, int high)
+        {
             return random.Next(low, high);
         }
 
-        public static int RoundToMultiple(int number, int multiple) {
+        public static int RoundToMultiple(int number, int multiple)
+        {
             double d = number / multiple;
-            d = System.Math.Round(d, 0);
+            d = Math.Round(d, 0);
             return Convert.ToInt32(d * multiple);
         }
 

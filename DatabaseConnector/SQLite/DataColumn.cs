@@ -19,7 +19,8 @@ namespace PMDCP.DatabaseConnector.SQLite
     {
         #region Constructors
 
-        public DataColumn(int index, bool primaryKey, string name, object value) {
+        public DataColumn(int index, bool primaryKey, string name, object value)
+        {
             Index = index;
             Name = name;
             Value = value;
@@ -27,7 +28,8 @@ namespace PMDCP.DatabaseConnector.SQLite
             PrimaryKey = primaryKey;
         }
 
-        public DataColumn(bool primaryKey, string name, object value) {
+        public DataColumn(bool primaryKey, string name, object value)
+        {
             Index = -1;
             Name = name;
             Value = value;
@@ -47,12 +49,16 @@ namespace PMDCP.DatabaseConnector.SQLite
 
         public object Value { get; set; }
 
-        public string ValueString {
-            get {
-                if (Value != null) {
+        public string ValueString
+        {
+            get
+            {
+                if (Value != null)
+                {
                     return Value.ToString();
                 }
-                else {
+                else
+                {
                     return null;
                 }
             }

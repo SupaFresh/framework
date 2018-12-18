@@ -20,10 +20,10 @@ namespace PMDCP.Core
 
     public class ListPair<TKey, TValue> : IEnumerable<TValue>
     {
-
         #region Constructors
 
-        public ListPair() {
+        public ListPair()
+        {
             Keys = new List<TKey>();
             Values = new List<TValue>();
         }
@@ -32,9 +32,7 @@ namespace PMDCP.Core
 
         #region Properties
 
-        public int Count {
-            get { return Keys.Count; }
-        }
+        public int Count => Keys.Count;
 
         public List<TKey> Keys { get; }
 
@@ -44,23 +42,29 @@ namespace PMDCP.Core
 
         #region Indexers
 
-        public TKey this[TValue val] {
-            get {
+        public TKey this[TValue val]
+        {
+            get
+            {
                 int index = Values.IndexOf(val);
                 return Keys[index];
             }
-            set {
+            set
+            {
                 int index = Values.IndexOf(val);
                 Keys[index] = value;
             }
         }
 
-        public TValue this[TKey key] {
-            get {
+        public TValue this[TKey key]
+        {
+            get
+            {
                 int index = Keys.IndexOf(key);
                 return Values[index];
             }
-            set {
+            set
+            {
                 int index = Keys.IndexOf(key);
                 Values[index] = value;
             }
@@ -70,124 +74,168 @@ namespace PMDCP.Core
 
         #region Methods
 
-        public void Add(TKey key, TValue value) {
-            if (key != null) {
-                if (Keys.Contains(key) == false) {
+        public void Add(TKey key, TValue value)
+        {
+            if (key != null)
+            {
+                if (Keys.Contains(key) == false)
+                {
                     Keys.Add(key);
                     Values.Add(value);
-                } else {
+                }
+                else
+                {
                     throw (new ArgumentException("A key with the same value has already been added"));
                 }
-            } else {
+            }
+            else
+            {
                 throw (new ArgumentNullException("key"));
             }
         }
 
-        public void Clear() {
+        public void Clear()
+        {
             Keys.Clear();
             Values.Clear();
         }
 
-        public bool ContainsKey(TKey key) {
+        public bool ContainsKey(TKey key)
+        {
             return Keys.Contains(key);
         }
 
-        public bool ContainsValue(TValue value) {
+        public bool ContainsValue(TValue value)
+        {
             return Values.Contains(value);
         }
 
-        public ListPair<TKey, TValue> Copy() {
-            lock (this) {
+        public ListPair<TKey, TValue> Copy()
+        {
+            lock (this)
+            {
                 ListPair<TKey, TValue> copy = new ListPair<TKey, TValue>();
-                for (int i = 0; i < Keys.Count; i++) {
+                for (int i = 0; i < Keys.Count; i++)
+                {
                     copy.Add(Keys[i], Values[i]);
                 }
                 return copy;
             }
         }
 
-        public IEnumerator<TValue> GetEnumerator() {
+        public IEnumerator<TValue> GetEnumerator()
+        {
             return Values.GetEnumerator();
         }
 
-        public TKey GetKey(TValue value) {
+        public TKey GetKey(TValue value)
+        {
             int index = Values.IndexOf(value);
-            if (index > -1) {
+            if (index > -1)
+            {
                 return Keys[index];
-            } else {
+            }
+            else
+            {
                 return default(TKey);
             }
         }
 
-        public TValue GetValue(TKey key) {
+        public TValue GetValue(TKey key)
+        {
             int index = Keys.IndexOf(key);
-            if (index > -1) {
+            if (index > -1)
+            {
                 return Values[index];
-            } else {
+            }
+            else
+            {
                 return default(TValue);
             }
         }
 
-        public int IndexOfKey(TKey key) {
+        public int IndexOfKey(TKey key)
+        {
             return Keys.IndexOf(key);
         }
 
-        public int IndexOfValue(TValue value) {
+        public int IndexOfValue(TValue value)
+        {
             return Values.IndexOf(value);
         }
 
-        public TKey KeyByIndex(int index) {
+        public TKey KeyByIndex(int index)
+        {
             return Keys[index];
         }
 
-        public void RemoveAt(int index) {
+        public void RemoveAt(int index)
+        {
             Keys.RemoveAt(index);
             Values.RemoveAt(index);
         }
 
-        public void RemoveAtKey(TKey key) {
-            if (key != null) {
-                if (Keys.Contains(key)) {
+        public void RemoveAtKey(TKey key)
+        {
+            if (key != null)
+            {
+                if (Keys.Contains(key))
+                {
                     int index = Keys.IndexOf(key);
                     Keys.RemoveAt(index);
                     Values.RemoveAt(index);
-                } else {
+                }
+                else
+                {
                     throw (new KeyNotFoundException());
                 }
-            } else {
+            }
+            else
+            {
                 throw (new ArgumentNullException("key"));
             }
         }
 
-        public void RemoveAtValue(TValue value) {
-            if (value != null) {
-                if (Values.Contains(value)) {
+        public void RemoveAtValue(TValue value)
+        {
+            if (value != null)
+            {
+                if (Values.Contains(value))
+                {
                     int index = Values.IndexOf(value);
                     Keys.RemoveAt(index);
                     Values.RemoveAt(index);
-                } else {
+                }
+                else
+                {
                     throw (new KeyNotFoundException());
                 }
-            } else {
+            }
+            else
+            {
                 throw (new ArgumentNullException("value"));
             }
         }
 
-        public void SetKey(TValue value, TKey newKey) {
+        public void SetKey(TValue value, TKey newKey)
+        {
             int index = Values.IndexOf(value);
             Keys[index] = newKey;
         }
 
-        public void SetValue(TKey key, TValue value) {
+        public void SetValue(TKey key, TValue value)
+        {
             int index = Keys.IndexOf(key);
             Values[index] = value;
         }
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() {
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
             return Values.GetEnumerator();
         }
 
-        public TValue ValueByIndex(int index) {
+        public TValue ValueByIndex(int index)
+        {
             return Values[index];
         }
 

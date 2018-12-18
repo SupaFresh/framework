@@ -14,23 +14,24 @@
 // along with Mystery Dungeon eXtended.  If not, see <http://www.gnu.org/licenses/>.
 
 using System.Collections.Generic;
-using System.Net;
 using System.IO;
+using System.Net;
 
 namespace PMDCP.Net.Ftp
 {
     public class Ftp
     {
         // The hostname or IP address of the FTP server
-        private string remoteHost;
+        private readonly string remoteHost;
 
         // The remote username
-        private string remoteUser;
+        private readonly string remoteUser;
 
         // Password for the remote user
-        private string remotePass;
+        private readonly string remotePass;
 
-        public Ftp(string remoteHost, string remoteUser, string remotePassword, bool debug) {
+        public Ftp(string remoteHost, string remoteUser, string remotePassword, bool debug)
+        {
             this.remoteHost = remoteHost;
             this.remoteUser = remoteUser;
             remotePass = remotePassword;
@@ -40,7 +41,8 @@ namespace PMDCP.Net.Ftp
         /// Get a list of files and folders on the FTP server
         /// </summary>
         /// <returns></returns>
-        public List<string> DirectoryListing() {
+        public List<string> DirectoryListing()
+        {
             return DirectoryListing(string.Empty);
         }
 
@@ -49,7 +51,8 @@ namespace PMDCP.Net.Ftp
         /// </summary>
         /// <param name="folder"></param>
         /// <returns></returns>
-        public List<string> DirectoryListing(string folder) {
+        public List<string> DirectoryListing(string folder)
+        {
             FtpWebRequest request = (FtpWebRequest)WebRequest.Create(remoteHost + folder);
             request.Method = WebRequestMethods.Ftp.ListDirectory;
             request.Credentials = new NetworkCredential(remoteUser, remotePass);
@@ -59,7 +62,8 @@ namespace PMDCP.Net.Ftp
 
             List<string> result = new List<string>();
 
-            while (!reader.EndOfStream) {
+            while (!reader.EndOfStream)
+            {
                 result.Add(reader.ReadLine());
             }
 
@@ -73,7 +77,8 @@ namespace PMDCP.Net.Ftp
         /// </summary>
         /// <param name="filename">filename and path to the file, e.g. public_html/test.zip</param>
         /// <param name="destination">The location to save the file, e.g. c:\\test.zip</param>
-        public void Download(string filename, string destination) {
+        public void Download(string filename, string destination)
+        {
             FtpWebRequest request = (FtpWebRequest)WebRequest.Create(remoteHost + filename);
             request.Method = WebRequestMethods.Ftp.DownloadFile;
             request.Credentials = new NetworkCredential(remoteUser, remotePass);
@@ -89,7 +94,8 @@ namespace PMDCP.Net.Ftp
             response.Close();
         }
 
-        public void Download(string filename, Stream destinationStream) {
+        public void Download(string filename, Stream destinationStream)
+        {
             FtpWebRequest request = (FtpWebRequest)WebRequest.Create(remoteHost + filename);
             request.Method = WebRequestMethods.Ftp.DownloadFile;
             request.Credentials = new NetworkCredential(remoteUser, remotePass);
@@ -101,7 +107,8 @@ namespace PMDCP.Net.Ftp
             byte[] buffer = new byte[bufferSize];
 
             readCount = responseStream.Read(buffer, 0, bufferSize);
-            while (readCount > 0) {
+            while (readCount > 0)
+            {
                 destinationStream.Write(buffer, 0, readCount);
                 readCount = responseStream.Read(buffer, 0, bufferSize);
             }
@@ -113,7 +120,8 @@ namespace PMDCP.Net.Ftp
         /// Remove a file from the server.
         /// </summary>
         /// <param name="filename">filename and path to the file, e.g. public_html/test.zip</param>
-        public void DeleteFileFromServer(string filename) {
+        public void DeleteFileFromServer(string filename)
+        {
             FtpWebRequest request = (FtpWebRequest)WebRequest.Create(remoteHost + filename);
             request.Method = WebRequestMethods.Ftp.DeleteFile;
             request.Credentials = new NetworkCredential(remoteUser, remotePass);
@@ -126,7 +134,8 @@ namespace PMDCP.Net.Ftp
         /// </summary>
         /// <param name="source">Full path to the source file e.g. c:\test.zip</param>
         /// <param name="destination">destination folder and filename e.g. public_html/test.zip</param>
-        public void UploadFile(string source, string destination) {
+        public void UploadFile(string source, string destination)
+        {
             //string filename = Path.GetFileName(source);
 
             //FtpWebRequest request = (FtpWebRequest)WebRequest.Create(remoteHost + destination);
@@ -149,7 +158,8 @@ namespace PMDCP.Net.Ftp
             UploadFile(new FileStream(source, FileMode.Open, FileAccess.Read), destination);
         }
 
-        public void UploadFile(Stream sourceStream, string destination) {
+        public void UploadFile(Stream sourceStream, string destination)
+        {
             //string filename = Path.GetFileName(source);
 
             FtpWebRequest request = (FtpWebRequest)WebRequest.Create(remoteHost + destination);
@@ -168,7 +178,8 @@ namespace PMDCP.Net.Ftp
             contentLen = sourceStream.Read(buff, 0, buffLength);
 
             // Till Stream content ends
-            while (contentLen != 0) {
+            while (contentLen != 0)
+            {
                 // Write Content from the file stream to the FTP Upload Stream
                 requestStream.Write(buff, 0, contentLen);
                 contentLen = sourceStream.Read(buff, 0, buffLength);
@@ -176,6 +187,5 @@ namespace PMDCP.Net.Ftp
 
             requestStream.Close();
         }
-
     }
 }

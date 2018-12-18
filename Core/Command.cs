@@ -19,10 +19,10 @@ namespace PMDCP.Core
 {
     public class Command
     {
-
         #region Constructors
 
-        internal Command(List<string> command) {
+        internal Command(List<string> command)
+        {
             CommandArgs = command;
         }
 
@@ -39,16 +39,19 @@ namespace PMDCP.Core
 
         #region Indexers
 
-        public string this[int index] {
-            get { return CommandArgs[index]; }
-        }
+        public string this[int index] => CommandArgs[index];
 
-        public string this[string argument] {
-            get {
+        public string this[string argument]
+        {
+            get
+            {
                 int index = FindCommandArg(argument);
-                if (index > -1 && CommandArgs.Count > index + 1) {
+                if (index > -1 && CommandArgs.Count > index + 1)
+                {
                     return CommandArgs[index + 1];
-                } else {
+                }
+                else
+                {
                     return null;
                 }
             }
@@ -63,7 +66,8 @@ namespace PMDCP.Core
         /// </summary>
         /// <param name="argToFind">The argument to look for</param>
         /// <returns>True if the argument exists; False if it doesn't exist.</returns>
-        public bool ContainsCommandArg(string argToFind) {
+        public bool ContainsCommandArg(string argToFind)
+        {
             return CommandArgs.Contains(argToFind);
         }
 
@@ -72,7 +76,8 @@ namespace PMDCP.Core
         /// </summary>
         /// <param name="argToFind"></param>
         /// <returns>The index of the argument if it was found; otherwise, returns -1</returns>
-        public int FindCommandArg(string argToFind) {
+        public int FindCommandArg(string argToFind)
+        {
             return CommandArgs.IndexOf(argToFind);
         }
 

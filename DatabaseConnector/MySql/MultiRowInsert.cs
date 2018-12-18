@@ -19,19 +19,17 @@ namespace PMDCP.DatabaseConnector.MySql
 {
     public class MultiRowInsert
     {
-        StringBuilder stringBuilder;
-        bool firstRow;
-        bool firstColumn;
+        private StringBuilder stringBuilder;
+        private bool firstRow;
+        private bool firstColumn;
+        private string[] columnNames;
+        private string tableName;
+        private int rowCount = 0;
+        private MySql database;
+        private bool hasData = false;
 
-        string[] columnNames;
-        string tableName;
-
-        int rowCount = 0;
-
-        MySql database;
-        bool hasData = false;
-
-        public MultiRowInsert(MySql database, string tableName, params string[] columnNames) {
+        public MultiRowInsert(MySql database, string tableName, params string[] columnNames)
+        {
             this.database = database;
             this.tableName = tableName;
             this.columnNames = columnNames;
@@ -39,14 +37,16 @@ namespace PMDCP.DatabaseConnector.MySql
             UpdateParameters(tableName, columnNames);
         }
 
-        private void PrepareForParameterUpdate() {
+        private void PrepareForParameterUpdate()
+        {
             stringBuilder = new StringBuilder();
             firstRow = true;
             firstColumn = true;
             hasData = false;
         }
 
-        public void UpdateParameters(string tableName, string[] columnNames) {
+        public void UpdateParameters(string tableName, string[] columnNames)
+        {
             PrepareForParameterUpdate();
 
             this.tableName = tableName;
@@ -56,14 +56,16 @@ namespace PMDCP.DatabaseConnector.MySql
             stringBuilder.Append(tableName);
             stringBuilder.Append("` (");
             stringBuilder.Append(columnNames[0]);
-            for (int i = 1; i < columnNames.Length; i++) {
+            for (int i = 1; i < columnNames.Length; i++)
+            {
                 stringBuilder.Append(",");
                 stringBuilder.Append(columnNames[i]);
             }
             stringBuilder.Append(") VALUES");
         }
 
-        public void UpdateParameters(string tableName, string columnNames, string test) {
+        public void UpdateParameters(string tableName, string columnNames, string test)
+        {
             PrepareForParameterUpdate();
 
             this.tableName = tableName;
@@ -75,79 +77,101 @@ namespace PMDCP.DatabaseConnector.MySql
             stringBuilder.Append(") VALUES");
         }
 
-        public void AddRow(params string[] columnData) {
+        public void AddRow(params string[] columnData)
+        {
             AddRowOpening();
-            foreach (string data in columnData) {
+            foreach (string data in columnData)
+            {
                 AddColumnData(data);
             }
             AddRowClosing();
         }
 
-        public void AddRowOpening() {
-            if (stringBuilder == null) {
+        public void AddRowOpening()
+        {
+            if (stringBuilder == null)
+            {
                 UpdateParameters(tableName, columnNames);
             }
 
-            if (!firstRow) {
+            if (!firstRow)
+            {
                 stringBuilder.Append(",");
-            } else {
+            }
+            else
+            {
                 firstRow = false;
             }
             stringBuilder.Append("(");
         }
 
-        private void CheckFirstColumn() {
+        private void CheckFirstColumn()
+        {
             hasData = true;
-            if (!firstColumn) {
+            if (!firstColumn)
+            {
                 stringBuilder.Append(",");
-            } else {
+            }
+            else
+            {
                 firstColumn = false;
             }
         }
 
-        public void AddColumnData(string data) {
+        public void AddColumnData(string data)
+        {
             CheckFirstColumn();
             stringBuilder.Append("\'");
             stringBuilder.Append(database.VerifyValueString(data));
             stringBuilder.Append("\'");
         }
 
-        public void AddColumnData(params string[] data) {
-            foreach (string dataString in data) {
+        public void AddColumnData(params string[] data)
+        {
+            foreach (string dataString in data)
+            {
                 AddColumnData(dataString);
             }
         }
 
-        public void AddColumnData(int data) {
+        public void AddColumnData(int data)
+        {
             CheckFirstColumn();
             stringBuilder.Append(data);
         }
 
-        public void AddColumnData(params int[] data) {
-            foreach (int dataInt in data) {
+        public void AddColumnData(params int[] data)
+        {
+            foreach (int dataInt in data)
+            {
                 AddColumnData(dataInt);
             }
         }
 
-        public void AddRowClosing() {
+        public void AddRowClosing()
+        {
             stringBuilder.Append(")");
             firstColumn = true;
 
             rowCount++;
-            if (rowCount >= 1000) {
+            if (rowCount >= 1000)
+            {
                 database.ExecuteNonQuery(GetSqlQuery());
                 stringBuilder = null;
                 rowCount = 0;
             }
         }
 
-        public string GetSqlQuery() {
-            if (stringBuilder != null && hasData == true) {
+        public string GetSqlQuery()
+        {
+            if (stringBuilder != null && hasData == true)
+            {
                 return stringBuilder.ToString();
-            } else {
+            }
+            else
+            {
                 return "";
             }
         }
-
     }
 }

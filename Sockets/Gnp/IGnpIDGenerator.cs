@@ -13,12 +13,12 @@
 // You should have received a copy of the GNU General Public License
 // along with Mystery Dungeon eXtended.  If not, see <http://www.gnu.org/licenses/>.
 
-
 namespace PMDCP.Sockets.Gnp
 {
     public interface IGnpIDGenerator<TClientID>
     {
         TClientID GenerateID(GnpClient gnpClient);
+
         TClientID GenerateID(DataReceivedEventArgs e);
     }
 }

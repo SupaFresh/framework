@@ -20,7 +20,9 @@ namespace PMDCP.Sockets.Tcp
     public interface ITcpClientCollection<TClientID>
     {
         ListPair<TClientID, TcpClient> Clients { get; }
+
         TcpClient GetTcpClient(TClientID clientID);
+
         void AddTcpClient(TClientID clientID, TcpClient tcpClient);
     }
 }

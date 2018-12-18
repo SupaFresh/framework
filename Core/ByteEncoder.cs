@@ -24,29 +24,34 @@ namespace PMDCP.Core
         /// </summary>
         /// <param name="cChar">Character to convert</param>
         /// <returns></returns>
-        public static byte[] CharToByteArray(char cChar) {
+        public static byte[] CharToByteArray(char cChar)
+        {
             return new byte[] {
                         (byte)((cChar >> 8) & 0xff),
                         (byte)((cChar >> 0) & 0xff),
                 };
         }
+
         /// <summary>
         /// Creates an 8 bit byte array from a Boolean
         /// </summary>
         /// <param name="bBoolean">Boolean to convert</param>
         /// <returns></returns>
-        public static byte[] BooleanToByteArray(bool bBoolean) {
+        public static byte[] BooleanToByteArray(bool bBoolean)
+        {
             return new byte[] { (byte)(bBoolean ? 0x01 : 0x00) };
         }
+
         /// <summary>
         /// Creates a 32 bit byte array from an integer
         /// </summary>
         /// <param name="int32">Integer to convert</param>
         /// <returns></returns>
-        public static byte[] IntToByteArray(int int32) {
+        public static byte[] IntToByteArray(int int32)
+        {
             return new byte[] {
-                        (byte)((int32 >> 24) & 0xff), 
-                        (byte)((int32 >> 16) & 0xff), 
+                        (byte)((int32 >> 24) & 0xff),
+                        (byte)((int32 >> 16) & 0xff),
                         (byte)((int32 >> 8) & 0xff),
                         (byte)((int32 >> 0) & 0xff),
                 };
@@ -57,7 +62,8 @@ namespace PMDCP.Core
         /// </summary>
         /// <param name="int64">Long to convert</param>
         /// <returns></returns>
-        public static byte[] LongToByteArray(long int64) {
+        public static byte[] LongToByteArray(long int64)
+        {
             return new byte[] {
                         (byte)((int64 >> 56) & 0xff),
                         (byte)((int64 >> 48) & 0xff),
@@ -69,16 +75,19 @@ namespace PMDCP.Core
                         (byte)((int64 >> 0)  & 0xff)
                 };
         }
+
         /// <summary>
         /// Creates a byte array from a String
         /// </summary>
         /// <param name="sString">String to convert</param>
         /// <returns></returns>
-        public static byte[] StringToByteArray(string sString) {
+        public static byte[] StringToByteArray(string sString)
+        {
             return (sString == null) ? null : StringEncoding().GetBytes(sString);
         }
 
-        public static Encoding StringEncoding() {
+        public static Encoding StringEncoding()
+        {
             return Encoding.Unicode;
         }
 
@@ -87,63 +96,76 @@ namespace PMDCP.Core
         /// </summary>
         /// <param name="byteArray">Array of bytes to convert</param>
         /// <returns></returns>
-        public static char ByteArrayToChar(byte[] byteArray) {
+        public static char ByteArrayToChar(byte[] byteArray)
+        {
             return (char)((0xff & byteArray[0]) << 8 | (0xff & byteArray[1]) << 0);
         }
+
         /// <summary>
         /// Creates a Char array from a byte array
         /// </summary>
         /// <param name="byteArray">Array of bytes to convert</param>
         /// <returns></returns>
-        public static char[] ByteArrayToCharArray(byte[] byteArray) {
+        public static char[] ByteArrayToCharArray(byte[] byteArray)
+        {
             int size = byteArray.Length / 2;
             char[] charArray = new char[size];
             byte[] tmpArray;
-            for (int s = 0; s < size; s++) {
+            for (int s = 0; s < size; s++)
+            {
                 tmpArray = GetSubByteArray(byteArray, s * 2, (s + 1) * 2);
                 charArray[s] = ByteArrayToChar(tmpArray);
             }
             return charArray;
         }
+
         /// <summary>
         /// Creates a byte array from a Char array
         /// </summary>
         /// <param name="charArray">Array of characters to convert</param>
         /// <returns></returns>
-        public static byte[] CharArrayToByteArray(char[] charArray) {
+        public static byte[] CharArrayToByteArray(char[] charArray)
+        {
             byte[] byteArray = new byte[charArray.Length * 2];
             byte[] tmpArray;
-            for (int s = 0; s < charArray.Length; s++) {
+            for (int s = 0; s < charArray.Length; s++)
+            {
                 tmpArray = CharToByteArray(charArray[s]);
                 byteArray = AppendToByteArray(byteArray, tmpArray, s * 2);
             }
             return byteArray;
         }
-        public static short ByteArrayToShort(byte[] byteArray, int offset) {
+
+        public static short ByteArrayToShort(byte[] byteArray, int offset)
+        {
             return
                     (short)((0xff & byteArray[offset]) << 8 |
                                     (0xff & byteArray[offset + 1]) << 0);
         }
+
         /// <summary>
         /// Creates an Integer from a byte array
         /// </summary>
         /// <param name="byteArray">Byte array to convert</param>
         /// <param name="offset">Offset to start parsing</param>
         /// <returns></returns>
-        public static int ByteArrayToInt(byte[] byteArray, int offset) {
+        public static int ByteArrayToInt(byte[] byteArray, int offset)
+        {
             return
                     (0xff & byteArray[offset]) << 24 |
                     (0xff & byteArray[offset + 1]) << 16 |
                     (0xff & byteArray[offset + 2]) << 8 |
                     (0xff & byteArray[offset + 3]) << 0;
         }
+
         /// <summary>
         /// Creates a long from a byte array
         /// </summary>
         /// <param name="byteArray">Byte array to convert</param>
         /// <param name="offset">Offset to start parsing</param>
         /// <returns></returns>
-        public static int ByteArrayToLong(byte[] byteArray, int offset) {
+        public static int ByteArrayToLong(byte[] byteArray, int offset)
+        {
             return
                     (0xff & byteArray[offset]) << 56 |
                     (0xff & byteArray[offset + 1]) << 48 |
@@ -160,13 +182,16 @@ namespace PMDCP.Core
         /// </summary>
         /// <param name="byteArray">Byte array to convert</param>
         /// <returns></returns>
-        public static string ByteArrayToString(byte[] byteArray) {
+        public static string ByteArrayToString(byte[] byteArray)
+        {
             return StringEncoding().GetString(byteArray);
         }
 
-        public static string ByteArrayToString(byte[] byteArray, int offset, int count) {
+        public static string ByteArrayToString(byte[] byteArray, int offset, int count)
+        {
             return StringEncoding().GetString(byteArray, offset, count);
         }
+
         /// <summary>
         /// Adds a byte array to another byte array
         /// </summary>
@@ -174,24 +199,34 @@ namespace PMDCP.Core
         /// <param name="sArray">Array to append</param>
         /// <param name="offset">Offset to start appending</param>
         /// <returns></returns>
-        public static byte[] AppendToByteArray(byte[] dArray, byte[] sArray, int offset) {
+        public static byte[] AppendToByteArray(byte[] dArray, byte[] sArray, int offset)
+        {
             for (int i = 0; i < sArray.Length; i++)
+            {
                 dArray[offset + i] = sArray[i];
+            }
+
             return dArray;
         }
+
         /// <summary>
         /// Adds a byte array to the end of a byte array
         /// </summary>
         /// <param name="dArray">Byte array to append to</param>
         /// <param name="sArray">Byte array to append</param>
         /// <returns></returns>
-        public static byte[] AppendToByteArray(byte[] dArray, byte[] sArray) {
+        public static byte[] AppendToByteArray(byte[] dArray, byte[] sArray)
+        {
             int endOfArray = dArray.Length;
             dArray = endOfArray < endOfArray + sArray.Length ? ExpandByteArray(dArray, sArray.Length) : dArray;
             for (int i = 0; i < sArray.Length; i++)
+            {
                 dArray[endOfArray + i] = sArray[i];
+            }
+
             return dArray;
         }
+
         //public static byte[] AppendToByteArray(byte[] dArray, params byte[] sArray) {
         //    foreach (byte bArray in sArray) {
         //        dArray = AppendToByteArray(dArray, bArray);
@@ -205,60 +240,76 @@ namespace PMDCP.Core
         /// <param name="offset_START">Starting location</param>
         /// <param name="offset_END">Ending location</param>
         /// <returns></returns>
-        public static byte[] GetSubByteArray(byte[] byteArray, int offset_START, int offset_END) {
+        public static byte[] GetSubByteArray(byte[] byteArray, int offset_START, int offset_END)
+        {
             byte[] byteBuffer = new byte[offset_END - offset_START];
             for (int i = offset_START; i < offset_END; i++)
+            {
                 byteBuffer[i - offset_START] = byteArray[i];
+            }
+
             return byteBuffer;
         }
+
         /// <summary>
         /// Extends the maximum size of a byte array
         /// </summary>
         /// <param name="byteArray">Byte array to expand</param>
         /// <param name="appendLength">Size to extend array</param>
         /// <returns></returns>
-        public static byte[] ExpandByteArray(byte[] byteArray, int appendLength) {
+        public static byte[] ExpandByteArray(byte[] byteArray, int appendLength)
+        {
             byte[] cArray = (byte[])byteArray.Clone();
             byteArray = new byte[cArray.Length + appendLength];
             for (int i = 0; i < cArray.Length; i++)
+            {
                 byteArray[i] = cArray[i];
+            }
+
             return byteArray;
         }
+
         /// <summary>
         /// Compares two byte arrays
         /// </summary>
         /// <param name="array1">Array 1</param>
         /// <param name="array2">Array 2</param>
         /// <returns></returns>
-        public static bool CompareByteArray(byte[] array1, byte[] array2) {
+        public static bool CompareByteArray(byte[] array1, byte[] array2)
+        {
             return array1.Equals(array2);
         }
+
         /// <summary>
         /// Converts a String to an array of Char
         /// </summary>
         /// <param name="sVal">String to convert</param>
         /// <returns></returns>
-        public static char[] StringToCharArray(string sVal) {
+        public static char[] StringToCharArray(string sVal)
+        {
             return sVal.ToCharArray();
         }
+
         /// <summary>
         /// Converts an array of Char to a String
         /// </summary>
         /// <param name="charArray">Array of Chars to convert</param>
         /// <returns></returns>
-        public static string CharArrayToString(char[] charArray) {
+        public static string CharArrayToString(char[] charArray)
+        {
             return new string(charArray);
         }
+
         /// <summary>
         /// Converts an Integer to a 4 byte String
         /// </summary>
         /// <param name="val">Integer to convert</param>
         /// <returns></returns>
-        public static string AppendIntegerToString(int val) {
+        public static string AppendIntegerToString(int val)
+        {
             byte[] comCode = IntToByteArray(val);
             char[] chrCode = ByteArrayToCharArray(comCode);
             return CharArrayToString(chrCode);
         }
-
     }
 }

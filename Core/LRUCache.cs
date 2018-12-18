@@ -22,16 +22,17 @@ namespace PMDCP.Core
     {
         #region Fields
 
-        Dictionary<K, LinkedListNode<LRUCacheItem<K, V>>> cacheMap = new Dictionary<K, LinkedListNode<LRUCacheItem<K, V>>>();
-        int capacity;
-        LinkedList<LRUCacheItem<K, V>> lruList = new LinkedList<LRUCacheItem<K, V>>();
-        object lockObject = new object();
+        private Dictionary<K, LinkedListNode<LRUCacheItem<K, V>>> cacheMap = new Dictionary<K, LinkedListNode<LRUCacheItem<K, V>>>();
+        private readonly int capacity;
+        private LinkedList<LRUCacheItem<K, V>> lruList = new LinkedList<LRUCacheItem<K, V>>();
+        private readonly object lockObject = new object();
 
         #endregion Fields
 
         #region Constructors
 
-        public LRUCache(int capacity) {
+        public LRUCache(int capacity)
+        {
             this.capacity = capacity;
         }
 
@@ -40,9 +41,12 @@ namespace PMDCP.Core
         #region Methods
 
         //[MethodImpl(MethodImplOptions.Synchronized)]
-        public void Add(K key, V val) {
-            lock (lockObject) {
-                if (cacheMap.Count >= capacity) {
+        public void Add(K key, V val)
+        {
+            lock (lockObject)
+            {
+                if (cacheMap.Count >= capacity)
+                {
                     RemoveFirst();
                 }
                 LRUCacheItem<K, V> cacheItem = new LRUCacheItem<K, V>(key, val);
@@ -53,10 +57,12 @@ namespace PMDCP.Core
         }
 
         //[MethodImpl(MethodImplOptions.Synchronized)]
-        public V Get(K key) {
-            lock (lockObject) {
-                LinkedListNode<LRUCacheItem<K, V>> node;
-                if (cacheMap.TryGetValue(key, out node)) {
+        public V Get(K key)
+        {
+            lock (lockObject)
+            {
+                if (cacheMap.TryGetValue(key, out LinkedListNode<LRUCacheItem<K, V>> node))
+                {
                     //System.Console.WriteLine("Cache HIT " + key);
                     V value = node.Value.value;
 
@@ -69,7 +75,8 @@ namespace PMDCP.Core
             }
         }
 
-        protected void RemoveFirst() {
+        protected void RemoveFirst()
+        {
             // Remove from LRUPriority
             LinkedListNode<LRUCacheItem<K, V>> node = lruList.First;
             lruList.RemoveFirst();
@@ -91,7 +98,8 @@ namespace PMDCP.Core
 
         #region Constructors
 
-        public LRUCacheItem(K k, V v) {
+        public LRUCacheItem(K k, V v)
+        {
             key = k;
             value = v;
         }

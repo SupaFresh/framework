@@ -19,8 +19,8 @@ using System.Collections.Generic;
 namespace PMDCP.Core
 {
     /// <summary>
-    /// Class definition for a cacheable collection of items.  Specifically, 
-    /// a maximum size for the cache may be defined and objects added will 
+    /// Class definition for a cacheable collection of items.  Specifically,
+    /// a maximum size for the cache may be defined and objects added will
     /// be kept-alive whilst there is sufficient cache space.  Once an item
     /// has be pushed out of the cache, it is subject to the normal GC conditions.
     /// </summary>
@@ -44,7 +44,8 @@ namespace PMDCP.Core
         /// at construction time.
         /// </summary>
         /// <param name="maxBytes">Maximum size of the cache.</param>
-        public Cache(int maxBytes) {
+        public Cache(int maxBytes)
+        {
             this.maxBytes = maxBytes;
         }
 
@@ -56,9 +57,10 @@ namespace PMDCP.Core
         /// left in the cache allowing them to come alive again.
         /// </summary>
         private int maxBytes = 1024 * 1024;
+
         public int MaxBytes {
-            get { return maxBytes; }
-            set { maxBytes = value; }
+            get => maxBytes;
+            set => maxBytes = value;
         }
 
         /// <summary>
@@ -78,11 +80,15 @@ namespace PMDCP.Core
         /// <value>Current cache's managed size.</value>
         /// <remarks>The cache is at the mercy of the <c>ICacheable</c> items
         /// returning their true size.</remarks>
-        public int CurrentCacheUsage {
-            get {
+        public int CurrentCacheUsage
+        {
+            get
+            {
                 int size = 0;
-                if (cacheStore != null) {
-                    foreach (KeyValuePair<Key, Value> c in cacheStore) {
+                if (cacheStore != null)
+                {
+                    foreach (KeyValuePair<Key, Value> c in cacheStore)
+                    {
                         size += (c.Value as ICacheable).BytesUsed;
                     }
                 }
@@ -99,7 +105,8 @@ namespace PMDCP.Core
         /// <param name="bytes">Number of bytes needed within the cache.</param>
         /// <remarks>This purge function may be improved with some hit-count being
         /// maintained.</remarks>
-        private void PurgeSpace(int bytes) {
+        private void PurgeSpace(int bytes)
+        {
             // Purge space using a slight modification of the first-in-first-out system.
             // Basically, the first item added (the oldest) will be the first removed, however,
             // any item accessed is given a "touch" and moved to the end of the queue.
@@ -107,9 +114,11 @@ namespace PMDCP.Core
             // small).
             if (cacheStore != null &&
                  arrivalOrder != null &&
-                 cacheStore.Count != 0) {
+                 cacheStore.Count != 0)
+            {
                 int purged = 0;
-                while (MaxBytes <= (CurrentCacheUsage + bytes) && arrivalOrder.Count > 0) {
+                while (MaxBytes <= (CurrentCacheUsage + bytes) && arrivalOrder.Count > 0)
+                {
                     Key k = arrivalOrder.Dequeue();
                     int freeing = cacheStore[k].BytesUsed;
                     purged += freeing;
@@ -128,8 +137,10 @@ namespace PMDCP.Core
         /// </summary>
         /// <param name="k">Identifier or key for the item.</param>
         /// <param name="v">The actual item to store/cache.</param>
-        private void StoreItem(Key k, Value v) {
-            if (cacheStore == null) {
+        private void StoreItem(Key k, Value v)
+        {
+            if (cacheStore == null)
+            {
                 // Create the stores.
                 cacheStore = new Dictionary<Key, Value>();
                 arrivalOrder = new Queue<Key>();
@@ -143,9 +154,11 @@ namespace PMDCP.Core
         /// </summary>
         /// <param name="k">Identifier or key for item to add.</param>
         /// <param name="v">Actual item to store.</param>
-        public void Add(Key k, Value v) {
+        public void Add(Key k, Value v)
+        {
             // Check if we're using this yet
-            if (ContainsKey(k)) {
+            if (ContainsKey(k))
+            {
                 // Simple replacement by removing and adding again, this
                 // will ensure we do the size calculation in only one place.
                 Remove(k);
@@ -153,7 +166,8 @@ namespace PMDCP.Core
 
             // Need to get current total size and see if this will fit.
             int projectedUsage = v.BytesUsed + CurrentCacheUsage;
-            if (projectedUsage > maxBytes) {
+            if (projectedUsage > maxBytes)
+            {
                 System.Diagnostics.Debug.WriteLine(string.Format("Need to make space for {0} bytes, currently using {1}", v.BytesUsed, CurrentCacheUsage));
                 PurgeSpace(v.BytesUsed);
             }
@@ -166,8 +180,10 @@ namespace PMDCP.Core
         /// Remove the specified item from the cache.
         /// </summary>
         /// <param name="k">Identifier for the item to remove.</param>
-        public void Remove(Key k) {
-            if (ContainsKey(k)) {
+        public void Remove(Key k)
+        {
+            if (ContainsKey(k))
+            {
                 RemoveKeyFromQueue(k);
                 cacheStore.Remove(k);
             }
@@ -177,20 +193,28 @@ namespace PMDCP.Core
         /// Internal function to dequeue a specified value.
         /// </summary>
         /// <param name="k">Identifier of item to remove.</param>
-        /// <remarks>In worst case senarios, a new queue needs to be rebuilt.  
+        /// <remarks>In worst case senarios, a new queue needs to be rebuilt.
         /// Perhaps a List acting like a queue would work better.</remarks>
-        private void RemoveKeyFromQueue(Key k) {
-            if (arrivalOrder.Contains(k)) {
+        private void RemoveKeyFromQueue(Key k)
+        {
+            if (arrivalOrder.Contains(k))
+            {
                 if (arrivalOrder.Peek().CompareTo(k) == 0)
+                {
                     arrivalOrder.Dequeue();
-                else {
+                }
+                else
+                {
                     Queue<Key> tempQueue = new Queue<Key>();
                     int oldQueueSize = arrivalOrder.Count;
-                    while (arrivalOrder.Count > 0) {
+                    while (arrivalOrder.Count > 0)
+                    {
                         Key tempValue = arrivalOrder.Dequeue();
 
                         if (tempValue.CompareTo(k) != 0)
+                        {
                             tempQueue.Enqueue(tempValue);
+                        }
                     }
                     arrivalOrder = tempQueue;
                 }
@@ -203,7 +227,8 @@ namespace PMDCP.Core
         /// is known that this item would benifit from not being purged.
         /// </summary>
         /// <param name="k">Identifier of item to touch.</param>
-        public void Touch(Key k) {
+        public void Touch(Key k)
+        {
             RemoveKeyFromQueue(k);
             arrivalOrder.Enqueue(k);   // Put at end of queue.
         }
@@ -215,21 +240,27 @@ namespace PMDCP.Core
         /// <returns>Item value corresponding to Key supplied.</returns>
         /// <remarks>Accessing a stored item in this way automatically
         /// forces the item to the end of the purge queue.</remarks>
-        public Value GetValue(Key k) {
-            if (cacheStore != null && cacheStore.ContainsKey(k)) {
+        public Value GetValue(Key k)
+        {
+            if (cacheStore != null && cacheStore.ContainsKey(k))
+            {
                 Touch(k);
                 return cacheStore[k];
-            } else
+            }
+            else
+            {
                 return default(Value);
+            }
         }
 
         /// <summary>
         /// Determines whether the cache contains the specific key.
         /// </summary>
         /// <param name="k">Key to locate in the cache.</param>
-        /// <returns><c>true</c> if the cache contains the specified key; 
+        /// <returns><c>true</c> if the cache contains the specified key;
         /// otherwise <c>false</c>.</returns>
-        public bool ContainsKey(Key k) {
+        public bool ContainsKey(Key k)
+        {
             return (cacheStore != null && cacheStore.ContainsKey(k));
         }
 
@@ -239,16 +270,19 @@ namespace PMDCP.Core
         /// </summary>
         /// <param name="k">Key identifying value to return.</param>
         /// <returns>The value associated to the supplied key.</returns>
-        public Value this[Key k] { get { return GetValue(k); } }
+        public Value this[Key k] => GetValue(k);
 
         /// <summary>
         /// Returns an enumerator that iterates through the collection of
         /// keys.
         /// </summary>
         /// <returns>The enumerator for keys.</returns>
-        public IEnumerable<Key> GetKeys() {
+        public IEnumerable<Key> GetKeys()
+        {
             foreach (Key k in arrivalOrder)
+            {
                 yield return k;
+            }
         }
 
         /// <summary>
@@ -256,46 +290,54 @@ namespace PMDCP.Core
         /// values within the cache.
         /// </summary>
         /// <returns>The enumerator for the values.</returns>
-        public IEnumerable<Value> GetValues() {
+        public IEnumerable<Value> GetValues()
+        {
             foreach (KeyValuePair<Key, Value> i in cacheStore)
+            {
                 yield return i.Value;
+            }
         }
 
         /// <summary>
-        /// Returns the <c>KeyValuePair&lt;Key,Value&gt;</c> for the cache 
+        /// Returns the <c>KeyValuePair&lt;Key,Value&gt;</c> for the cache
         /// collection.
         /// </summary>
         /// <returns>The enumerator for the cache, returning both the
         /// key and the value as a pair.</returns>
-        /// <remarks>The return value from this function can be 
-        /// thought of as being like the C++ Standard Template 
+        /// <remarks>The return value from this function can be
+        /// thought of as being like the C++ Standard Template
         /// Library's std::pair template.</remarks>
-        public IEnumerable<KeyValuePair<Key, Value>> GetItems() {
+        public IEnumerable<KeyValuePair<Key, Value>> GetItems()
+        {
             foreach (KeyValuePair<Key, Value> i in cacheStore)
+            {
                 yield return i;
+            }
         }
 
         /// <summary>
         /// The default enumerator for the cache collection.  Returns an enumerator allowing the traversing of the values, much like the <see cref="GetValues"/>.
         /// </summary>
         /// <returns>The enumerator for the values.</returns>
-        public IEnumerator<Value> GetEnumerator() {
+        public IEnumerator<Value> GetEnumerator()
+        {
             foreach (KeyValuePair<Key, Value> i in cacheStore)
+            {
                 yield return i.Value;
+            }
         }
 
         /// <summary>
         /// Gets the number of items stored in the cache.
         /// </summary>
         /// <value>The number of items stored in the cache. </value>
-        public int Count {
-            get { return (cacheStore == null) ? 0 : cacheStore.Count; }
-        }
+        public int Count => (cacheStore == null) ? 0 : cacheStore.Count;
 
         /// <summary>
         /// Empties the cache of all items.
         /// </summary>
-        public void PurgeAll() {
+        public void PurgeAll()
+        {
             System.Diagnostics.Debug.WriteLine(string.Format("Purging cached collection of {0} items", cacheStore.Count));
             arrivalOrder.Clear();
             cacheStore.Clear();

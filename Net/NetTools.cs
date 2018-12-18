@@ -30,7 +30,8 @@ namespace PMDCP.Net
         /// Opens a webpage in the default web browser.
         /// </summary>
         /// <param name="webpage">The webpage to open.</param>
-        public static void OpenWebpage(string webpage) {
+        public static void OpenWebpage(string webpage)
+        {
             OpenWebpage(new Uri(webpage));
         }
 
@@ -38,21 +39,28 @@ namespace PMDCP.Net
         /// Opens a webpage in the default web browser.
         /// </summary>
         /// <param name="webpage">The webpage to open.</param>
-        public static void OpenWebpage(Uri website) {
+        public static void OpenWebpage(Uri website)
+        {
             Process.Start(website.AbsolutePath);
         }
 
-        public static bool IsConnected() {
+        public static bool IsConnected()
+        {
             bool success = false;
-            if (NetworkInterface.GetIsNetworkAvailable() == false) {
+            if (NetworkInterface.GetIsNetworkAvailable() == false)
+            {
                 return success;
             }
             string[] Mysite = { "www.google.com" };
-            try {
-                using (Ping ping = new Ping()) {
-                    foreach (string url in Mysite) {
+            try
+            {
+                using (Ping ping = new Ping())
+                {
+                    foreach (string url in Mysite)
+                    {
                         PingReply replyMsg = ping.Send(url, 300);
-                        if (replyMsg.Status == IPStatus.Success) {
+                        if (replyMsg.Status == IPStatus.Success)
+                        {
                             success = true;
                             break;
                         }
@@ -66,10 +74,13 @@ namespace PMDCP.Net
             return success;
         }
 
-        public static string GetMacAddress() {
+        public static string GetMacAddress()
+        {
             NetworkInterface[] nics = NetworkInterface.GetAllNetworkInterfaces();
-            for (int i = 0; i < nics.Length; i++) {
-                if (i != NetworkInterface.LoopbackInterfaceIndex) {
+            for (int i = 0; i < nics.Length; i++)
+            {
+                if (i != NetworkInterface.LoopbackInterfaceIndex)
+                {
                     return nics[i].GetPhysicalAddress().ToString();
                 }
             }
@@ -77,6 +88,5 @@ namespace PMDCP.Net
         }
 
         #endregion Methods
-
     }
 }

@@ -15,18 +15,17 @@
 
 namespace PMDCP.Sockets
 {
-    using System.Text;
-
     using PMDCP.Core;
+    using System.Text;
 
     public class UdpPacket : IPacket
     {
         #region Fields
 
         public const char SEP_CHAR = (char)0;
-        bool inParamSegment;
-        StringBuilder packet;
-        long size = -1;
+        private bool inParamSegment;
+        private StringBuilder packet;
+        private long size = -1;
 
         #endregion Fields
 
@@ -49,27 +48,20 @@ namespace PMDCP.Sockets
 
         #region Properties
 
-        public ConnectionType ConnectionType
-        {
-            get { return Sockets.ConnectionType.Tcp; }
-        }
+        public ConnectionType ConnectionType => ConnectionType.Tcp;
 
         public string Header { get; private set; }
 
-        public string PacketString
-        {
-            get { return packet.ToString(); }
-        }
+        public string PacketString => packet.ToString();
 
-        public char SeperatorChar
-        {
-            get { return SEP_CHAR; }
-        }
+        public char SeperatorChar => SEP_CHAR;
 
         public long Size
         {
-            get {
-                if (size == -1) {
+            get
+            {
+                if (size == -1)
+                {
                     size = ByteEncoder.StringEncoding().GetByteCount(PacketString);
                 }
                 return size;
@@ -85,7 +77,8 @@ namespace PMDCP.Sockets
         public static UdpPacket CreatePacket(string header, params string[] param)
         {
             UdpPacket packet = new UdpPacket(header);
-            for (int i = 0; i < param.Length; i++) {
+            for (int i = 0; i < param.Length; i++)
+            {
                 packet.AppendParameter(param[i]);
             }
             return packet;
@@ -94,7 +87,8 @@ namespace PMDCP.Sockets
         public static UdpPacket CreatePacket(string header, params int[] param)
         {
             UdpPacket packet = new UdpPacket(header);
-            for (int i = 0; i < param.Length; i++) {
+            for (int i = 0; i < param.Length; i++)
+            {
                 packet.AppendParameter(param[i]);
             }
             return packet;
@@ -113,7 +107,8 @@ namespace PMDCP.Sockets
 
         public void AppendParameter(int parameter)
         {
-            if (string.IsNullOrEmpty(Header)) {
+            if (string.IsNullOrEmpty(Header))
+            {
                 Header = parameter.ToString();
             }
             packet.Append(parameter.ToString());
@@ -122,7 +117,8 @@ namespace PMDCP.Sockets
 
         public void AppendParameter(string parameter)
         {
-            if (string.IsNullOrEmpty(Header)) {
+            if (string.IsNullOrEmpty(Header))
+            {
                 Header = parameter;
             }
             packet.Append(parameter);
@@ -136,7 +132,8 @@ namespace PMDCP.Sockets
 
         public void AppendParameters(params int[] param)
         {
-            for (int i = 0; i < param.Length; i++) {
+            for (int i = 0; i < param.Length; i++)
+            {
                 packet.Append(param[i].ToString());
                 packet.Append(SEP_CHAR);
             }
@@ -144,7 +141,8 @@ namespace PMDCP.Sockets
 
         public void AppendParameters(params string[] param)
         {
-            for (int i = 0; i < param.Length; i++) {
+            for (int i = 0; i < param.Length; i++)
+            {
                 packet.Append(param[i]);
                 packet.Append(SEP_CHAR);
             }
@@ -162,7 +160,8 @@ namespace PMDCP.Sockets
 
         public void PrependParameters(params string[] param)
         {
-            for (int i = param.Length - 1; i >= 0; i--) {
+            for (int i = param.Length - 1; i >= 0; i--)
+            {
                 packet.Insert(0, param[i]);
                 packet.Insert(param[i].Length, SEP_CHAR);
             }

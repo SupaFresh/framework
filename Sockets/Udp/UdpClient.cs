@@ -13,56 +13,63 @@
 // You should have received a copy of the GNU General Public License
 // along with Mystery Dungeon eXtended.  If not, see <http://www.gnu.org/licenses/>.
 
+using PMDCP.Core;
 using System;
 using System.Net;
 using System.Net.Sockets;
-using PMDCP.Core;
 
 namespace PMDCP.Sockets.Udp
 {
     public class UdpClient
     {
-        EndPoint bindEndPoint;
+        private EndPoint bindEndPoint;
 
         public Socket Socket { get; }
 
         public event EventHandler<DataReceivedEventArgs> DataReceived;
 
-        public UdpClient() {
+        public UdpClient()
+        {
             Socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
         }
 
-        public void Send(byte[] data, string address, int port) {
+        public void Send(byte[] data, string address, int port)
+        {
             Send(data, IPAddress.Parse(address), port);
         }
 
-        public void Send(byte[] data, IPAddress address, int port) {
+        public void Send(byte[] data, IPAddress address, int port)
+        {
             Send(data, new IPEndPoint(address, port));
         }
 
-        public void Send(byte[] data, EndPoint endPoint) {
+        public void Send(byte[] data, EndPoint endPoint)
+        {
             Socket.BeginSendTo(data, 0, data.Length, SocketFlags.None, endPoint, new AsyncCallback(SendCallback), this);
         }
 
-        private void SendCallback(IAsyncResult result) {
+        private void SendCallback(IAsyncResult result)
+        {
             Socket.EndSendTo(result);
         }
 
-        public void Listen(int port) {
+        public void Listen(int port)
+        {
             Listen(new IPEndPoint(IPAddress.Any, port));
         }
 
-        public void Listen(EndPoint bindEndPoint) {
+        public void Listen(EndPoint bindEndPoint)
+        {
             this.bindEndPoint = bindEndPoint;
             byte[] recBuffer = new byte[256];
             Socket.Bind(bindEndPoint);
             Socket.BeginReceiveFrom(recBuffer, 0, recBuffer.Length,
                 SocketFlags.None, ref bindEndPoint,
                 new AsyncCallback(MessageReceivedCallback), recBuffer);
-
         }
 
-        public void StartListenLoop(EndPoint bindEndPoint) {
+        public void StartListenLoop(EndPoint bindEndPoint)
+        {
             this.bindEndPoint = bindEndPoint;
             byte[] recBuffer = new byte[256];
             Socket.BeginReceiveFrom(recBuffer, 0, recBuffer.Length,
@@ -70,14 +77,18 @@ namespace PMDCP.Sockets.Udp
                 new AsyncCallback(MessageReceivedCallback), recBuffer);
         }
 
-        private void MessageReceivedCallback(IAsyncResult result) {
+        private void MessageReceivedCallback(IAsyncResult result)
+        {
             EndPoint remoteEndPoint = new IPEndPoint(0, 0);
             byte[] recBuffer = result.AsyncState as byte[];
-            try {
+            try
+            {
                 int bytesRead = Socket.EndReceiveFrom(result,
                     ref remoteEndPoint);
                 DataReceived?.Invoke(this, new DataReceivedEventArgs(new ByteArray(recBuffer, bytesRead).ToString(), remoteEndPoint));
-            } catch (SocketException e) {
+            }
+            catch (SocketException e)
+            {
                 Console.WriteLine("Error: {0} {1}", e.ErrorCode, e.Message);
             }
 

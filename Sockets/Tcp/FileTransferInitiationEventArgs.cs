@@ -17,11 +17,11 @@ using System;
 
 namespace PMDCP.Sockets.Tcp
 {
-	/// <summary>
-	/// Description of FileTransferInitiationEventArgs.
-	/// </summary>
-	public class FileTransferInitiationEventArgs : EventArgs
-	{
+    /// <summary>
+    /// Description of FileTransferInitiationEventArgs.
+    /// </summary>
+    public class FileTransferInitiationEventArgs : EventArgs
+    {
         public string FileName { get; set; }
 
         public bool Accept { get; set; } = false;
@@ -29,8 +29,8 @@ namespace PMDCP.Sockets.Tcp
         public string DestinationDirectory { get; set; }
 
         internal FileTransferInitiationEventArgs(string fileName)
-		{
-			FileName = fileName;
-		}
-	}
+        {
+            FileName = fileName;
+        }
+    }
 }

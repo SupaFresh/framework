@@ -19,7 +19,8 @@ namespace PMDCP.Sockets.Tcp
 {
     public class ConnectionReceivedEventArgs : EventArgs
     {
-        public ConnectionReceivedEventArgs(object id, TcpClient tcpClient) {
+        public ConnectionReceivedEventArgs(object id, TcpClient tcpClient)
+        {
             TcpClient = tcpClient;
             ID = id;
         }

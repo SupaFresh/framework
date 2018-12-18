@@ -28,16 +28,20 @@ namespace PMDCP.DatabaseConnector.MySql
         public Field(string name, FieldType type)
         {
             Name = name;
-            switch (type) {
+            switch (type)
+            {
                 case FieldType.Text:
                     Type = "TEXT";
                     break;
+
                 case FieldType.Numeric:
                     Type = "NUMERIC";
                     break;
+
                 case FieldType.Blob:
                     Type = "BLOB";
                     break;
+
                 case FieldType.IntegerPrimaryKey:
                     Type = "INTEGER PRIMARY KEY";
                     break;

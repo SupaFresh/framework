@@ -19,39 +19,41 @@ namespace PMDCP.Sockets.Gnp
 {
     public class GnpClientCollection<TClientID>
     {
-        public GnpClientCollection() {
-             Clients = new ListPair<TClientID, GnpClient>();
+        public GnpClientCollection()
+        {
+            Clients = new ListPair<TClientID, GnpClient>();
         }
 
-         public GnpClient GetGnpClient(TClientID clientID) {
+        public GnpClient GetGnpClient(TClientID clientID)
+        {
             int index = Clients.IndexOfKey(clientID);
-            if (index > -1) {
+            if (index > -1)
+            {
                 return Clients.ValueByIndex(index);
-            } else {
+            }
+            else
+            {
                 return null;
             }
         }
 
-         public int IndexOf(TClientID clientID) {
-             return Clients.IndexOfKey(clientID);
-         }
+        public int IndexOf(TClientID clientID)
+        {
+            return Clients.IndexOfKey(clientID);
+        }
 
         public ListPair<TClientID, GnpClient> Clients { get; }
 
-        public int Count {
-            get { return Clients.Count; }
-        }
+        public int Count => Clients.Count;
 
-        public GnpClient this[TClientID clientID] {
-            get { return Clients.GetValue(clientID); }
-        }
+        public GnpClient this[TClientID clientID] => Clients.GetValue(clientID);
 
-        public GnpClient this[int index] {
-            get { return Clients.ValueByIndex(index); }
-        }
+        public GnpClient this[int index] => Clients.ValueByIndex(index);
 
-        public void AddGnpClient(TClientID clientID, GnpClient gnpClient) {
-            if (Clients.ContainsKey(clientID) == false) {
+        public void AddGnpClient(TClientID clientID, GnpClient gnpClient)
+        {
+            if (Clients.ContainsKey(clientID) == false)
+            {
                 // If the collection does not contain a client with the same ID, add it
                 Clients.Add(clientID, gnpClient);
             }

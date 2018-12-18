@@ -19,13 +19,12 @@ namespace PMDCP.Core
 {
     public class MultiNameLRUCache<K, V>
     {
-
         #region Fields
 
-        Dictionary<K, ValueItem<K, V>> names = new Dictionary<K, ValueItem<K, V>>();
-        LinkedList<ValueItem<K, V>> values = new LinkedList<ValueItem<K, V>>();
-        int capacity;
-        object lockObject = new object();
+        private Dictionary<K, ValueItem<K, V>> names = new Dictionary<K, ValueItem<K, V>>();
+        private LinkedList<ValueItem<K, V>> values = new LinkedList<ValueItem<K, V>>();
+        private readonly int capacity;
+        private readonly object lockObject = new object();
 
         #endregion Fields
 
@@ -61,9 +60,8 @@ namespace PMDCP.Core
         {
             lock (lockObject)
             {
-                ValueItem<K, V> node;
                 //make sure key exists
-                if (names.TryGetValue(oldKey, out node))
+                if (names.TryGetValue(oldKey, out ValueItem<K, V> node))
                 {
                     node.keys.AddLast(newKey);
                     names.Add(newKey, node);
@@ -83,10 +81,8 @@ namespace PMDCP.Core
         {
             lock (lockObject)
             {
-                ValueItem<K, V> node;
-                if (names.TryGetValue(key, out node))
+                if (names.TryGetValue(key, out ValueItem<K, V> node))
                 {
-
                     V value = node.value;
 
                     values.Remove(node);
@@ -110,9 +106,7 @@ namespace PMDCP.Core
         }
 
         #endregion Methods
-
     }
-
 
     public class NameItem<K, V>
     {

@@ -19,111 +19,152 @@ namespace PMDCP.Core
 {
     public static class Extensions
     {
-        public static byte ToByte(this string str) {
+        public static byte ToByte(this string str)
+        {
             if (!string.IsNullOrEmpty(str) && byte.TryParse(str, out byte result))
             {
                 return result;
             }
             else
+            {
                 return 0;
+            }
         }
 
-        public static byte ToByte(this string str, byte defaultVal) {
+        public static byte ToByte(this string str, byte defaultVal)
+        {
             if (str != null && byte.TryParse(str, out byte result) == true)
             {
                 return result;
             }
             else
+            {
                 return defaultVal;
+            }
         }
 
-        public static int ToInt(this string str) {
+        public static int ToInt(this string str)
+        {
             if (!string.IsNullOrEmpty(str) && int.TryParse(str, out int result))
             {
                 return result;
             }
             else
+            {
                 return 0;
+            }
         }
 
-        public static int ToInt(this string str, int defaultVal) {
+        public static int ToInt(this string str, int defaultVal)
+        {
             if (str != null && int.TryParse(str, out int result) == true)
             {
                 return result;
             }
             else
+            {
                 return defaultVal;
+            }
         }
 
-        public static double ToDbl(this string str) {
+        public static double ToDbl(this string str)
+        {
             if (str != null && double.TryParse(str, out double result) == true)
             {
                 return result;
             }
             else
+            {
                 return 0;
+            }
         }
 
-        public static double ToDbl(this string str, double defaultVal) {
+        public static double ToDbl(this string str, double defaultVal)
+        {
             if (str != null && double.TryParse(str, out double result) == true)
             {
                 return result;
             }
             else
+            {
                 return defaultVal;
+            }
         }
 
-        public static string ToIntString(this bool boolval) {
+        public static string ToIntString(this bool boolval)
+        {
             if (boolval == true)
+            {
                 return "1";
+            }
             else
+            {
                 return "0";
+            }
         }
 
-        public static bool IsNumeric(this string str) {
+        public static bool IsNumeric(this string str)
+        {
             return int.TryParse(str, out int result);
         }
 
-        public static ulong ToUlng(this string str) {
+        public static ulong ToUlng(this string str)
+        {
             if (ulong.TryParse(str, out ulong result) == true)
             {
                 return result;
             }
             else
+            {
                 return 0;
+            }
         }
 
-        public static bool ToBool(this string str) {
-            if (string.IsNullOrEmpty(str)) {
+        public static bool ToBool(this string str)
+        {
+            if (string.IsNullOrEmpty(str))
+            {
                 return false;
             }
-            switch (str.ToLower()) {
+            switch (str.ToLower())
+            {
                 case "true":
                     return true;
+
                 case "false":
                     return false;
+
                 case "1":
                     return true;
+
                 case "0":
                     return false;
+
                 default:
                     return false;
             }
         }
 
-        public static bool ToBool(this string str, bool defaultValue) {
-            if (string.IsNullOrEmpty(str)) {
+        public static bool ToBool(this string str, bool defaultValue)
+        {
+            if (string.IsNullOrEmpty(str))
+            {
                 return false;
             }
-            switch (str.ToLower()) {
+            switch (str.ToLower())
+            {
                 case "true":
                     return true;
+
                 case "false":
                     return false;
+
                 case "1":
                     return true;
+
                 case "0":
                     return false;
+
                 default:
                     return defaultValue;
             }
@@ -137,7 +178,8 @@ namespace PMDCP.Core
         //    }
         //}
 
-        public static DateTime? ToDate(this string date) {
+        public static DateTime? ToDate(this string date)
+        {
             if (DateTime.TryParse(date, out DateTime tmpDate))
             {
                 return tmpDate;
@@ -148,20 +190,25 @@ namespace PMDCP.Core
             }
         }
 
-        public static string ToHex(this System.Drawing.Color color) {
+        public static string ToHex(this System.Drawing.Color color)
+        {
             return string.Format("#{0:x2}{1:x2}{2:x2}{3:x2}", color.A, color.R, color.G, color.B);
         }
 
-        public static System.Drawing.Color ToColor(this string hexString) {
+        public static System.Drawing.Color ToColor(this string hexString)
+        {
             return HexStringToColor(hexString);
         }
 
-        private static System.Drawing.Color HexStringToColor(string hex) {
+        private static System.Drawing.Color HexStringToColor(string hex)
+        {
             hex = hex.Replace("#", "");
 
             if (hex.Length != 8)
+            {
                 throw new Exception(hex +
                     " is not a valid 8-place hexadecimal color code.");
+            }
 
             string a, r, g, b;
             a = hex.Substring(0, 2);
@@ -175,10 +222,11 @@ namespace PMDCP.Core
                                                  HexStringToBase10Int(b));
         }
 
-        private static int HexStringToBase10Int(string hex) {
+        private static int HexStringToBase10Int(string hex)
+        {
             int base10value = 0;
 
-            try { base10value = System.Convert.ToInt32(hex, 16); } catch { base10value = 0; }
+            try { base10value = Convert.ToInt32(hex, 16); } catch { base10value = 0; }
 
             return base10value;
         }

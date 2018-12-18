@@ -20,7 +20,7 @@
 // making a combined work based on this library.  Thus, the terms and
 // conditions of the GNU General Public License cover the whole
 // combination.
-// 
+//
 // As a special exception, the copyright holders of this library give you
 // permission to link this library with independent modules to produce an
 // executable, regardless of the license terms of these independent
@@ -36,59 +36,64 @@
 using System;
 
 #if !NETCF_1_0 && !NETCF_2_0
+
 using System.Runtime.Serialization;
+
 #endif
 
 namespace PMDCP.Compression
 {
-	/// <summary>
-	/// SharpZipBaseException is the base exception class for the SharpZipLibrary.
-	/// All library exceptions are derived from this.
-	/// </summary>
-	/// <remarks>NOTE: Not all exceptions thrown will be derived from this class.
-	/// A variety of other exceptions are possible for example <see cref="ArgumentNullException"></see></remarks>
+    /// <summary>
+    /// SharpZipBaseException is the base exception class for the SharpZipLibrary.
+    /// All library exceptions are derived from this.
+    /// </summary>
+    /// <remarks>NOTE: Not all exceptions thrown will be derived from this class.
+    /// A variety of other exceptions are possible for example <see cref="ArgumentNullException"></see></remarks>
 #if !NETCF_1_0 && !NETCF_2_0
-	[Serializable]
-#endif
-	public class SharpZipBaseException : ApplicationException
-	{
-#if !NETCF_1_0 && !NETCF_2_0
-		/// <summary>
-		/// Deserialization constructor 
-		/// </summary>
-		/// <param name="info"><see cref="System.Runtime.Serialization.SerializationInfo"/> for this constructor</param>
-		/// <param name="context"><see cref="StreamingContext"/> for this constructor</param>
-		protected SharpZipBaseException(SerializationInfo info, StreamingContext context )
-			: base( info, context )
-		{
-		}
-#endif
-		
-		/// <summary>
-		/// Initializes a new instance of the SharpZipBaseException class.
-		/// </summary>
-		public SharpZipBaseException()
-		{
-		}
-		
-		/// <summary>
-		/// Initializes a new instance of the SharpZipBaseException class with a specified error message.
-		/// </summary>
-		/// <param name="message">A message describing the exception.</param>
-		public SharpZipBaseException(string message)
-			: base(message)
-		{
-		}
 
-		/// <summary>
-		/// Initializes a new instance of the SharpZipBaseException class with a specified
-		/// error message and a reference to the inner exception that is the cause of this exception.
-		/// </summary>
-		/// <param name="message">A message describing the exception.</param>
-		/// <param name="innerException">The inner exception</param>
-		public SharpZipBaseException(string message, Exception innerException)
-			: base(message, innerException)
-		{
-		}
-	}
+    [Serializable]
+#endif
+    public class SharpZipBaseException : ApplicationException
+    {
+#if !NETCF_1_0 && !NETCF_2_0
+
+        /// <summary>
+        /// Deserialization constructor
+        /// </summary>
+        /// <param name="info"><see cref="SerializationInfo"/> for this constructor</param>
+        /// <param name="context"><see cref="StreamingContext"/> for this constructor</param>
+        protected SharpZipBaseException(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        {
+        }
+
+#endif
+
+        /// <summary>
+        /// Initializes a new instance of the SharpZipBaseException class.
+        /// </summary>
+        public SharpZipBaseException()
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the SharpZipBaseException class with a specified error message.
+        /// </summary>
+        /// <param name="message">A message describing the exception.</param>
+        public SharpZipBaseException(string message)
+            : base(message)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the SharpZipBaseException class with a specified
+        /// error message and a reference to the inner exception that is the cause of this exception.
+        /// </summary>
+        /// <param name="message">A message describing the exception.</param>
+        /// <param name="innerException">The inner exception</param>
+        public SharpZipBaseException(string message, Exception innerException)
+            : base(message, innerException)
+        {
+        }
+    }
 }

@@ -17,10 +17,10 @@ namespace PMDCP.DatabaseConnector.MySql
 {
     public class DataColumnCollection
     {
-
         #region Constructors
 
-        public DataColumnCollection(int columnCount) {
+        public DataColumnCollection(int columnCount)
+        {
             Columns = new IDataColumn[columnCount];
         }
 
@@ -34,30 +34,26 @@ namespace PMDCP.DatabaseConnector.MySql
 
         #region Methods
 
-        public void SetColumn(int columnIndex, IDataColumn column) {
+        public void SetColumn(int columnIndex, IDataColumn column)
+        {
             Columns[columnIndex] = column;
         }
 
-        public IDataColumn FindByName(string name) {
-            for (int i = 0; i < Columns.Length; i++) {
-                if (Columns[i].Name == name) {
+        public IDataColumn FindByName(string name)
+        {
+            for (int i = 0; i < Columns.Length; i++)
+            {
+                if (Columns[i].Name == name)
+                {
                     return Columns[i];
                 }
             }
             return null;
         }
 
-        public IDataColumn this[string name] {
-            get {
-                return FindByName(name);
-            }
-        }
+        public IDataColumn this[string name] => FindByName(name);
 
-        public IDataColumn this[int index] {
-            get {
-                return Columns[index];
-            }
-        }
+        public IDataColumn this[int index] => Columns[index];
 
         #endregion Methods
     }

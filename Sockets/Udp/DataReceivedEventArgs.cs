@@ -20,12 +20,12 @@ namespace PMDCP.Sockets.Udp
 
     public class DataReceivedEventArgs : EventArgs
     {
-
         public EndPoint RemoteEndPoint { get; }
 
         #region Constructors
 
-        public DataReceivedEventArgs(string data, EndPoint remoteEndPoint) {
+        public DataReceivedEventArgs(string data, EndPoint remoteEndPoint)
+        {
             Data = data;
             RemoteEndPoint = remoteEndPoint;
         }

@@ -20,51 +20,61 @@ namespace PMDCP.Sockets.Gnp
 {
     public class GnpListener<TClientID>
     {
-        GnpClientCollection<TClientID> clientCollection;
-        IGnpIDGenerator<TClientID> idGenerator;
-        GnpClient gnpClient;
+        private GnpClientCollection<TClientID> clientCollection;
+        private IGnpIDGenerator<TClientID> idGenerator;
+        private GnpClient gnpClient;
 
         public event EventHandler<ConnectionReceivedEventArgs> ConnectionReceived;
 
-        public GnpListener(IGnpIDGenerator<TClientID> idGenerator) {
+        public GnpListener(IGnpIDGenerator<TClientID> idGenerator)
+        {
             gnpClient = new GnpClient();
             this.idGenerator = idGenerator;
 
             Initialize();
         }
 
-        private void Initialize() {
+        private void Initialize()
+        {
             clientCollection = new GnpClientCollection<TClientID>();
         }
 
-        public void Listen(int port) {
+        public void Listen(int port)
+        {
             Listen(IPAddress.Any, port);
         }
 
-        public void Listen(string ipAddress, int port) {
+        public void Listen(string ipAddress, int port)
+        {
             Listen(IPAddress.Parse(ipAddress), port);
         }
 
-        public void Listen(IPAddress ipAddress, int port) {
+        public void Listen(IPAddress ipAddress, int port)
+        {
             Listen(new IPEndPoint(ipAddress, port));
         }
 
-        public void Listen(EndPoint endPoint) {
+        public void Listen(EndPoint endPoint)
+        {
             gnpClient.Listen(endPoint);
 
             gnpClient.DataReceived += new EventHandler<DataReceivedEventArgs>(gnpClient_DataReceived);
         }
 
-        void gnpClient_DataReceived(object sender, DataReceivedEventArgs e) {
+        private void gnpClient_DataReceived(object sender, DataReceivedEventArgs e)
+        {
             // We received data from a client that hasn't been redirected yet
 
             TClientID id = idGenerator.GenerateID(e);
             int index = clientCollection.IndexOf(id);
 
             GnpClient dataClient = null;
-            if (index > -1) {
+            if (index > -1)
+            {
                 dataClient = clientCollection[index];
-            } else {
+            }
+            else
+            {
                 dataClient = new GnpClient(e.DataSource);
 
                 clientCollection.AddGnpClient(id, dataClient);
@@ -75,19 +85,22 @@ namespace PMDCP.Sockets.Gnp
             dataClient.InjectData(e.ByteData, e.DataSource);
         }
 
-        public void SendDataTo(byte[] data, TClientID clientID) {
+        public void SendDataTo(byte[] data, TClientID clientID)
+        {
             SendDataTo(data, clientCollection.GetGnpClient(clientID));
         }
 
-        public void SendDataTo(byte[] data, GnpClient gnpClient) {
+        public void SendDataTo(byte[] data, GnpClient gnpClient)
+        {
             this.gnpClient.Send(data, gnpClient.Socket.RemoteEndPoint);
         }
 
-        public void SendDataToAll(byte[] data) {
-            for (int i = 0; i < clientCollection.Count; i++) {
+        public void SendDataToAll(byte[] data)
+        {
+            for (int i = 0; i < clientCollection.Count; i++)
+            {
                 SendDataTo(data, clientCollection[i]);
             }
         }
-
     }
 }

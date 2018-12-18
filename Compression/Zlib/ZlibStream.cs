@@ -30,7 +30,6 @@ using System.IO;
 
 namespace PMDCP.Compression.Zlib
 {
-
     /// <summary>
     /// Represents a Zlib stream for compression or decompression.
     /// </summary>
@@ -68,10 +67,10 @@ namespace PMDCP.Compression.Zlib
     /// </remarks>
     /// <seealso cref="DeflateStream" />
     /// <seealso cref="GZipStream" />
-    public class ZlibStream : System.IO.Stream
+    public class ZlibStream : Stream
     {
         internal ZlibBaseStream _baseStream;
-        bool _disposed;
+        private bool _disposed;
 
         /// <summary>
         /// Create a <c>ZlibStream</c> using the specified <c>CompressionMode</c>.
@@ -126,7 +125,7 @@ namespace PMDCP.Compression.Zlib
         ///
         /// <param name="stream">The stream which will be read or written.</param>
         /// <param name="mode">Indicates whether the ZlibStream will compress or decompress.</param>
-        public ZlibStream(System.IO.Stream stream, CompressionMode mode)
+        public ZlibStream(Stream stream, CompressionMode mode)
             : this(stream, mode, CompressionLevel.Default, false)
         {
         }
@@ -213,7 +212,7 @@ namespace PMDCP.Compression.Zlib
         ///   remain open after the deflation or inflation occurs.  By default, after
         ///   <c>Close()</c> is called on the stream, the captive stream is also
         ///   closed. In some cases this is not desired, for example if the stream is a
-        ///   <see cref="System.IO.MemoryStream"/> that will be re-read after
+        ///   <see cref="MemoryStream"/> that will be re-read after
         ///   compression.  Specify true for the <paramref name="leaveOpen"/> parameter to leave the stream
         ///   open.
         /// </para>
@@ -229,7 +228,7 @@ namespace PMDCP.Compression.Zlib
         /// <param name="mode">Indicates whether the ZlibStream will compress or decompress.</param>
         /// <param name="leaveOpen">true if the application would like the stream to remain
         /// open after inflation/deflation.</param>
-        public ZlibStream(System.IO.Stream stream, CompressionMode mode, bool leaveOpen)
+        public ZlibStream(Stream stream, CompressionMode mode, bool leaveOpen)
             : this(stream, mode, CompressionLevel.Default, leaveOpen)
         {
         }
@@ -247,7 +246,7 @@ namespace PMDCP.Compression.Zlib
         ///   remain open after the deflation or inflation occurs.  By default, after
         ///   <c>Close()</c> is called on the stream, the captive stream is also closed. In
         ///   some cases this is not desired, for example if the stream is a <see
-        ///   cref="System.IO.MemoryStream"/> that will be re-read after compression.
+        ///   cref="MemoryStream"/> that will be re-read after compression.
         ///   Specify true for the <paramref name="leaveOpen"/> parameter to leave the stream open.
         /// </para>
         ///
@@ -310,7 +309,7 @@ namespace PMDCP.Compression.Zlib
         /// A tuning knob to trade speed for effectiveness. This parameter is effective only when
         /// mode is <c>CompressionMode.Compress</c>.
         /// </param>
-        public ZlibStream(System.IO.Stream stream, CompressionMode mode, CompressionLevel level, bool leaveOpen)
+        public ZlibStream(Stream stream, CompressionMode mode, CompressionLevel level, bool leaveOpen)
         {
             _baseStream = new ZlibBaseStream(stream, mode, level, ZlibStreamFlavor.ZLIB, leaveOpen);
         }
@@ -321,12 +320,16 @@ namespace PMDCP.Compression.Zlib
         /// This property sets the flush behavior on the stream.
         /// Sorry, though, not sure exactly how to describe all the various settings.
         /// </summary>
-        virtual public FlushType FlushMode
+        public virtual FlushType FlushMode
         {
-            get { return (_baseStream._flushMode); }
+            get => (_baseStream._flushMode);
             set
             {
-                if (_disposed) throw new ObjectDisposedException("ZlibStream");
+                if (_disposed)
+                {
+                    throw new ObjectDisposedException("ZlibStream");
+                }
+
                 _baseStream._flushMode = value;
             }
         }
@@ -350,34 +353,35 @@ namespace PMDCP.Compression.Zlib
         /// </remarks>
         public int BufferSize
         {
-            get
-            {
-                return _baseStream._bufferSize;
-            }
+            get => _baseStream._bufferSize;
             set
             {
-                if (_disposed) throw new ObjectDisposedException("ZlibStream");
+                if (_disposed)
+                {
+                    throw new ObjectDisposedException("ZlibStream");
+                }
+
                 if (_baseStream._workingBuffer != null)
+                {
                     throw new ZlibException("The working buffer is already set.");
+                }
+
                 if (value < ZlibConstants.WorkingBufferSizeMin)
+                {
                     throw new ZlibException(string.Format("Don't be silly. {0} bytes?? Use a bigger buffer, at least {1}.", value, ZlibConstants.WorkingBufferSizeMin));
+                }
+
                 _baseStream._bufferSize = value;
             }
         }
 
         /// <summary> Returns the total number of bytes input so far.</summary>
-        virtual public long TotalIn
-        {
-            get { return _baseStream._z.TotalBytesIn; }
-        }
+        public virtual long TotalIn => _baseStream._z.TotalBytesIn;
 
         /// <summary> Returns the total number of bytes output so far.</summary>
-        virtual public long TotalOut
-        {
-            get { return _baseStream._z.TotalBytesOut; }
-        }
+        public virtual long TotalOut => _baseStream._z.TotalBytesOut;
 
-        #endregion
+        #endregion Zlib properties
 
         #region System.IO.Stream methods
 
@@ -395,7 +399,10 @@ namespace PMDCP.Compression.Zlib
                 if (!_disposed)
                 {
                     if (disposing && (_baseStream != null))
+                    {
                         _baseStream.Close();
+                    }
+
                     _disposed = true;
                 }
             }
@@ -404,7 +411,6 @@ namespace PMDCP.Compression.Zlib
                 base.Dispose(disposing);
             }
         }
-
 
         /// <summary>
         /// Indicates whether the stream can be read.
@@ -416,7 +422,11 @@ namespace PMDCP.Compression.Zlib
         {
             get
             {
-                if (_disposed) throw new ObjectDisposedException("ZlibStream");
+                if (_disposed)
+                {
+                    throw new ObjectDisposedException("ZlibStream");
+                }
+
                 return _baseStream._stream.CanRead;
             }
         }
@@ -427,10 +437,7 @@ namespace PMDCP.Compression.Zlib
         /// <remarks>
         /// Always returns false.
         /// </remarks>
-        public override bool CanSeek
-        {
-            get { return false; }
-        }
+        public override bool CanSeek => false;
 
         /// <summary>
         /// Indicates whether the stream can be written.
@@ -442,7 +449,11 @@ namespace PMDCP.Compression.Zlib
         {
             get
             {
-                if (_disposed) throw new ObjectDisposedException("ZlibStream");
+                if (_disposed)
+                {
+                    throw new ObjectDisposedException("ZlibStream");
+                }
+
                 return _baseStream._stream.CanWrite;
             }
         }
@@ -452,17 +463,18 @@ namespace PMDCP.Compression.Zlib
         /// </summary>
         public override void Flush()
         {
-            if (_disposed) throw new ObjectDisposedException("ZlibStream");
+            if (_disposed)
+            {
+                throw new ObjectDisposedException("ZlibStream");
+            }
+
             _baseStream.Flush();
         }
 
         /// <summary>
         /// Reading this property always throws a <see cref="NotImplementedException"/>.
         /// </summary>
-        public override long Length
-        {
-            get { throw new NotImplementedException(); }
-        }
+        public override long Length => throw new NotImplementedException();
 
         /// <summary>
         ///   The position of the stream pointer.
@@ -480,13 +492,19 @@ namespace PMDCP.Compression.Zlib
             get
             {
                 if (_baseStream._streamMode == ZlibBaseStream.StreamMode.Writer)
+                {
                     return _baseStream._z.TotalBytesOut;
+                }
+
                 if (_baseStream._streamMode == ZlibBaseStream.StreamMode.Reader)
+                {
                     return _baseStream._z.TotalBytesIn;
+                }
+
                 return 0;
             }
 
-            set { throw new NotImplementedException(); }
+            set => throw new NotImplementedException();
         }
 
         /// <summary>
@@ -517,14 +535,18 @@ namespace PMDCP.Compression.Zlib
         /// <param name="count">the number of bytes to read.</param>
         public override int Read(byte[] buffer, int offset, int count)
         {
-                if (_disposed) throw new ObjectDisposedException("ZlibStream");
+            if (_disposed)
+            {
+                throw new ObjectDisposedException("ZlibStream");
+            }
+
             return _baseStream.Read(buffer, offset, count);
         }
 
         /// <summary>
         /// Calling this method always throws a <see cref="NotImplementedException"/>.
         /// </summary>
-        public override long Seek(long offset, System.IO.SeekOrigin origin)
+        public override long Seek(long offset, SeekOrigin origin)
         {
             throw new NotImplementedException();
         }
@@ -565,11 +587,15 @@ namespace PMDCP.Compression.Zlib
         /// <param name="count">the number of bytes to write.</param>
         public override void Write(byte[] buffer, int offset, int count)
         {
-                if (_disposed) throw new ObjectDisposedException("ZlibStream");
+            if (_disposed)
+            {
+                throw new ObjectDisposedException("ZlibStream");
+            }
+
             _baseStream.Write(buffer, offset, count);
         }
-        #endregion
 
+        #endregion System.IO.Stream methods
 
         /// <summary>
         ///   Compress a string into a byte array using ZLIB.
@@ -590,7 +616,7 @@ namespace PMDCP.Compression.Zlib
         /// <returns>The string in compressed form</returns>
         public static byte[] CompressString(string s)
         {
-            using (var ms = new MemoryStream())
+            using (MemoryStream ms = new MemoryStream())
             {
                 Stream compressor =
                     new ZlibStream(ms, CompressionMode.Compress, CompressionLevel.BestCompression);
@@ -598,7 +624,6 @@ namespace PMDCP.Compression.Zlib
                 return ms.ToArray();
             }
         }
-
 
         /// <summary>
         ///   Compress a byte array into a new byte array using ZLIB.
@@ -618,16 +643,15 @@ namespace PMDCP.Compression.Zlib
         /// <returns>The data in compressed form</returns>
         public static byte[] CompressBuffer(byte[] b)
         {
-            using (var ms = new MemoryStream())
+            using (MemoryStream ms = new MemoryStream())
             {
                 Stream compressor =
-                    new ZlibStream( ms, CompressionMode.Compress, CompressionLevel.BestCompression );
+                    new ZlibStream(ms, CompressionMode.Compress, CompressionLevel.BestCompression);
 
                 ZlibBaseStream.CompressBuffer(b, compressor);
                 return ms.ToArray();
             }
         }
-
 
         /// <summary>
         ///   Uncompress a ZLIB-compressed byte array into a single string.
@@ -643,7 +667,7 @@ namespace PMDCP.Compression.Zlib
         /// <returns>The uncompressed string</returns>
         public static string UncompressString(byte[] compressed)
         {
-            using (var input = new MemoryStream(compressed))
+            using (MemoryStream input = new MemoryStream(compressed))
             {
                 Stream decompressor =
                     new ZlibStream(input, CompressionMode.Decompress);
@@ -651,7 +675,6 @@ namespace PMDCP.Compression.Zlib
                 return ZlibBaseStream.UncompressString(compressed, decompressor);
             }
         }
-
 
         /// <summary>
         ///   Uncompress a ZLIB-compressed byte array into a byte array.
@@ -667,16 +690,13 @@ namespace PMDCP.Compression.Zlib
         /// <returns>The data in uncompressed form</returns>
         public static byte[] UncompressBuffer(byte[] compressed)
         {
-            using (var input = new MemoryStream(compressed))
+            using (MemoryStream input = new MemoryStream(compressed))
             {
                 Stream decompressor =
-                    new ZlibStream( input, CompressionMode.Decompress );
+                    new ZlibStream(input, CompressionMode.Decompress);
 
                 return ZlibBaseStream.UncompressBuffer(compressed, decompressor);
             }
         }
-
     }
-
-
 }

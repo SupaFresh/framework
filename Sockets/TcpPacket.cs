@@ -15,30 +15,31 @@
 
 namespace PMDCP.Sockets
 {
-    using System.Text;
-
     using PMDCP.Core;
+    using System.Text;
 
     public class TcpPacket : IPacket
     {
         #region Fields
 
         public const char SEP_CHAR = (char)0;
-        bool inParamSegment;
-        StringBuilder packet;
-        long size = -1;
+        private bool inParamSegment;
+        private StringBuilder packet;
+        private long size = -1;
 
         #endregion Fields
 
         #region Constructors
 
-        public TcpPacket(string header) {
+        public TcpPacket(string header)
+        {
             Header = header;
             packet = new StringBuilder(Header);
             packet.Append(SEP_CHAR);
         }
 
-        public TcpPacket() {
+        public TcpPacket()
+        {
             Header = null;
             packet = new StringBuilder();
         }
@@ -47,23 +48,20 @@ namespace PMDCP.Sockets
 
         #region Properties
 
-        public ConnectionType ConnectionType {
-            get { return ConnectionType.Tcp; }
-        }
+        public ConnectionType ConnectionType => ConnectionType.Tcp;
 
         public string Header { get; private set; }
 
-        public string PacketString {
-            get { return packet.ToString(); }
-        }
+        public string PacketString => packet.ToString();
 
-        public char SeperatorChar {
-            get { return SEP_CHAR; }
-        }
+        public char SeperatorChar => SEP_CHAR;
 
-        public long Size {
-            get {
-                if (size == -1) {
+        public long Size
+        {
+            get
+            {
+                if (size == -1)
+                {
                     size = ByteEncoder.StringEncoding().GetByteCount(PacketString);
                 }
                 return size;
@@ -76,81 +74,101 @@ namespace PMDCP.Sockets
 
         #region Methods
 
-        public static TcpPacket CreatePacket(string header, params string[] param) {
+        public static TcpPacket CreatePacket(string header, params string[] param)
+        {
             TcpPacket packet = new TcpPacket(header);
-            for (int i = 0; i < param.Length; i++) {
+            for (int i = 0; i < param.Length; i++)
+            {
                 packet.AppendParameter(param[i]);
             }
             return packet;
         }
 
-        public static TcpPacket CreatePacket(string header, params int[] param) {
+        public static TcpPacket CreatePacket(string header, params int[] param)
+        {
             TcpPacket packet = new TcpPacket(header);
-            for (int i = 0; i < param.Length; i++) {
+            for (int i = 0; i < param.Length; i++)
+            {
                 packet.AppendParameter(param[i]);
             }
             return packet;
         }
 
-        public static TcpPacket CreatePacket(string header) {
+        public static TcpPacket CreatePacket(string header)
+        {
             TcpPacket packet = new TcpPacket(header);
             return packet;
         }
 
-        public void AppendClass(ISendable sendableClass) {
+        public void AppendClass(ISendable sendableClass)
+        {
             sendableClass.AppendToPacket(this);
         }
 
-        public void AppendParameter(int parameter) {
-            if (string.IsNullOrEmpty(Header)) {
+        public void AppendParameter(int parameter)
+        {
+            if (string.IsNullOrEmpty(Header))
+            {
                 Header = parameter.ToString();
             }
             packet.Append(parameter.ToString());
             packet.Append(SEP_CHAR);
         }
 
-        public void AppendParameter(string parameter) {
-            if (string.IsNullOrEmpty(Header)) {
+        public void AppendParameter(string parameter)
+        {
+            if (string.IsNullOrEmpty(Header))
+            {
                 Header = parameter;
             }
             packet.Append(parameter);
             packet.Append(SEP_CHAR);
         }
 
-        public void AppendParameterSegment(string segment) {
+        public void AppendParameterSegment(string segment)
+        {
             packet.Append(segment);
         }
 
-        public void AppendParameters(params int[] param) {
-            for (int i = 0; i < param.Length; i++) {
+        public void AppendParameters(params int[] param)
+        {
+            for (int i = 0; i < param.Length; i++)
+            {
                 packet.Append(param[i].ToString());
                 packet.Append(SEP_CHAR);
             }
         }
 
-        public void AppendParameters(params string[] param) {
-            for (int i = 0; i < param.Length; i++) {
+        public void AppendParameters(params string[] param)
+        {
+            for (int i = 0; i < param.Length; i++)
+            {
                 packet.Append(param[i]);
                 packet.Append(SEP_CHAR);
             }
         }
 
-        public void EndParameterSegment() {
+        public void EndParameterSegment()
+        {
             packet.Append(SEP_CHAR);
             inParamSegment = false;
         }
 
-        public void FinalizePacket() {
+        public void FinalizePacket()
+        {
         }
 
-        public void PrependParameters(params string[] param) {
-            for (int i = param.Length - 1; i >= 0; i--) {
+        public void PrependParameters(params string[] param)
+        {
+            for (int i = param.Length - 1; i >= 0; i--)
+            {
                 packet.Insert(0, param[i]);
                 packet.Insert(param[i].Length, SEP_CHAR);
             }
         }
 
-        public void StartParameterSegment() {
+        public void StartParameterSegment()
+        {
             inParamSegment = true;
         }
 

@@ -22,16 +22,17 @@ namespace PMDCP.Sockets.Tcp
 
     public class TcpListener<TClientID>
     {
-
         #region Fields
-        ITcpIDGenerator<TClientID> idGenerator;
-        List<Socket> listenerSockets;
+
+        private ITcpIDGenerator<TClientID> idGenerator;
+        private List<Socket> listenerSockets;
 
         #endregion Fields
 
         #region Constructors
 
-        public TcpListener(ITcpIDGenerator<TClientID> idGenerator) {
+        public TcpListener(ITcpIDGenerator<TClientID> idGenerator)
+        {
             listenerSockets = new List<Socket>();
 
             this.idGenerator = idGenerator;
@@ -57,15 +58,18 @@ namespace PMDCP.Sockets.Tcp
 
         #region Methods
 
-        public void Listen(string ipAddress, int port) {
+        public void Listen(string ipAddress, int port)
+        {
             Listen(IPAddress.Parse(ipAddress), port);
         }
 
-        public void Listen(IPAddress ipAddress, int port) {
+        public void Listen(IPAddress ipAddress, int port)
+        {
             Listen(new IPEndPoint(ipAddress, port));
         }
 
-        public void Listen(EndPoint endPoint) {
+        public void Listen(EndPoint endPoint)
+        {
             Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
             socket.Bind(endPoint);
@@ -75,28 +79,35 @@ namespace PMDCP.Sockets.Tcp
             listenerSockets.Add(socket);
         }
 
-        public void SendDataTo(byte[] data, TClientID clientID) {
+        public void SendDataTo(byte[] data, TClientID clientID)
+        {
             SendDataTo(data, ClientCollection.GetTcpClient(clientID));
         }
 
-        public void SendDataTo(byte[] data, TcpClient tcpClient) {
+        public void SendDataTo(byte[] data, TcpClient tcpClient)
+        {
             tcpClient.Send(data);
         }
 
-        public void SendDataToAll(byte[] data) {
-            foreach (TcpClient client in ClientCollection.EnumerateAllClients()) {
+        public void SendDataToAll(byte[] data)
+        {
+            foreach (TcpClient client in ClientCollection.EnumerateAllClients())
+            {
                 client.Send(data);
             }
         }
 
-        private void Initialize() {
+        private void Initialize()
+        {
             Backlog = 10;
             ClientCollection = new TcpClientCollection<TClientID>();
         }
 
-        private void ListenCallback(IAsyncResult result) {
+        private void ListenCallback(IAsyncResult result)
+        {
             Socket socket = result.AsyncState as Socket;
-            try {
+            try
+            {
                 System.Net.Sockets.Socket client = socket.EndAccept(result);
 
                 socket.BeginAccept(new AsyncCallback(ListenCallback), socket);
@@ -105,7 +116,9 @@ namespace PMDCP.Sockets.Tcp
                 TClientID id = idGenerator.GenerateID(tcpClient);
                 ClientCollection.AddTcpClient(id, tcpClient);
                 ConnectionReceived?.Invoke(this, new ConnectionReceivedEventArgs(id, tcpClient));
-            } catch {
+            }
+            catch
+            {
                 socket.BeginAccept(new AsyncCallback(ListenCallback), socket);
             }
         }
